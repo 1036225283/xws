@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--控制台日志输出配置-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--对输出日志进行格式化-->
+        <encoder>
+            <!-- %d日期,%p日志级别,%file文件名,%line所在行数,%m输出的信息,%n换行 -->
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
+            <!--字符编码-->
+            <charset>UTF-8</charset><!--此处设置字符集-->
+        </encoder>
+    </appender>
+    <!--指定日志输出等级-->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!--上述配置表名将 >=info级别的日志都输出到控制台-->
+
+    <!--日志文件配置-->
+    <appender name="xws-neuron" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值。-->
+        <File>/Users/xws/log/xws-neuron.log</File>
+        <!--滚动记录文件：根据时间来制定滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/Users/xws/log/xws-neuron.log.%d.%i</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>64 MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d %p (%file:%line\)- %m%n
+            </pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+    <logger name="xws-neuron" level="INFO">
+        <appender-ref ref="xws-neuron"/>
+    </logger>
+</configuration>
