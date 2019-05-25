@@ -25,11 +25,10 @@ A Java implement of Deep Neural Network.
 ```
 # Build a RNN Network
 ```JAVA 
-List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
+         List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
          List<RnnSequence> listTest = createSequenceMNIST(UtilMnist.testData());
  
-         CNNetWork cnNetWork = CNNetWork.load("RNN_MNIST_LN");
- //        CNNetWork cnNetWork = new CNNetWork();
+         CNNetWork cnNetWork = new CNNetWork();
          //93.92%
          //95.52%
          cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 28));
@@ -41,7 +40,6 @@ List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
          double learnRate = UtilNeuralNet.e() * 0.00000001;
  
  
- //
          cnNetWork.entryLearn();
          cnNetWork.setBatchSize(1);
          cnNetWork.setLearnRate(learnRate);
