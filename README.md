@@ -1,11 +1,6 @@
 # XWS
 A Java implement of Deep Neural Network.
 
-# The advantage of project
-Batch gradient descent is not used，Using online learning。
-### RNN
-1. Instead of using LSTM, RNN USES the ResNet residual
-2. Through XOR training and testing, ADD training and testing, MNIST training and testing, MNIST recognition rate reached 95%
 # Build a CNN Network
 ```java       
         CNNetWork cnNetWork = new CNNetWork();
@@ -75,3 +70,31 @@ List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
  
          cnNetWork.save("RNN_MNIST_LN");
 ```
+# Pull Request
+Pull request is welcome.
+# communicate with
+QQ group: 1036225283
+
+# Features
+1. Batch gradient descent is not used，Using online learning。
+2. Instead of using LSTM, RNN USES the ResNet residual
+1. without any dependency
+2. Basic layer: input layer, conv2d layer,deepwise conv2d layer, pooling layer(MAX and MEAN), full connect layer, softmax layer, recurrent layer 
+3. Loss function: Cross Entropy,log like-hood ,MSE loss
+4. Optimize method: SGD(SGD without momentum),SGDM(SGD with momentum)
+5. active funcs:sigmod , tanh, relu
+6. L1 and L2 regularization is supported.
+
+# Test and Performance
+## DNN
+1. mnist recognition success rate is 99%
+## CNN
+1. mnist recognition success rate is 99%
+2. cifar10 recognition success rate is 65%
+## RNN
+1. XOR test ok
+2. ADD test ok
+3. mnist recognition success rate is 95%
+
+# License MIT
+
