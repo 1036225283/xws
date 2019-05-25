@@ -78,12 +78,11 @@ QQ group: 1036225283
 # Features
 1. Batch gradient descent is not used，Using online learning。
 2. Instead of using LSTM, RNN USES the ResNet residual
-1. without any dependency
-2. Basic layer: input layer, conv2d layer,deepwise conv2d layer, pooling layer(MAX and MEAN), full connect layer, softmax layer, recurrent layer 
-3. Loss function: Cross Entropy,log like-hood ,MSE loss
-4. Optimize method: SGD(SGD without momentum),SGDM(SGD with momentum)
-5. active funcs:sigmod , tanh, relu
-6. L1 and L2 regularization is supported.
+3. without any dependency
+4. Basic layer: input layer, dropout layer,filter layer, pooling layer(MAX), full connect layer, softmax layer, rnn layer 
+5. Loss function: Cross Entropy,log like-hood ,MSE loss
+6. active funcs:sigmod , tanh, relu
+7. L2 regularization is supported.
 
 # Test and Performance
 ## DNN
