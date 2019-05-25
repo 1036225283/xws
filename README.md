@@ -4,7 +4,7 @@ A Java implement of Deep Neural Network.
 # The advantage of project
 Batch gradient descent is not used，Using online learning
 
-#Build a CNN Network
+# Build a CNN Network
 ```java       
         CNNetWork cnNetWork = new CNNetWork();
         cnNetWork.addLayer(new BnLayer("bn1"));
@@ -26,7 +26,7 @@ Batch gradient descent is not used，Using online learning
         cnNetWork.save(strName);
 
 ```
-#Build a RNN Network
+# Build a RNN Network
 ```JAVA 
 List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
          List<RnnSequence> listTest = createSequenceMNIST(UtilMnist.testData());
@@ -72,4 +72,4 @@ List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
          }
  
          cnNetWork.save("RNN_MNIST_LN");
-         ```
+```
