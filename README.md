@@ -4,8 +4,8 @@ A Java implement of Deep Neural Network.
 # The advantage of project
 Batch gradient descent is not used，Using online learning。
 ### RNN
-Instead of using LSTM, RNN USES the ResNet residual
-
+1. Instead of using LSTM, RNN USES the ResNet residual
+2. Through XOR training and testing, ADD training and testing, MNIST training and testing, MNIST recognition rate reached 95%
 # Build a CNN Network
 ```java       
         CNNetWork cnNetWork = new CNNetWork();
