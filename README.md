@@ -2,7 +2,9 @@
 A Java implement of Deep Neural Network.
 
 # The advantage of project
-Batch gradient descent is not used，Using online learning
+Batch gradient descent is not used，Using online learning。
+### RNN
+Instead of using LSTM, RNN USES the ResNet residual
 
 # Build a CNN Network
 ```java       
