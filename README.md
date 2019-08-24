@@ -71,7 +71,8 @@ A Java implement of Deep Neural Network.
 # Pull Request
 Pull request is welcome.
 # communicate with
-QQ group: 1036225283
+QQ group: 35870788
+Personal QQ:1036225283
 
 # Features
 1. Batch gradient descent is not used，Using online learning。
