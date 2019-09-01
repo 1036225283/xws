@@ -508,7 +508,11 @@ public class FullNetWorkTest {
 
     //加工手写字符的期望数据
     public static double[] expectMNIST(double val) {
-        double[] expect = new double[10];
+        return expectMNIST(val, 10);
+    }
+
+    public static double[] expectMNIST(double val, int total) {
+        double[] expect = new double[total];
         int index = (int) val;
         expect[index] = 1;
         return expect;

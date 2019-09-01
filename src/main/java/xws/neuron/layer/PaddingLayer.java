@@ -1,121 +1,162 @@
 package xws.neuron.layer;
 
-import xws.neuron.CNNPool;
 import xws.neuron.Tensor;
-import xws.neuron.UtilNeuralNet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
- * 数据扩展
+ * 填充空白
+ * 左填充
+ * 右填充
+ * 上填充
+ * 下填充
  * Created by xws on 2019/2/19.
  */
 public class PaddingLayer extends Layer {
 
 
-    private int padding = 0;
+    private Tensor tensorInput;
+    private Tensor tensorOut;
 
-
-    private CNNPool pool;//池化核
-
-    private int outDepth;
-    private int outHeight;
-    private int outWidth;
-
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
-
-    private List<Index> list;
+    private int pTop;
+    private int pBottom;
+    private int pLeft;
+    private int pRight;
 
 
     public PaddingLayer() {
     }
 
-    //构造函数时，传入filters的构造
     public PaddingLayer(int padding) {
         super("PaddingLayer");
-        this.padding = padding;
+        this.pTop = padding;
+        this.pBottom = padding;
+        this.pLeft = padding;
+        this.pRight = padding;
     }
 
     public PaddingLayer(String name, int padding) {
         super("PaddingLayer");
-        this.padding = padding;
+        this.pTop = padding;
+        this.pBottom = padding;
+        this.pLeft = padding;
+        this.pRight = padding;
         setName(name);
     }
 
+    //构造函数时，传入filters的构造
+    public PaddingLayer(int pTop, int pBottom, int pLeft, int pRight) {
+        super("PaddingLayer");
+        this.pTop = pTop;
+        this.pBottom = pBottom;
+        this.pLeft = pLeft;
+        this.pRight = pRight;
+    }
+
+    public PaddingLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
+        super("PaddingLayer");
+        this.pTop = pTop;
+        this.pBottom = pBottom;
+        this.pLeft = pLeft;
+        this.pRight = pRight;
+        setName(name);
+
+    }
 
     @Override
     public Tensor forward(Tensor tensor) {
 
-        inputDepth = tensor.getDepth();
-        inputHeight = tensor.getHeight();
-        inputWidth = tensor.getWidth();
-
-        list = new ArrayList<>();
-
-
-        //需要计算出结果数据的维度和大小
-        outHeight = UtilNeuralNet.afterHeight(tensor.getHeight(), 0, pool.getStrideY(), pool.getHeight());
-        outWidth = UtilNeuralNet.afterWidth(tensor.getWidth(), 0, pool.getStrideX(), pool.getWidth());
-        outDepth = tensor.getDepth();
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(outDepth);
-        tensorOut.setHeight(outHeight);
-        tensorOut.setWidth(outWidth);
+        tensorInput = tensor;
+        //首先，根据现有大小，创建新的大小
+        tensorOut = new Tensor();
+        tensorOut.setDepth(tensorInput.getDepth());
+        tensorOut.setHeight(tensorInput.getHeight() + pTop + pBottom);
+        tensorOut.setWidth(tensorInput.getWidth() + pLeft + pRight);
         tensorOut.createArray();
 
-        for (int d = 0; d < tensor.getDepth(); d++) {
-            for (int h = 0; h < outHeight; h++) {
-                for (int w = 0; w < outWidth; w++) {
-                    Index index = pool.maxPool(d, h * pool.getStrideY(), w * pool.getStrideX(), tensor);
-                    tensorOut.set(d, h, w, index.getValue());
-                    list.add(index);
+
+        //开始拷贝数据到新的tenser里面去
+        for (int d = 0; d < tensorOut.getDepth(); d++) {
+            for (int h = 0; h < tensorOut.getHeight(); h++) {
+                for (int w = 0; w < tensorOut.getWidth(); w++) {
+                    if (h < pTop || h > tensorInput.getHeight() + pTop - 1) {
+                        continue;
+                    }
+                    if (w < pLeft || w > tensorInput.getWidth() + pLeft - 1) {
+                        continue;
+                    }
+
+                    double val = tensor.get(d, h - pTop, w - pLeft);
+                    tensorOut.set(d, h, w, val);
                 }
             }
 
         }
-
-//        System.out.println(JSON.toJSONString(list));
 
         return tensorOut;
     }
 
     @Override
     public Tensor backPropagation(Tensor tensor) {
-        //先创造和输入数据一样大小的虚拟数据
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(inputDepth);
-        tensorOut.setHeight(inputHeight);
-        tensorOut.setWidth(inputWidth);
-        tensorOut.createArray();
+
+        //首先，创造和输入数据一样大小的虚拟数据
+        Tensor tensorError = new Tensor();
+        tensorError.setDepth(tensorInput.getDepth());
+        tensorError.setHeight(tensorInput.getHeight());
+        tensorError.setWidth(tensorInput.getWidth());
+        tensorError.createArray();
 
 
-        //根据前向传播时记录的最大值的坐标，将误差数据恢复回去
-        double[] error = tensor.getArray();
-        for (int i = 0; i < error.length; i++) {
-            Index index = list.get(i);
-            tensorOut.set(index.getDepth(), index.getHeight(), index.getWidth(), error[i]);
+        //其次，将误差数据拷贝回去
+        for (int d = 0; d < tensorOut.getDepth(); d++) {
+            for (int h = 0; h < tensorOut.getHeight(); h++) {
+                for (int w = 0; w < tensorOut.getWidth(); w++) {
+
+                    if (h < pTop || h > tensorInput.getHeight() + pTop - 1) {
+                        continue;
+                    }
+                    if (w < pLeft || w > tensorInput.getWidth() + pLeft - 1) {
+                        continue;
+                    }
+
+                    double val = tensor.get(d, h, w);
+                    tensorError.set(d, h - pTop, w - pLeft, val);
+                }
+            }
+
         }
 
-        return tensorOut;
+        return tensorError;
     }
 
-    public CNNPool getPool() {
-        return pool;
+    public int getpTop() {
+        return pTop;
     }
 
-    public void setPool(CNNPool pool) {
-        this.pool = pool;
+    public void setpTop(int pTop) {
+        this.pTop = pTop;
     }
 
-    public int getPadding() {
-        return padding;
+    public int getpBottom() {
+        return pBottom;
     }
 
-    public void setPadding(int padding) {
-        this.padding = padding;
+    public void setpBottom(int pBottom) {
+        this.pBottom = pBottom;
+    }
+
+    public int getpLeft() {
+        return pLeft;
+    }
+
+    public void setpLeft(int pLeft) {
+        this.pLeft = pLeft;
+    }
+
+    public int getpRight() {
+        return pRight;
+    }
+
+    public void setpRight(int pRight) {
+        this.pRight = pRight;
     }
 }

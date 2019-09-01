@@ -6,34 +6,60 @@ package xws.neuron.layer;
  */
 public class Index {
 
-    private int depth;
-    private int height;
-    private int width;
+    private int depthFrom;//池化前的深度
+    private int depthTo;//池化后的深度
+    private int heightFrom;//池化前的高度坐标
+    private int heightTo;//池化后的高度坐标
+    private int widthFrom;//池化前的宽度坐标
+    private int widthTo;//池化后的宽度坐标
     private double value;
 
-
-    public int getDepth() {
-        return depth;
+    public int getDepthFrom() {
+        return depthFrom;
     }
 
-    public void setDepth(int depth) {
-        this.depth = depth;
+    public void setDepthFrom(int depthFrom) {
+        this.depthFrom = depthFrom;
     }
 
-    public int getHeight() {
-        return height;
+    public int getDepthTo() {
+        return depthTo;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public void setDepthTo(int depthTo) {
+        this.depthTo = depthTo;
     }
 
-    public int getWidth() {
-        return width;
+    public int getHeightFrom() {
+        return heightFrom;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setHeightFrom(int heightFrom) {
+        this.heightFrom = heightFrom;
+    }
+
+    public int getHeightTo() {
+        return heightTo;
+    }
+
+    public void setHeightTo(int heightTo) {
+        this.heightTo = heightTo;
+    }
+
+    public int getWidthFrom() {
+        return widthFrom;
+    }
+
+    public void setWidthFrom(int widthFrom) {
+        this.widthFrom = widthFrom;
+    }
+
+    public int getWidthTo() {
+        return widthTo;
+    }
+
+    public void setWidthTo(int widthTo) {
+        this.widthTo = widthTo;
     }
 
     public double getValue() {

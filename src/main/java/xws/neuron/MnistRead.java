@@ -7,10 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-/**
- * 在网上copy的类
- * 来自https://blog.csdn.net/kiss_xiaojie/article/details/83627698
- */
 public class MnistRead {
 
     public static final String TRAIN_IMAGES_FILE = "/Users/xws/Desktop/data/train-images-idx3-ubyte";

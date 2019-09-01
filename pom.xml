@@ -70,6 +70,13 @@
 
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>http://www.1036225283.com:8090/nexus/content/repositories/releases</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>

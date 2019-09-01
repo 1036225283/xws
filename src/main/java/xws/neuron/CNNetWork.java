@@ -86,6 +86,13 @@ public class CNNetWork extends NeuralNetWork {
         for (int i = 0; i < layers.size(); i++) {
             Layer layer = layers.get(i);
             layer.setBatch(getBatch());
+            //需要判断layer的类型，如果是反池化，反卷积，或者合并和裁剪的时候，需要获取前面层的信息
+            if (layer.getType().equals("MaxPoolBackLayer")) {
+                MaxPoolBackLayer maxPoolBackLayer = (MaxPoolBackLayer) layer;
+                String layerName = maxPoolBackLayer.getTargetName();
+                Layer targetLayer = getLayer(layerName);
+                maxPoolBackLayer.setMaxPoolLayer((MaxPoolLayer) targetLayer);
+            }
             tensorInput = layer.forward(tensorInput);
         }
         double[] result = tensorInput.getArray();
@@ -108,12 +115,15 @@ public class CNNetWork extends NeuralNetWork {
 //            System.out.println(layerArr.get(i));
             JSONObject layer = layerArr.getJSONObject(i);
             String strType = layer.getString("type");
-            if ("filter".equals(strType)) {
-                FilterLayer filterLayer = JSONObject.parseObject(layer.toString(), FilterLayer.class);
-                cnNetWork.addLayer(filterLayer);
-            } else if ("pool".equals(strType)) {
-                PoolLayer poolLayer = JSONObject.parseObject(layer.toString(), PoolLayer.class);
-                cnNetWork.addLayer(poolLayer);
+            if ("ConvolutionLayer".equals(strType)) {
+                ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
+                cnNetWork.addLayer(convolutionLayer);
+            } else if ("MaxPoolLayer".equals(strType)) {
+                MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
+                cnNetWork.addLayer(maxPoolLayer);
+            } else if ("MeanPoolLayer".equals(strType)) {
+                MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
+                cnNetWork.addLayer(meanPoolLayer);
             } else if ("full".equals(strType)) {
                 FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
                 cnNetWork.addLayer(fullLayer);
@@ -141,6 +151,9 @@ public class CNNetWork extends NeuralNetWork {
             } else if ("RnnLayer".equals(strType)) {
                 RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
                 cnNetWork.addLayer(rnnLayer);
+            } else if ("PaddingLayer".equals(strType)) {
+                PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
+                cnNetWork.addLayer(paddingLayer);
             }
 
 
@@ -161,6 +174,26 @@ public class CNNetWork extends NeuralNetWork {
             totalError = totalError + Math.pow(expect[i] - a[i], 2);
         }
         return totalError;
+    }
+
+    //获取layer根据层index
+    public Layer getLayer(int index) {
+        if (index >= layers.size()) {
+            throw new RuntimeException(index + " must < layers.size()");
+        }
+        return layers.get(index);
+    }
+
+
+    //获取layer根据name
+    public Layer getLayer(String name) {
+        for (int i = 0; i < layers.size(); i++) {
+            Layer layer = layers.get(i);
+            if (name.equals(layer.getName())) {
+                return layer;
+            }
+        }
+        throw new RuntimeException(name + " not found");
     }
 
     public List<Layer> getLayers() {

@@ -85,6 +85,7 @@ public class CNNPool {
     }
 
 
+    //最大值池化
     public Index maxPool(int depth, int heightIndex, int widthIndex, Tensor tensor) {
         Index index = new Index();
         double max = 0;
@@ -94,14 +95,37 @@ public class CNNPool {
                 double tmp = tensor.get(depth, heightIndex + h, widthIndex + w);
                 if (tmp > max) {
                     max = tmp;
-                    index.setDepth(depth);
-                    index.setHeight(heightIndex + h);
-                    index.setWidth(widthIndex + w);
+                    index.setDepthFrom(depth);
+                    index.setHeightFrom(heightIndex + h);
+                    index.setWidthFrom(widthIndex + w);
                     index.setValue(max);
                 }
             }
         }
         return index;
+    }
+
+
+    //平均值池化
+    public double meanPool(int depth, int heightIndex, int widthIndex, Tensor tensor) {
+        double total = 0;
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                double tmp = tensor.get(depth, heightIndex + h, widthIndex + w);
+                total = total + tmp;
+            }
+        }
+        return total;
+    }
+
+    //平均值池化求导
+    public void meanPool_d(int depth, int heightIndex, int widthIndex, Tensor tensor, double error) {
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                double value = tensor.get(depth, heightIndex + h, widthIndex + w);
+                tensor.set(depth, heightIndex + h, widthIndex + w, value + error);
+            }
+        }
     }
 
     public CNNPool() {

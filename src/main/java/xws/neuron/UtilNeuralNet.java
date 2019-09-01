@@ -137,6 +137,21 @@ public class UtilNeuralNet {
         }
     }
 
+    //初始化stock数据
+    public static void initStock(double[] data) {
+//        double max = max(data);
+
+        for (int i = 0; i < data.length; i++) {
+//            data[i] = (data[i] / max) * 10;
+            data[i] = data[i] / 128d - 1d;
+
+        }
+
+
+//        for (int i = 0; i < data.length; i++) {
+//            data[i] = (data[i] - min) / (max - min);
+//        }
+    }
 
     //除以最大值，进行归一化
     public static void initMax(double[] data) {
@@ -230,6 +245,11 @@ public class UtilNeuralNet {
         }
 
         return log;
+    }
+
+    //交并比
+    public static void iou() {
+
     }
 
     public static void main(String[] args) {

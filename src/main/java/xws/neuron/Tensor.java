@@ -139,7 +139,10 @@ public class Tensor {
     }
 
     //展示数据
-    public void show() {
+    public void show(String msg) {
+        if (msg != null) {
+            System.out.println(msg);
+        }
         for (int d = 0; d < depth; d++) {
             System.out.println("深度：" + d);
             for (int h = 0; h < height; h++) {
@@ -149,6 +152,10 @@ public class Tensor {
                 System.out.println();
             }
         }
+    }
+
+    public void show() {
+        show(null);
     }
 
     //一维点乘
@@ -190,6 +197,63 @@ public class Tensor {
             val[i] = get(depth, height, i);
         }
         return val;
+    }
+
+    //从byte[]拷贝数据
+    public void copy(byte[] bs) {
+        if (bs.length != array.length) {
+            throw new RuntimeException("数据长度不匹配");
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            array[i] = bs[i];
+        }
+    }
+
+    //裁剪数据
+    public Tensor subtensor(int startDepth, int endDepth, int startHeight, int endHeight, int startWidth, int endWidth) {
+
+        if (startDepth < 0 || startHeight < 0 || startWidth < 0) {
+            throw new RuntimeException("start must >=0 ");
+        }
+
+        if (endDepth >= depth || endHeight >= height || endWidth >= width) {
+            throw new RuntimeException("end must < length");
+        }
+
+        if (startDepth >= (depth - endDepth) || startHeight >= (height - endHeight) || startWidth >= (width - endWidth)) {
+            throw new RuntimeException("length - end must > start");
+        }
+
+        Tensor tensorNew = new Tensor();
+        tensorNew.setDepth(depth - endDepth - startDepth);
+        tensorNew.setHeight(height - endHeight - startHeight);
+        tensorNew.setWidth(width - endWidth - startWidth);
+        tensorNew.createArray();
+        for (int d = 0; d < tensorNew.getDepth(); d++) {
+            for (int h = 0; h < tensorNew.getHeight(); h++) {
+                for (int w = 0; w < tensorNew.getWidth(); w++) {
+                    double val = get(d + startDepth, h + startHeight, w + startWidth);
+                    tensorNew.set(d, h, w, val);
+                }
+            }
+        }
+        return tensorNew;
+    }
+
+    //裁剪宽度
+    public Tensor subWidth(int start, int end) {
+        return subtensor(0, 0, 0, 0, start, end);
+    }
+
+    //裁剪高度
+    public Tensor subHeight(int start, int end) {
+        return subtensor(0, 0, start, end, 0, 0);
+    }
+
+    //裁剪深度
+    public Tensor subDepth(int start, int end) {
+        return subtensor(start, end, 0, 0, 0, 0);
     }
 
     public String toString() {

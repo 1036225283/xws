@@ -2,7 +2,9 @@ package xws.test;
 
 import com.alibaba.fastjson.JSON;
 import xws.neuron.CNNetWork;
+import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.*;
 import xws.util.Cifar10;
 import xws.util.RnnSequence;
 import xws.util.UtilCifar10;
@@ -20,13 +22,60 @@ import static xws.test.FullNetWorkTest.expectMNIST;
  */
 public class RnnTest {
 
+    private static String strName = "RNN_ADD";
+
+    private static List<Cifar10> list = createData();
 
     public static void main(String[] args) {
+//        createCNNetWork();
+//        learnMNIST();
 //        XOR();
 //        ADD();
         MNIST();
     }
 
+
+
+    //第1个数+第2个数+第3个数+第n个数
+    public static void createCNNetWork() {
+        CNNetWork cnNetWork = new CNNetWork();
+//        cnNetWork.addLayer(new BnLayer("bn1"));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 3));
+//        cnNetWork.addLayer(new BnLayer("bn2"));
+        cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
+
+        Cifar10 cifar10 = list.get(0);
+        cnNetWork.entryTest();
+        cnNetWork.setStep(0);
+        for (int i = 0; i < list.size(); i++) {
+            cnNetWork.learn(cifar10.getRgb(), new double[]{cifar10.getValue()});
+        }
+
+        cnNetWork.save(strName);
+
+
+    }
+
+    public static List<Cifar10> createData() {
+        double total = 0;
+        List<Cifar10> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Tensor tensor = new Tensor();
+            tensor.setDepth(1);
+            tensor.setHeight(1);
+            tensor.setWidth(1);
+            tensor.createArray();
+            Cifar10 cifar10 = new Cifar10();
+            cifar10.setRgb(tensor);
+            double val = Math.random();
+            tensor.set(0, val);
+            total = total + tensor.get(0);
+            cifar10.setValue(total);
+            list.add(cifar10);
+        }
+
+        return list;
+    }
 
     //创建mnist序列
     public static List<RnnSequence> createSequenceMNIST(List<Cifar10> list) {
