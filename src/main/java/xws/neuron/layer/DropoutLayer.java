@@ -263,8 +263,11 @@ public class DropoutLayer extends Layer {
         }
 
         pdi();
-        pdw();
-        pdb();
+        if (!isTest()) {
+            pdw();
+            pdb();
+        }
+
 
         Tensor tensorOut = new Tensor();
         tensorOut.setDepth(1);

@@ -17,13 +17,8 @@ import java.util.List;
  * 输出s(t-1)到s(t)的权重是共享的
  * 应该是一个神经元，一个Tensor，存放权重信息，这样计算的时候，使用Tensor的点乘就可以了
  * 神经元的个数，应该是在初始化layer的时候完成的
- * ResNets并没有残差权重
  * <p>
  * <p>
- * 就拿实际情况来说把，输入20天的数据，再加上换手率，量，那么一天的数据就是6条数据，
- * 隐含层有4个神经元，那么全连接权重=6
- * 上一个时刻，到这一个时刻的权重 = 4
- * skip collection 到这个时刻的权重也是4
  * Created by xws on 2019/5/15.
  */
 public class RnnLayer extends Layer {

@@ -194,6 +194,10 @@ public class ConvolutionLayer extends Layer {
             }
         }
 
+        if (isTest()) {
+            return tensorError;
+        }
+
         //计算w的误差
         for (int f = 0; f < filters.length; f++) {
             CNNFilter filter = filters[f];

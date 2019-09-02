@@ -197,8 +197,11 @@ public class CrossEntropyLayer extends Layer {
         pdw = new double[bias.length][w.getWidth()];
 
         pdi();
-        pdw();
-        pdb();
+        if (!isTest()) {
+            pdw();
+            pdb();
+        }
+
 
         Tensor tensorOut = new Tensor();
         tensorOut.setDepth(1);

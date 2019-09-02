@@ -21,7 +21,7 @@ public class FullLayer extends Layer {
     private double[] bias;//每个神经元的偏置
     private double[] z;//每个神经元的z值
 
-    //一下三个变量，在每次计算之前必须清空
+    //以下三个变量，在每次计算之前必须清空
     private double[] pdi;//∂C/∂I - I是上一层的输入
     private double[][] pdw;//∂C/∂W
     private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
@@ -195,8 +195,10 @@ public class FullLayer extends Layer {
         }
 
         pdi();
-        pdw();
-        pdb();
+        if (!isTest()) {
+            pdw();
+            pdb();
+        }
 
         Tensor tensorOut = new Tensor();
         tensorOut.setDepth(1);

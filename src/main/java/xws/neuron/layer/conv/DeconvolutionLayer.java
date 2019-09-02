@@ -188,6 +188,10 @@ public class DeconvolutionLayer extends Layer {
             }
         }
 
+        if (isTest()) {
+            return tensorErrorInput;
+        }
+
         //计算w的误差
         for (int f = 0; f < filters.length; f++) {
             CNNFilter filter = filters[f];
