@@ -1,9 +1,7 @@
 package xws.neuron;
 
 import com.alibaba.fastjson.JSON;
-import xws.neuron.layer.Index;
-
-import java.util.List;
+import xws.neuron.layer.pool.Index;
 
 /**
  * 池化核

@@ -5,6 +5,7 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.rnn.RnnLayer;
 import xws.util.Cifar10;
 import xws.util.RnnSequence;
 import xws.util.UtilCifar10;

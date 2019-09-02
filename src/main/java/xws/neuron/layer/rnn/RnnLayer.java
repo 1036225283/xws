@@ -1,7 +1,8 @@
-package xws.neuron.layer;
+package xws.neuron.layer.rnn;
 
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 import xws.util.UtilFile;
 
 import java.util.ArrayList;

@@ -1,7 +1,8 @@
-package xws.neuron.layer;
+package xws.neuron.layer.rnn;
 
 import xws.neuron.ActivationFunction;
 import xws.neuron.Tensor;
+import xws.neuron.layer.Layer;
 
 import java.util.List;
 

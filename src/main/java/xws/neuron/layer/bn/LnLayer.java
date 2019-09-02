@@ -1,7 +1,8 @@
-package xws.neuron.layer;
+package xws.neuron.layer.bn;
 
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 
 
 /**

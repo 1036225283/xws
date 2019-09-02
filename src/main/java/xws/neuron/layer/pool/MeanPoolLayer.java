@@ -1,15 +1,19 @@
-package xws.neuron.layer;
+package xws.neuron.layer.pool;
 
 import xws.neuron.CNNPool;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 
 
 /**
- * 反池化层-平均池化
- * Created by xws on 2019/6/8.
+ * 平均池化层
+ * 恢复数据的问题
+ * 1.全连接层的一维数据恢复到
+ * 2.池化层恢复到卷积层
+ * Created by xws on 2019/6/6.
  */
-public class MeanPoolBackLayer extends Layer {
+public class MeanPoolLayer extends Layer {
 
 
     private CNNPool pool;//池化核
@@ -23,17 +27,17 @@ public class MeanPoolBackLayer extends Layer {
     private int inputWidth;
 
 
-    public MeanPoolBackLayer() {
+    public MeanPoolLayer() {
     }
 
     //构造函数时，传入filters的构造
-    public MeanPoolBackLayer(int height, int width, int strideX, int strideY) {
-        super("MeanPoolBackLayer");
+    public MeanPoolLayer(int height, int width, int strideX, int strideY) {
+        super("MeanPoolLayer");
         pool = new CNNPool(height, width, strideX, strideY);
     }
 
-    public MeanPoolBackLayer(String name, int height, int width, int strideX, int strideY) {
-        super("MeanPoolBackLayer");
+    public MeanPoolLayer(String name, int height, int width, int strideX, int strideY) {
+        super("MeanPoolLayer");
         pool = new CNNPool(height, width, strideX, strideY);
         setName(name);
     }
@@ -47,9 +51,9 @@ public class MeanPoolBackLayer extends Layer {
         inputWidth = tensor.getWidth();
 
 
-        //首先，计算反池化后的大小
-        outHeight = (tensor.getHeight() - 1) * pool.getStrideY() + pool.getHeight();
-        outWidth = (tensor.getWidth() - 1) * pool.getStrideX() + pool.getWidth();
+        //需要计算出结果数据的维度和大小
+        outHeight = UtilNeuralNet.afterHeight(tensor.getHeight(), 0, pool.getStrideY(), pool.getHeight());
+        outWidth = UtilNeuralNet.afterWidth(tensor.getWidth(), 0, pool.getStrideX(), pool.getWidth());
         outDepth = tensor.getDepth();
         Tensor tensorOut = new Tensor();
         tensorOut.setDepth(outDepth);
@@ -57,18 +61,17 @@ public class MeanPoolBackLayer extends Layer {
         tensorOut.setWidth(outWidth);
         tensorOut.createArray();
 
-        //填充数据
         for (int d = 0; d < tensor.getDepth(); d++) {
             for (int h = 0; h < outHeight; h++) {
                 for (int w = 0; w < outWidth; w++) {
-                    //取出池化值
-                    double value = tensor.get(d, h, w);
-                    //逆向操作
-                    pool.meanPool_d(d, h * pool.getStrideY(), w * pool.getStrideX(), tensorOut, value);
+                    double value = pool.meanPool(d, h * pool.getStrideY(), w * pool.getStrideX(), tensor);
+                    tensorOut.set(d, h, w, value / pool.getHeight() / pool.getWidth());
                 }
             }
 
         }
+
+//        System.out.println(JSON.toJSONString(list));
 
         return tensorOut;
     }
@@ -89,9 +92,12 @@ public class MeanPoolBackLayer extends Layer {
         for (int d = 0; d < tensor.getDepth(); d++) {
             for (int h = 0; h < outHeight; h++) {
                 for (int w = 0; w < outWidth; w++) {
+                    //首先，拿到该位置的误差
+                    double error = tensor.get(d, h, w);
+                    //平摊误差
+                    double errorMean = error / total;
                     //累加误差
-                    double error = pool.meanPool(d, h * pool.getStrideY(), w * pool.getStrideX(), tensor);
-                    tensorOut.set(outHeight, outWidth, error);
+                    pool.meanPool_d(d, h * pool.getStrideY(), w * pool.getStrideX(), tensorOut, errorMean);
                 }
             }
         }

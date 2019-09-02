@@ -3,6 +3,15 @@ package xws.neuron;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.layer.*;
+import xws.neuron.layer.bn.BnLayer;
+import xws.neuron.layer.bn.LnLayer;
+import xws.neuron.layer.bn.MnLayer;
+import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.conv.DepthSeparableLayer;
+import xws.neuron.layer.pool.MaxPoolBackLayer;
+import xws.neuron.layer.pool.MaxPoolLayer;
+import xws.neuron.layer.pool.MeanPoolLayer;
+import xws.neuron.layer.rnn.RnnLayer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,17 +1,19 @@
-package xws.neuron.layer;
+package xws.neuron.layer.conv;
 
 import xws.neuron.ActivationFunction;
 import xws.neuron.CNNFilter;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 import xws.util.UtilFile;
 
 
 /**
- * 标准卷积层
+ * 标准反卷积层
+ * 输入卷积后的结果，对输入进行还原
  * Created by xws on 2019/2/19.
  */
-public class ConvolutionLayer extends Layer {
+public class DeconvolutionLayer extends Layer {
 
 
     private CNNFilter[] filters;//卷积核
@@ -48,12 +50,12 @@ public class ConvolutionLayer extends Layer {
     //z值数据存储
     private Tensor tensorZ;
 
-    public ConvolutionLayer() {
+    public DeconvolutionLayer() {
     }
 
     //构造函数时，传入filters的构造,total是特征
-    public ConvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
-        super("ConvolutionLayer");
+    public DeconvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
+        super("filter");
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -64,8 +66,8 @@ public class ConvolutionLayer extends Layer {
     }
 
 
-    public ConvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding) {
-        super("ConvolutionLayer");
+    public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding) {
+        super("filter");
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -77,8 +79,8 @@ public class ConvolutionLayer extends Layer {
 
     }
 
-    public ConvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding, double lambda) {
-        super("ConvolutionLayer");
+    public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding, double lambda) {
+        super("filter");
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -100,18 +102,12 @@ public class ConvolutionLayer extends Layer {
 
         initFile();
 
+        //反向卷积，传递正向卷积结果进来
+        //首先，计算反卷积后的大小，并开辟空间
         tensorInput = tensor;
-
-        //如果卷积层前面是FullLayer,需要计算出结果数据的维度和大小
-        if (tensor.getHeight() == 1) {
-            int val = (int) Math.sqrt((double) tensor.getArray().length);
-            tensor.setHeight(val);
-            tensor.setWidth(val);
-        }
-
         outDepth = filters.length;
-        outHeight = UtilNeuralNet.afterHeight(tensor.getHeight(), padding, strideY, height);
-        outWidth = UtilNeuralNet.afterWidth(tensor.getWidth(), padding, strideX, width);
+        outHeight = (tensor.getHeight() - 1) * strideY + height;
+        outWidth = (tensor.getWidth() - 1) * strideX + width;
 
 
         Tensor tensorOut = new Tensor();
@@ -140,8 +136,7 @@ public class ConvolutionLayer extends Layer {
             //有多少输出，意味着就要执行多少次卷积操作
             for (int h = 0; h < outHeight; h++) {
                 for (int w = 0; w < outWidth; w++) {
-                    double val = cnnFilter.convolution(h * strideY, w * strideX, tensorInput);
-                    tensorOut.set(d, h, w, val);
+                    cnnFilter.deconvolution(d, h * strideY, w * strideX, tensorInput, tensorOut);
                 }
             }
         }
@@ -169,11 +164,11 @@ public class ConvolutionLayer extends Layer {
     public Tensor backPropagation(Tensor tensor) {
 
         //创建张量，存储误差数据
-        Tensor tensorError = new Tensor();
-        tensorError.setDepth(tensorInput.getDepth());
-        tensorError.setHeight(tensorInput.getHeight());
-        tensorError.setWidth(tensorInput.getWidth());
-        tensorError.createArray();
+        Tensor tensorErrorInput = new Tensor();
+        tensorErrorInput.setDepth(tensorInput.getDepth());
+        tensorErrorInput.setHeight(tensorInput.getHeight());
+        tensorErrorInput.setWidth(tensorInput.getWidth());
+        tensorErrorInput.createArray();
 
         pdz(tensor);
 
@@ -187,8 +182,8 @@ public class ConvolutionLayer extends Layer {
             for (int h = 0; h < outHeight; h++) {
                 for (int w = 0; w < outWidth; w++) {
                     //获取误差
-                    double error = tensor.get(d, h, w);
-                    filter.convolution_d(h * strideY, w * strideX, tensorError, error);
+                    double error = filter.deconvolution_d(d, h * strideY, w * strideX, tensor, tensorErrorInput);
+                    tensorErrorInput.set(d, h, w, error);
                 }
             }
         }
@@ -215,7 +210,7 @@ public class ConvolutionLayer extends Layer {
             filter.updateErrorB(tensor, i, getLearnRate());
         }
 
-        return tensorError;
+        return tensorErrorInput;
     }
 
     //求∂A/∂Z

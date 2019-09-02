@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import xws.neuron.CNNetWork;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.bn.LnLayer;
+import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.util.Cifar10;
 import xws.util.UtilCifar10;
 

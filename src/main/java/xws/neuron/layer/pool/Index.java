@@ -1,4 +1,4 @@
-package xws.neuron.layer;
+package xws.neuron.layer.pool;
 
 /**
  * pool用来记录坐标信息，包括深度，高度，宽度
