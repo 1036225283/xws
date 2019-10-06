@@ -359,7 +359,6 @@ public class MnistTest {
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
             CNNetWork cnNetWork = CNNetWork.load(strName);
-            cnNetWork.entryLearn();
             cnNetWork.setBatchSize(5);
 //            cnNetWork.setBatchSize(20);
             cnNetWork.setBatch(10);
@@ -371,6 +370,8 @@ public class MnistTest {
             int batch = 2000;
             for (int i = 0; i < list.size(); i = i + batch) {
 
+                cnNetWork.entryLearn();
+
                 //将这一批数据，反复喂给
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
@@ -379,6 +380,8 @@ public class MnistTest {
                         int result = cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }
+                cnNetWork.entryTest();
+
                 UtilCifar10.test(cnNetWork, listTest);
             }
             cnNetWork.save(strName);
@@ -410,12 +413,12 @@ public class MnistTest {
 
     //当两个都为1是才为1
     public static void and() {
-        CNNetWork netWork = CNNetWork.load("and_cnn");
-//        CNNetWork netWork = new CNNetWork();
-
-//        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
-//        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
-
+//        CNNetWork netWork = CNNetWork.load("and_cnn");
+        CNNetWork netWork = new CNNetWork();
+//
+        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
+        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
+        netWork.setLearnRate(0.35);
 
         if (netWork == null) {
             return;
@@ -451,7 +454,9 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
+
             netWork.learn(tensor11, new double[]{1});
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
@@ -465,6 +470,7 @@ public class MnistTest {
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
+            netWork.entryTest();
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));
 
@@ -489,7 +495,7 @@ public class MnistTest {
 //
         netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
         netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
-
+        netWork.setLearnRate(1);
 
         if (netWork == null) {
             return;
@@ -525,7 +531,8 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
             netWork.learn(tensor11, new double[]{0});
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
@@ -539,6 +546,7 @@ public class MnistTest {
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
+            netWork.entryTest();
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));
 
@@ -560,12 +568,13 @@ public class MnistTest {
     public static void and_or_xor() {
 //        CNNetWork netWork = CNNetWork.load("and_or_xor_cnn");
         CNNetWork netWork = new CNNetWork();
+//        netWork.setLearnRate(1);
 //
         netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
         //用二次方，果然慢了很多
-//        netWork.addLayer(new FullLayer("full2", "sigmoid", 3));
+        netWork.addLayer(new FullLayer("full2", "sigmoid", 3));
         //用交叉熵，果然快了很多
-        netWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 3));
+//        netWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 3));
 
 
         if (netWork == null) {
@@ -602,7 +611,8 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
             System.out.println("i = ---------------------------------------" + i);
             netWork.learn(tensor11, new double[]{1, 1, 0});
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
@@ -616,6 +626,7 @@ public class MnistTest {
             netWork.learn(tensor00, new double[]{0, 0, 0});
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
+            netWork.entryTest();
 
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));
