@@ -232,11 +232,12 @@ public class SoftmaxLayer extends Layer {
         pda = new double[bias.length];
 
         for (int i = 0; i < w.getHeight(); i++) {
-            if (getExpect()[i] == 1) {
-                pda[i] = a[i] - 1;
-            } else {
-                pda[i] = a[i];
-            }
+            pda[i] = a[i] - getExpect()[i];
+//            if (getExpect()[i] == 1) {
+//                pda[i] = a[i] - 1;
+//            } else {
+//                pda[i] = a[i];
+//            }
         }
 
         Tensor tensorOut = new Tensor();
