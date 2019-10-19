@@ -55,7 +55,7 @@ public class CNNetWork extends NeuralNetWork {
     }
 
     //卷积神经网络学习
-    public int learn(Tensor tensorInput, double[] expect) {
+    public int learn(Tensor tensorInput, double[] expect, double gamma) {
 //        tensorInput.show();
 
 
@@ -72,6 +72,7 @@ public class CNNetWork extends NeuralNetWork {
             //误差计算
             Layer lastLayer = layers.get(layers.size() - 1);
             lastLayer.setExpect(expect);
+            lastLayer.setGamma(gamma);
             //获取识别的值
             double[] result = lastLayer.a().getArray();
             maxIndex = UtilNeuralNet.maxIndex(result);
@@ -87,6 +88,10 @@ public class CNNetWork extends NeuralNetWork {
 
         return maxIndex;
 
+    }
+
+    public int learn(Tensor tensorInput, double[] expect) {
+        return learn(tensorInput, expect, 1);
     }
 
     //卷积神经网络工作

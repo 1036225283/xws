@@ -29,6 +29,8 @@ public class Layer {
 
     private int step = 0;//run step
 
+    private double gamma = 1;//loss rate
+
 
     public Layer() {
         type = "full";
@@ -134,5 +136,13 @@ public class Layer {
 
     public void setStep(int step) {
         this.step = step;
+    }
+
+    public double getGamma() {
+        return gamma;
+    }
+
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
     }
 }
