@@ -18,13 +18,13 @@ public class FullLayer extends Layer {
     private Tensor tensorInput;//把上一层的输入也保存起来
 
     private Tensor w;//存放权重信息
-    private double[] bias;//每个神经元的偏置
-    private double[] z;//每个神经元的z值
+    private Tensor bias;//每个神经元的偏置
+    private Tensor z;//每个神经元的z值
 
     //以下三个变量，在每次计算之前必须清空
     private Tensor pdi;//∂C/∂I - I是上一层的输入
     private double[][] pdw;//∂C/∂W
-    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
+    private Tensor pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
 
     //输入数据和输出数据的维度
     private int inputDepth;
@@ -54,9 +54,6 @@ public class FullLayer extends Layer {
         super("full");
 
         //初始化每个神经元的权重和偏置
-        bias = new double[num];
-        z = new double[num];
-
         init(num);
 
     }
@@ -66,8 +63,6 @@ public class FullLayer extends Layer {
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
-        bias = new double[num];
-        z = new double[num];
 
         init(num);
     }
@@ -77,8 +72,6 @@ public class FullLayer extends Layer {
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
-        bias = new double[num];
-        z = new double[num];
         this.lambda = lambda;
 
         init(num);
@@ -88,15 +81,23 @@ public class FullLayer extends Layer {
         tensorOut = new Tensor();
         tensorOut.setWidth(num);
         tensorOut.createArray();
+
+        bias = new Tensor();
+        bias.setWidth(num);
+        bias.createArray();
+
+        z = new Tensor();
+        z.setWidth(num);
+        z.createArray();
     }
 
     private void initW(int inputs) {
         w = new Tensor();
-        w.setHeight(bias.length);
+        w.setHeight(bias.getWidth());
         w.setWidth(inputs);
         w.createArray();
         UtilNeuralNet.initWeight(w.getArray());
-        UtilNeuralNet.initBias(bias);
+        UtilNeuralNet.initBias(bias.getArray());
     }
 
 
@@ -119,12 +120,16 @@ public class FullLayer extends Layer {
 
         //如果z为空，则进行初始化
         if (z == null) {
-            z = new double[bias.length];
+            z = new Tensor();
+            z.setWidth(bias.getWidth());
+            z.createArray();
         }
+
+        z.zero();
 
         if (tensorOut == null) {
             tensorOut = new Tensor();
-            tensorOut.setWidth(bias.length);
+            tensorOut.setWidth(bias.getWidth());
             tensorOut.createArray();
         }
 
@@ -142,12 +147,11 @@ public class FullLayer extends Layer {
 
         for (int i = 0; i < w.getHeight(); i++) {
             //计算神经元的输出
-            z[i] = 0;//把之前的数据清理掉
             for (int k = 0; k < w.getWidth(); k++) {
-                z[i] = z[i] + w.get(i, k) * tensorInput.get(k);
+                z.set(i, z.get(i) + w.get(i, k) * tensorInput.get(k));
             }
-            z[i] = z[i] + bias[i];
-            tensorOut.set(i, ActivationFunction.activation(z[i], getActivationType()));
+            z.set(i, z.get(i) + bias.get(i));
+            tensorOut.set(i, ActivationFunction.activation(z.get(i), getActivationType()));
         }
 
 //        StringBuffer sbz = new StringBuffer();
@@ -183,16 +187,18 @@ public class FullLayer extends Layer {
 //        logE.append(tensor.toString());
 
         //先把pdb清空
-        pdb = new double[bias.length];
+        pdb = new Tensor();
+        pdb.setWidth(bias.getWidth());
+        pdb.createArray();
         //inputs决定了有多少个输入，也就是这一层的神经元会有多少个w
         pdi = new Tensor();
         pdi.setWidth(inputDepth * inputHeight * inputWidth);
         pdi.createArray();
-        pdw = new double[bias.length][w.getWidth()];
+        pdw = new double[bias.getWidth()][w.getWidth()];
 
         //计算pdz = ∂C/∂A * ∂A/∂Z
         for (int i = 0; i < pda.length; i++) {
-            pdb[i] = pda[i] * ActivationFunction.derivation(z[i], getActivationType());
+            pdb.set(i, pda[i] * ActivationFunction.derivation(z.get(i), getActivationType()));
         }
 
         pdi();
@@ -209,7 +215,7 @@ public class FullLayer extends Layer {
     public Tensor error() {
 
         Tensor pda = new Tensor();
-        pda.setWidth(bias.length);
+        pda.setWidth(bias.getWidth());
         pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
@@ -223,7 +229,7 @@ public class FullLayer extends Layer {
     public void pdi() {
         for (int i = 0; i < pdi.getWidth(); i++) {
             for (int k = 0; k < w.getHeight(); k++) {
-                pdi.set(i, pdi.get(i) + pdb[k] * w.get(k, i));
+                pdi.set(i, pdi.get(i) + pdb.get(k) * w.get(k, i));
             }
         }
     }
@@ -232,7 +238,7 @@ public class FullLayer extends Layer {
     public void pdw() {
         for (int i = 0; i < w.getHeight(); i++) {
             double[] pdw = this.pdw[i];
-            double pdz = this.pdb[i];
+            double pdz = this.pdb.get(i);
             for (int k = 0; k < w.getWidth(); k++) {
                 pdw[k] = pdz * tensorInput.get(k);
                 double val = w.get(i, k) - getLearnRate() * pdw[k] - lambda * w.get(i, k);
@@ -243,8 +249,8 @@ public class FullLayer extends Layer {
 
     //神经元计算∂C/∂B =
     public void pdb() {
-        for (int i = 0; i < bias.length; i++) {
-            bias[i] = bias[i] - getLearnRate() * pdb[i];
+        for (int i = 0; i < bias.getWidth(); i++) {
+            bias.set(i, bias.get(i) - getLearnRate() * pdb.get(i));
         }
     }
 
@@ -256,11 +262,11 @@ public class FullLayer extends Layer {
         this.w = w;
     }
 
-    public double[] getBias() {
+    public Tensor getBias() {
         return bias;
     }
 
-    public void setBias(double[] bias) {
+    public void setBias(Tensor bias) {
         this.bias = bias;
     }
 
