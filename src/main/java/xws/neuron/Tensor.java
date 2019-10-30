@@ -131,6 +131,15 @@ public class Tensor {
         }
     }
 
+    //累加值
+    public double val() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
     //缩放数据
     public void scale(double val) {
         for (int i = 0; i < array.length; i++) {
@@ -179,6 +188,10 @@ public class Tensor {
         for (int i = 0; i < array.length; i++) {
             array[i] = array[i] + tensor.get(i);
         }
+    }
+
+    public int size() {
+        return array.length;
     }
 
     //根据高度获取数据

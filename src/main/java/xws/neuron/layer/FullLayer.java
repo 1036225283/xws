@@ -14,18 +14,17 @@ import xws.util.UtilFile;
 public class FullLayer extends Layer {
 
 
-    private double[] a;//某一层的输出
-    private double[] input;//把上一层的输入也保存起来
+    private Tensor tensorOut;//某一层的输出
+    private Tensor tensorInput;//把上一层的输入也保存起来
 
     private Tensor w;//存放权重信息
     private double[] bias;//每个神经元的偏置
     private double[] z;//每个神经元的z值
 
     //以下三个变量，在每次计算之前必须清空
-    private double[] pdi;//∂C/∂I - I是上一层的输入
+    private Tensor pdi;//∂C/∂I - I是上一层的输入
     private double[][] pdw;//∂C/∂W
     private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-    private double[] pda;//∂C/∂A
 
     //输入数据和输出数据的维度
     private int inputDepth;
@@ -56,8 +55,9 @@ public class FullLayer extends Layer {
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
+
+        init(num);
 
     }
 
@@ -67,9 +67,9 @@ public class FullLayer extends Layer {
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
 
+        init(num);
     }
 
     public FullLayer(String name, String activationType, int num, double lambda) {
@@ -78,9 +78,16 @@ public class FullLayer extends Layer {
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
         this.lambda = lambda;
+
+        init(num);
+    }
+
+    private void init(int num) {
+        tensorOut = new Tensor();
+        tensorOut.setWidth(num);
+        tensorOut.createArray();
     }
 
     private void initW(int inputs) {
@@ -103,11 +110,11 @@ public class FullLayer extends Layer {
         inputHeight = tensor.getHeight();
         inputWidth = tensor.getWidth();
 
-        this.input = tensor.getArray();
+        this.tensorInput = tensor;
 
         //如果权重为空，则进行权重的初始化
         if (w == null) {
-            initW(input.length);
+            initW(tensorInput.size());
         }
 
         //如果z为空，则进行初始化
@@ -115,9 +122,13 @@ public class FullLayer extends Layer {
             z = new double[bias.length];
         }
 
-        if (a == null) {
-            a = new double[bias.length];
+        if (tensorOut == null) {
+            tensorOut = new Tensor();
+            tensorOut.setWidth(bias.length);
+            tensorOut.createArray();
         }
+
+        tensorOut.zero();
 
         //输出w
 //        logW.append(w.toString());
@@ -132,12 +143,11 @@ public class FullLayer extends Layer {
         for (int i = 0; i < w.getHeight(); i++) {
             //计算神经元的输出
             z[i] = 0;//把之前的数据清理掉
-            a[i] = 0;
             for (int k = 0; k < w.getWidth(); k++) {
-                z[i] = z[i] + w.get(i, k) * input[k];
+                z[i] = z[i] + w.get(i, k) * tensorInput.get(k);
             }
             z[i] = z[i] + bias[i];
-            a[i] = ActivationFunction.activation(z[i], getActivationType());
+            tensorOut.set(i, ActivationFunction.activation(z[i], getActivationType()));
         }
 
 //        StringBuffer sbz = new StringBuffer();
@@ -147,12 +157,6 @@ public class FullLayer extends Layer {
 //        sbz.append("\n");
 //        logZ.append(sbz.toString());
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(a.length);
-        tensorOut.setArray(a);
-
 //        logA.append(tensorOut.toString());
 
         return tensorOut;
@@ -161,11 +165,6 @@ public class FullLayer extends Layer {
     //获取这一层神经网络的输出
     @Override
     public Tensor a() {
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(a.length);
-        tensorOut.setArray(a);
         return tensorOut;
     }
 
@@ -186,7 +185,9 @@ public class FullLayer extends Layer {
         //先把pdb清空
         pdb = new double[bias.length];
         //inputs决定了有多少个输入，也就是这一层的神经元会有多少个w
-        pdi = new double[inputDepth * inputHeight * inputWidth];
+        pdi = new Tensor();
+        pdi.setWidth(inputDepth * inputHeight * inputWidth);
+        pdi.createArray();
         pdw = new double[bias.length][w.getWidth()];
 
         //计算pdz = ∂C/∂A * ∂A/∂Z
@@ -200,38 +201,29 @@ public class FullLayer extends Layer {
             pdb();
         }
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(pdi.length);
-        tensorOut.setArray(pdi);
-
-        return tensorOut;
+        return pdi;
     }
 
-    //误差计算
+    //误差计算 ∂C/∂A
     @Override
     public Tensor error() {
 
-        pda = new double[bias.length];
+        Tensor pda = new Tensor();
+        pda.setWidth(bias.length);
+        pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
-            pda[i] = (a[i] - getExpect()[i]);//二次损失函数
+            pda.set(i, (tensorOut.get(i) - getExpect()[i]));//二次损失函数
         }
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(pda.length);
-        tensorOut.setArray(pda);
-        return tensorOut;
+        return pda;
     }
 
     //神经元计算∂C/∂A(l-1)，在这，好汇集所有输入的误差
     public void pdi() {
-        for (int i = 0; i < pdi.length; i++) {
+        for (int i = 0; i < pdi.getWidth(); i++) {
             for (int k = 0; k < w.getHeight(); k++) {
-                pdi[i] = pdi[i] + pdb[k] * w.get(k, i);
+                pdi.set(i, pdi.get(i) + pdb[k] * w.get(k, i));
             }
         }
     }
@@ -242,7 +234,7 @@ public class FullLayer extends Layer {
             double[] pdw = this.pdw[i];
             double pdz = this.pdb[i];
             for (int k = 0; k < w.getWidth(); k++) {
-                pdw[k] = pdz * input[k];
+                pdw[k] = pdz * tensorInput.get(k);
                 double val = w.get(i, k) - getLearnRate() * pdw[k] - lambda * w.get(i, k);
                 w.set(i, k, val);
             }
@@ -282,7 +274,7 @@ public class FullLayer extends Layer {
 
     private void initFile() {
         if (logA == null) {
-            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".a.csv");
+            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".tensorOut.csv");
         }
 
         if (logB == null) {
