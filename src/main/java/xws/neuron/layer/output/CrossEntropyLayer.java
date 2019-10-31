@@ -1,8 +1,9 @@
-package xws.neuron.layer;
+package xws.neuron.layer.output;
 
 import xws.neuron.ActivationFunction;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 import xws.util.UtilFile;
 
 
@@ -12,27 +13,6 @@ import xws.util.UtilFile;
  * Created by xws on 2019/2/20.
  */
 public class CrossEntropyLayer extends Layer {
-
-
-    private Tensor tensorOut;//某一层的输出
-    private Tensor tensorInput;//把上一层的输入也保存起来
-
-    private Tensor w;//存放权重信息 一维是神经元的数量，二维是每个神经元的权重
-    private Tensor bias;//每个神经元的偏置
-    private Tensor z;//每个神经元的z值
-
-    //一下三个变量，在每次计算之前必须清空
-    private Tensor pdi;//∂C/∂I - I是上一层的输入
-    private double[][] pdw;//∂C/∂W
-    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-
-    //输入数据和输出数据的维度
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
-
-    //正则化
-    private double lambda = 0;
 
 
     //查看w的变化
@@ -45,6 +25,21 @@ public class CrossEntropyLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
+    private Tensor tensorOut;//某一层的输出
+    private Tensor tensorInput;//把上一层的输入也保存起来
+    private Tensor w;//存放权重信息 一维是神经元的数量，二维是每个神经元的权重
+    private Tensor bias;//每个神经元的偏置
+    private Tensor z;//每个神经元的z值
+    //一下三个变量，在每次计算之前必须清空
+    private Tensor pdi;//∂C/∂I - I是上一层的输入
+    private double[][] pdw;//∂C/∂W
+    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
+    //输入数据和输出数据的维度
+    private int inputDepth;
+    private int inputHeight;
+    private int inputWidth;
+    //正则化
+    private double lambda = 0;
 
     public CrossEntropyLayer() {
 

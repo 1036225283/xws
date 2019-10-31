@@ -48,7 +48,7 @@ public class MseLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public MseLayer(int neuralNum) {
-        super("full");
+        super(MseLayer.class.getSimpleName());
 
         //初始化每个神经元的权重和偏置
         init(neuralNum);
@@ -56,7 +56,7 @@ public class MseLayer extends Layer {
     }
 
     public MseLayer(String name, String activationType, int neuralNum) {
-        super("full");
+        super(MseLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -65,7 +65,7 @@ public class MseLayer extends Layer {
     }
 
     public MseLayer(String name, String activationType, int neuralNum, double lambda) {
-        super("full");
+        super(MseLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置

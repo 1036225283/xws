@@ -26,31 +26,6 @@ public class RnnLayer extends Layer {
 
 //    private double[] a;//某一层的输出
 
-    //    private Tensor w;//这次的权重
-    private int num;//神经元的个数
-
-    private List<RnnTime> rnnTimes;//存放每一个序列的信息
-
-    private List<Tensor> shareListInputWeight;//这次的权重
-    private List<Tensor> shareListInputPreviousWeight;//上次的权重
-    private List<Tensor> shareListInputResidualWeight;//邻残差权重
-
-    private List<Tensor> shareListErrorInputWeight;//输入权重误差
-    private List<Tensor> shareListErrorInputPreviousWeight;//上一时刻输入权重误差
-    private List<Tensor> shareListErrorInputResidualWeight;//残差输入权重误差
-    private Tensor shareErrorBias;//偏置的误差
-
-    private boolean initFlag = false;
-
-    private Tensor shareBias;//每个神经元的偏置
-
-    private int step = 0;//当前序列
-
-    private Tensor tensorOut;
-
-    //正则化
-    private double lambda = 0;
-
     //查看w的变化
     UtilFile logW;
     //查看b的变化
@@ -61,6 +36,22 @@ public class RnnLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
+    //    private Tensor w;//这次的权重
+    private int num;//神经元的个数
+    private List<RnnTime> rnnTimes;//存放每一个序列的信息
+    private List<Tensor> shareListInputWeight;//这次的权重
+    private List<Tensor> shareListInputPreviousWeight;//上次的权重
+    private List<Tensor> shareListInputResidualWeight;//邻残差权重
+    private List<Tensor> shareListErrorInputWeight;//输入权重误差
+    private List<Tensor> shareListErrorInputPreviousWeight;//上一时刻输入权重误差
+    private List<Tensor> shareListErrorInputResidualWeight;//残差输入权重误差
+    private Tensor shareErrorBias;//偏置的误差
+    private boolean initFlag = false;
+    private Tensor shareBias;//每个神经元的偏置
+    private int step = 0;//当前序列
+    private Tensor tensorOut;
+    //正则化
+    private double lambda = 0;
 
     public RnnLayer() {
 
@@ -68,7 +59,7 @@ public class RnnLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public RnnLayer(int num) {
-        super("RnnLayer");
+        super(RnnLayer.class.getSimpleName());
         //初始化神经元的个数
         this.num = num;
         init();
@@ -76,7 +67,7 @@ public class RnnLayer extends Layer {
     }
 
     public RnnLayer(String name, String activationType, int num) {
-        super("RnnLayer");
+        super(RnnLayer.class.getSimpleName());
         this.num = num;
         setName(name);
         setActivationType(activationType);
@@ -87,7 +78,7 @@ public class RnnLayer extends Layer {
     }
 
     public RnnLayer(String name, String activationType, int num, double lambda) {
-        super("RnnLayer");
+        super(RnnLayer.class.getSimpleName());
         this.num = num;
         setName(name);
         setActivationType(activationType);

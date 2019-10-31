@@ -1,7 +1,8 @@
-package xws.neuron.layer;
+package xws.neuron.layer.output;
 
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 import xws.util.UtilFile;
 
 
@@ -10,28 +11,8 @@ import xws.util.UtilFile;
  * 初始化时，需要指定有多少个神经元
  * Created by xws on 2019/2/20.
  */
-public class SoftmaxLayer extends Layer {
+public class SoftMaxLayer extends Layer {
 
-
-    private Tensor tensorOut;//某一层的输出
-    private Tensor tensorInput;//把上一层的输入也保存起来
-
-    private Tensor w;//存放权重信息
-    private double[] bias;//每个神经元的偏置
-    private double[] z;//每个神经元的z值
-
-    //一下三个变量，在每次计算之前必须清空
-    private Tensor pdi;//∂C/∂I - I是上一层的输入
-    private double[][] pdw;//∂C/∂W
-    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-
-    //输入数据和输出数据的维度
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
-
-    //正则化
-    private double lambda = 0;
 
     //查看w的变化
     UtilFile logW;
@@ -43,14 +24,29 @@ public class SoftmaxLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
+    private Tensor tensorOut;//某一层的输出
+    private Tensor tensorInput;//把上一层的输入也保存起来
+    private Tensor w;//存放权重信息
+    private double[] bias;//每个神经元的偏置
+    private double[] z;//每个神经元的z值
+    //一下三个变量，在每次计算之前必须清空
+    private Tensor pdi;//∂C/∂I - I是上一层的输入
+    private double[][] pdw;//∂C/∂W
+    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
+    //输入数据和输出数据的维度
+    private int inputDepth;
+    private int inputHeight;
+    private int inputWidth;
+    //正则化
+    private double lambda = 0;
 
-    public SoftmaxLayer() {
+    public SoftMaxLayer() {
 
     }
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
-    public SoftmaxLayer(int num) {
-        super("SoftmaxLayer");
+    public SoftMaxLayer(int num) {
+        super("SoftMaxLayer");
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -59,8 +55,8 @@ public class SoftmaxLayer extends Layer {
 
     }
 
-    public SoftmaxLayer(String name, int num) {
-        super("SoftmaxLayer");
+    public SoftMaxLayer(String name, int num) {
+        super("SoftMaxLayer");
         setName(name);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -69,8 +65,8 @@ public class SoftmaxLayer extends Layer {
 
     }
 
-    public SoftmaxLayer(String name, int num, double lambda) {
-        super("SoftmaxLayer");
+    public SoftMaxLayer(String name, int num, double lambda) {
+        super("SoftMaxLayer");
         setName(name);
         //初始化每个神经元的权重和偏置
         bias = new double[num];

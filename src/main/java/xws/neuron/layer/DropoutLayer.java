@@ -18,31 +18,6 @@ import java.util.TreeSet;
 public class DropoutLayer extends Layer {
 
 
-    private Tensor tensorOut;//某一层的输出
-    private Tensor tensorInput;//把上一层的输入也保存起来
-
-    private Tensor w;//存放权重信息
-    //    private double[][] w;//一维是神经元的数量，二维是每个神经元的权重
-    private double[] bias;//每个神经元的偏置
-    private double[] z;//每个神经元的z值
-
-    //一下三个变量，在每次计算之前必须清空
-    private Tensor pdi;//∂C/∂I - I是上一层的输入
-    private double[][] pdw;//∂C/∂W
-    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-
-    //输入数据和输出数据的维度
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
-
-    //正则化
-    private double lambda = 0;
-
-
-    private double dropoutRate = 0;//默认不丢任何权重0/0.5
-    private Set<Integer> dropouts;
-
     //查看w的变化
     UtilFile logW;
     //查看b的变化
@@ -53,6 +28,24 @@ public class DropoutLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
+    private Tensor tensorOut;//某一层的输出
+    private Tensor tensorInput;//把上一层的输入也保存起来
+    private Tensor w;//存放权重信息
+    //    private double[][] w;//一维是神经元的数量，二维是每个神经元的权重
+    private double[] bias;//每个神经元的偏置
+    private double[] z;//每个神经元的z值
+    //一下三个变量，在每次计算之前必须清空
+    private Tensor pdi;//∂C/∂I - I是上一层的输入
+    private double[][] pdw;//∂C/∂W
+    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
+    //输入数据和输出数据的维度
+    private int inputDepth;
+    private int inputHeight;
+    private int inputWidth;
+    //正则化
+    private double lambda = 0;
+    private double dropoutRate = 0;//默认不丢任何权重0/0.5
+    private Set<Integer> dropouts;
 
     public DropoutLayer() {
 
@@ -60,7 +53,7 @@ public class DropoutLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public DropoutLayer(int num) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -71,7 +64,7 @@ public class DropoutLayer extends Layer {
     }
 
     public DropoutLayer(String name, String activationType, int num) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -82,7 +75,7 @@ public class DropoutLayer extends Layer {
     }
 
     public DropoutLayer(String name, String activationType, int num, double dropoutRate) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -93,7 +86,7 @@ public class DropoutLayer extends Layer {
     }
 
     public DropoutLayer(String name, String activationType, int num, double dropoutRate, double lambda) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置

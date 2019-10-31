@@ -15,11 +15,11 @@ public class LnLayer extends Layer {
     private double standard;
 
     public LnLayer() {
-        super("LnLayer");
+        super(LnLayer.class.getSimpleName());
     }
 
     public LnLayer(String name) {
-        super("LnLayer");
+        super(LnLayer.class.getSimpleName());
         setName(name);
     }
 

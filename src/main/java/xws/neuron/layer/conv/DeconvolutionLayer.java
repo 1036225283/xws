@@ -16,22 +16,6 @@ import xws.util.UtilFile;
 public class DeconvolutionLayer extends Layer {
 
 
-    private CNNFilter[] filters;//卷积核
-    private int height;
-    private int width;
-    private int strideX;
-    private int strideY;
-    private int padding = 0;
-
-    //输出输入数据大小
-    private int outDepth;
-    private int outHeight;
-    private int outWidth;
-
-    //正则化
-    private double lambda = 0;
-
-
     //查看w的变化
     UtilFile logW;
     //查看b的变化
@@ -42,8 +26,18 @@ public class DeconvolutionLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
-
-
+    private CNNFilter[] filters;//卷积核
+    private int height;
+    private int width;
+    private int strideX;
+    private int strideY;
+    private int padding = 0;
+    //输出输入数据大小
+    private int outDepth;
+    private int outHeight;
+    private int outWidth;
+    //正则化
+    private double lambda = 0;
     //输入数据存储
     private Tensor tensorInput;
 
@@ -55,7 +49,7 @@ public class DeconvolutionLayer extends Layer {
 
     //构造函数时，传入filters的构造,total是特征
     public DeconvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
-        super("filter");
+        super(DeconvolutionLayer.class.getSimpleName());
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -67,7 +61,7 @@ public class DeconvolutionLayer extends Layer {
 
 
     public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding) {
-        super("filter");
+        super(DeconvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -80,7 +74,7 @@ public class DeconvolutionLayer extends Layer {
     }
 
     public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding, double lambda) {
-        super("filter");
+        super(DeconvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;

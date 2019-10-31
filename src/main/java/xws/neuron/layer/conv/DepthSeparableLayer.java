@@ -15,21 +15,6 @@ import xws.util.UtilFile;
 public class DepthSeparableLayer extends Layer {
 
 
-    private CNNFilter[] filters;//卷积核
-    private int height;
-    private int width;
-    private int strideX;
-    private int strideY;
-
-    //输出输入数据大小
-    private int outDepth;
-    private int outHeight;
-    private int outWidth;
-
-    //正则化
-    private double lambda = 0;
-
-
     //查看w的变化
     UtilFile logW;
     //查看b的变化
@@ -40,8 +25,17 @@ public class DepthSeparableLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
-
-
+    private CNNFilter[] filters;//卷积核
+    private int height;
+    private int width;
+    private int strideX;
+    private int strideY;
+    //输出输入数据大小
+    private int outDepth;
+    private int outHeight;
+    private int outWidth;
+    //正则化
+    private double lambda = 0;
     //输入数据存储
     private Tensor tensorInput;
 
@@ -53,7 +47,7 @@ public class DepthSeparableLayer extends Layer {
 
     //构造函数时，传入filters的构造,total是特征
     public DepthSeparableLayer(int height, int width, int strideX, int strideY) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getSimpleName());
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -62,7 +56,7 @@ public class DepthSeparableLayer extends Layer {
 
 
     public DepthSeparableLayer(String name, String activationType, int height, int width, int strideX, int strideY) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -72,7 +66,7 @@ public class DepthSeparableLayer extends Layer {
     }
 
     public DepthSeparableLayer(String name, String activationType, int height, int width, int strideX, int strideY, double lambda) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;

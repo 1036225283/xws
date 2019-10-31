@@ -47,7 +47,7 @@ public class FullLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public FullLayer(int neuralNum) {
-        super("full");
+        super(FullLayer.class.getSimpleName());
 
         //初始化每个神经元的权重和偏置
         init(neuralNum);
@@ -55,7 +55,7 @@ public class FullLayer extends Layer {
     }
 
     public FullLayer(String name, String activationType, int neuralNum) {
-        super("full");
+        super(FullLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -64,7 +64,7 @@ public class FullLayer extends Layer {
     }
 
     public FullLayer(String name, String activationType, int neuralNum, double lambda) {
-        super("full");
+        super(FullLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
