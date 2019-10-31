@@ -21,9 +21,10 @@ public class FullLayer extends Layer {
     private Tensor bias;//每个神经元的偏置
     private Tensor z;//每个神经元的z值
 
+
     //以下三个变量，在每次计算之前必须清空
     private Tensor pdi;//∂C/∂I - I是上一层的输入
-    private double[][] pdw;//∂C/∂W
+    private Tensor pdw;//∂C/∂W
     private Tensor pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
 
     //输入数据和输出数据的维度
@@ -194,7 +195,11 @@ public class FullLayer extends Layer {
         pdi = new Tensor();
         pdi.setWidth(inputDepth * inputHeight * inputWidth);
         pdi.createArray();
-        pdw = new double[bias.getWidth()][w.getWidth()];
+
+        pdw = new Tensor();
+        pdw.setHeight(bias.getWidth());
+        pdb.setWidth(w.getWidth());
+        pdb.createArray();
 
         //计算pdz = ∂C/∂A * ∂A/∂Z
         for (int i = 0; i < pda.length; i++) {
@@ -237,6 +242,7 @@ public class FullLayer extends Layer {
     //神经元计算∂C/∂W
     public void pdw() {
         for (int i = 0; i < w.getHeight(); i++) {
+
             double[] pdw = this.pdw[i];
             double pdz = this.pdb.get(i);
             for (int k = 0; k < w.getWidth(); k++) {

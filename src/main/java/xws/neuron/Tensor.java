@@ -179,16 +179,33 @@ public class Tensor {
     }
 
     //向量加法
-    public void add(Tensor tensor) {
+    public Tensor add(Tensor tensor) {
 
-        if (array.length != tensor.getArray().length) {
+        Tensor out = tensor.copy();
+
+        if (array.length != tensor.size()) {
             throw new RuntimeException("两个tensor的长度不一致");
         }
 
         for (int i = 0; i < array.length; i++) {
-            array[i] = array[i] + tensor.get(i);
+            out.set(i, out.get(i) + array[i]);
         }
+
+        return out;
     }
+
+    //tensorInput * tensorW
+    public Tensor multiplyW(Tensor tensorW) {
+        Tensor tensorInputMultiplyWeight = this.copy();
+        tensorInputMultiplyWeight.zero();
+        for (int h = 0; h < tensorW.getHeight(); h++) {
+            for (int w = 0; w < tensorW.getWidth(); w++) {
+                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+            }
+        }
+        return tensorInputMultiplyWeight;
+    }
+
 
     public int size() {
         return array.length;
