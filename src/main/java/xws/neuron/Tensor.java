@@ -13,6 +13,13 @@ public class Tensor {
     private double[] array;
 
 
+    public Tensor() {
+    }
+
+    public Tensor(int size) {
+        array = new double[size];
+    }
+
     public static void main(String[] args) {
         Tensor tensor = new Tensor(10000);
         tensor.setWidth(10);
@@ -95,7 +102,6 @@ public class Tensor {
     public int index(int depth, int height, int width) {
         return depth * this.height * this.width + height * this.width + width;
     }
-
 
     //创建一维数组
     public void createArray() {
@@ -206,7 +212,6 @@ public class Tensor {
         return tensorInputMultiplyWeight;
     }
 
-
     public int size() {
         return array.length;
     }
@@ -295,14 +300,6 @@ public class Tensor {
         return sb.toString();
     }
 
-    public Tensor() {
-    }
-
-    public Tensor(int size) {
-        array = new double[size];
-    }
-
-
     public int getHeight() {
         return height;
     }
@@ -331,16 +328,16 @@ public class Tensor {
         return array;
     }
 
+    public void setArray(double[] array) {
+        this.array = array;
+    }
+
     public byte[] toByteArray() {
         byte[] bs = new byte[array.length];
         for (int i = 0; i < bs.length; i++) {
             bs[i] = (byte) array[i];
         }
         return bs;
-    }
-
-    public void setArray(double[] array) {
-        this.array = array;
     }
 
 

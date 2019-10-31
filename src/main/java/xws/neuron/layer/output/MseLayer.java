@@ -1,8 +1,9 @@
-package xws.neuron.layer;
+package xws.neuron.layer.output;
 
 import xws.neuron.ActivationFunction;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.layer.Layer;
 import xws.util.UtilFile;
 
 
@@ -11,7 +12,7 @@ import xws.util.UtilFile;
  * 初始化时，需要指定有多少个神经元
  * Created by xws on 2019/2/20.
  */
-public class FullLayer extends Layer {
+public class MseLayer extends Layer {
 
 
     //查看w的变化
@@ -41,12 +42,12 @@ public class FullLayer extends Layer {
     //正则化
     private double lambda = 0;
 
-    public FullLayer() {
+    public MseLayer() {
 
     }
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
-    public FullLayer(int neuralNum) {
+    public MseLayer(int neuralNum) {
         super("full");
 
         //初始化每个神经元的权重和偏置
@@ -54,7 +55,7 @@ public class FullLayer extends Layer {
 
     }
 
-    public FullLayer(String name, String activationType, int neuralNum) {
+    public MseLayer(String name, String activationType, int neuralNum) {
         super("full");
         setName(name);
         setActivationType(activationType);
@@ -63,7 +64,7 @@ public class FullLayer extends Layer {
         init(neuralNum);
     }
 
-    public FullLayer(String name, String activationType, int neuralNum, double lambda) {
+    public MseLayer(String name, String activationType, int neuralNum, double lambda) {
         super("full");
         setName(name);
         setActivationType(activationType);

@@ -3,6 +3,9 @@ package xws.neuron;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.layer.*;
+import xws.neuron.layer.activation.ReLuLayer;
+import xws.neuron.layer.activation.SigmoidLayer;
+import xws.neuron.layer.activation.TanhLayer;
 import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.bn.LnLayer;
 import xws.neuron.layer.bn.MnLayer;
@@ -31,11 +34,82 @@ public class CNNetWork extends NeuralNetWork {
     //step rnn控制输入是否开始
     private int step = 0;
 
+    //加载卷积神经网络从硬盘上
+    public static CNNetWork load(String name) {
+        JSONObject jsonObject = loadJson(name);
+
+
+        CNNetWork cnNetWork = new CNNetWork();
+        int version = jsonObject.getIntValue("version");
+        cnNetWork.setVersion(version + 1);
+
+
+        //从json中提取出各个层
+        JSONArray layerArr = jsonObject.getJSONArray("layers");
+        for (int i = 0; i < layerArr.size(); i++) {
+//            System.out.println(layerArr.get(i));
+            JSONObject layer = layerArr.getJSONObject(i);
+            String strType = layer.getString("type");
+            if ("ConvolutionLayer".equals(strType)) {
+                ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
+                cnNetWork.addLayer(convolutionLayer);
+            } else if ("MaxPoolLayer".equals(strType)) {
+                MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
+                cnNetWork.addLayer(maxPoolLayer);
+            } else if ("MeanPoolLayer".equals(strType)) {
+                MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
+                cnNetWork.addLayer(meanPoolLayer);
+            } else if ("full".equals(strType)) {
+                FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
+                cnNetWork.addLayer(fullLayer);
+            } else if ("CrossEntropyLayer".equals(strType)) {
+                CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
+                cnNetWork.addLayer(crossEntropyLayer);
+            } else if ("DropoutLayer".equals(strType)) {
+                DropoutLayer dropoutLayer = JSONObject.parseObject(layer.toString(), DropoutLayer.class);
+                cnNetWork.addLayer(dropoutLayer);
+            } else if ("SoftmaxLayer".equals(strType)) {
+                SoftmaxLayer softmaxLayer = JSONObject.parseObject(layer.toString(), SoftmaxLayer.class);
+                cnNetWork.addLayer(softmaxLayer);
+            } else if ("DepthSeparableLayer".equals(strType)) {
+                DepthSeparableLayer depthSeparableLayer = JSONObject.parseObject(layer.toString(), DepthSeparableLayer.class);
+                cnNetWork.addLayer(depthSeparableLayer);
+            } else if ("MnLayer".equals(strType)) {
+                MnLayer mnLayer = JSONObject.parseObject(layer.toString(), MnLayer.class);
+                cnNetWork.addLayer(mnLayer);
+            } else if ("LnLayer".equals(strType)) {
+                LnLayer lnLayer = JSONObject.parseObject(layer.toString(), LnLayer.class);
+                cnNetWork.addLayer(lnLayer);
+            } else if ("BnLayer".equals(strType)) {
+                BnLayer bnLayer = JSONObject.parseObject(layer.toString(), BnLayer.class);
+                cnNetWork.addLayer(bnLayer);
+            } else if ("RnnLayer".equals(strType)) {
+                RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
+                cnNetWork.addLayer(rnnLayer);
+            } else if ("PaddingLayer".equals(strType)) {
+                PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
+                cnNetWork.addLayer(paddingLayer);
+            } else if (ReLuLayer.class.getSimpleName().equals(strType)) {
+                ReLuLayer reLuLayer = JSONObject.parseObject(layer.toString(), ReLuLayer.class);
+                cnNetWork.addLayer(reLuLayer);
+            } else if (SigmoidLayer.class.getSimpleName().equals(strType)) {
+                SigmoidLayer sigmoidLayer = JSONObject.parseObject(layer.toString(), SigmoidLayer.class);
+                cnNetWork.addLayer(sigmoidLayer);
+            } else if (TanhLayer.class.getSimpleName().equals(strType)) {
+                TanhLayer tanhLayer = JSONObject.parseObject(layer.toString(), TanhLayer.class);
+                cnNetWork.addLayer(tanhLayer);
+            }
+
+
+        }
+
+        return cnNetWork;
+    }
+
     //添加层到神经网络里面去
     public void addLayer(Layer layer) {
         layers.add(layer);
     }
-
 
     //是否进入学习状态
     public void entryLearn() {
@@ -112,70 +186,6 @@ public class CNNetWork extends NeuralNetWork {
         double[] result = tensorInput.getArray();
         return result;
     }
-
-    //加载卷积神经网络从硬盘上
-    public static CNNetWork load(String name) {
-        JSONObject jsonObject = loadJson(name);
-
-
-        CNNetWork cnNetWork = new CNNetWork();
-        int version = jsonObject.getIntValue("version");
-        cnNetWork.setVersion(version + 1);
-
-
-        //从json中提取出各个层
-        JSONArray layerArr = jsonObject.getJSONArray("layers");
-        for (int i = 0; i < layerArr.size(); i++) {
-//            System.out.println(layerArr.get(i));
-            JSONObject layer = layerArr.getJSONObject(i);
-            String strType = layer.getString("type");
-            if ("ConvolutionLayer".equals(strType)) {
-                ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
-                cnNetWork.addLayer(convolutionLayer);
-            } else if ("MaxPoolLayer".equals(strType)) {
-                MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
-                cnNetWork.addLayer(maxPoolLayer);
-            } else if ("MeanPoolLayer".equals(strType)) {
-                MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
-                cnNetWork.addLayer(meanPoolLayer);
-            } else if ("full".equals(strType)) {
-                FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
-                cnNetWork.addLayer(fullLayer);
-            } else if ("CrossEntropyLayer".equals(strType)) {
-                CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
-                cnNetWork.addLayer(crossEntropyLayer);
-            } else if ("DropoutLayer".equals(strType)) {
-                DropoutLayer dropoutLayer = JSONObject.parseObject(layer.toString(), DropoutLayer.class);
-                cnNetWork.addLayer(dropoutLayer);
-            } else if ("SoftmaxLayer".equals(strType)) {
-                SoftmaxLayer softmaxLayer = JSONObject.parseObject(layer.toString(), SoftmaxLayer.class);
-                cnNetWork.addLayer(softmaxLayer);
-            } else if ("DepthSeparableLayer".equals(strType)) {
-                DepthSeparableLayer depthSeparableLayer = JSONObject.parseObject(layer.toString(), DepthSeparableLayer.class);
-                cnNetWork.addLayer(depthSeparableLayer);
-            } else if ("MnLayer".equals(strType)) {
-                MnLayer mnLayer = JSONObject.parseObject(layer.toString(), MnLayer.class);
-                cnNetWork.addLayer(mnLayer);
-            } else if ("LnLayer".equals(strType)) {
-                LnLayer lnLayer = JSONObject.parseObject(layer.toString(), LnLayer.class);
-                cnNetWork.addLayer(lnLayer);
-            } else if ("BnLayer".equals(strType)) {
-                BnLayer bnLayer = JSONObject.parseObject(layer.toString(), BnLayer.class);
-                cnNetWork.addLayer(bnLayer);
-            } else if ("RnnLayer".equals(strType)) {
-                RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
-                cnNetWork.addLayer(rnnLayer);
-            } else if ("PaddingLayer".equals(strType)) {
-                PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
-                cnNetWork.addLayer(paddingLayer);
-            }
-
-
-        }
-
-        return cnNetWork;
-    }
-
 
     @Override
     public double totalError() {
