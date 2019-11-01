@@ -12,6 +12,7 @@ import xws.neuron.layer.bn.MnLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.conv.DepthSeparableLayer;
 import xws.neuron.layer.output.CrossEntropyLayer;
+import xws.neuron.layer.output.MseLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
@@ -91,7 +92,9 @@ public class CNNetWork extends NeuralNetWork {
             } else if (PaddingLayer.class.getSimpleName().equals(strType)) {
                 PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
                 cnNetWork.addLayer(paddingLayer);
-            } else if (ReLuLayer.class.getSimpleName().equals(strType)) {
+            }
+            //激活层
+            else if (ReLuLayer.class.getSimpleName().equals(strType)) {
                 ReLuLayer reLuLayer = JSONObject.parseObject(layer.toString(), ReLuLayer.class);
                 cnNetWork.addLayer(reLuLayer);
             } else if (SigmoidLayer.class.getSimpleName().equals(strType)) {
@@ -100,6 +103,17 @@ public class CNNetWork extends NeuralNetWork {
             } else if (TanhLayer.class.getSimpleName().equals(strType)) {
                 TanhLayer tanhLayer = JSONObject.parseObject(layer.toString(), TanhLayer.class);
                 cnNetWork.addLayer(tanhLayer);
+            }
+            //输出层
+            else if (MseLayer.class.getSimpleName().equals(strType)) {
+                MseLayer mseLayer = JSONObject.parseObject(layer.toString(), MseLayer.class);
+                cnNetWork.addLayer(mseLayer);
+            } else if (CrossEntropyLayer.class.getSimpleName().equals(strType)) {
+                CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
+                cnNetWork.addLayer(crossEntropyLayer);
+            } else if (SoftMaxLayer.class.getSimpleName().equals(strType)) {
+                SoftMaxLayer softMaxLayer = JSONObject.parseObject(layer.toString(), SoftMaxLayer.class);
+                cnNetWork.addLayer(softMaxLayer);
             }
 
 

@@ -31,6 +31,8 @@ public class FullLayer extends Layer {
     private Tensor tensorAddBias;//input * tensorWeight + tensorBias
     //正则化
     private double lambda = 0;
+    //神经元的个数
+    private int neuralNum;
 
     public FullLayer() {
 
@@ -39,7 +41,7 @@ public class FullLayer extends Layer {
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public FullLayer(int neuralNum) {
         super(FullLayer.class.getSimpleName());
-
+        this.neuralNum = neuralNum;
         //初始化每个神经元的权重和偏置
         init(neuralNum);
 
@@ -47,6 +49,8 @@ public class FullLayer extends Layer {
 
     public FullLayer(String name, String activationType, int neuralNum) {
         super(FullLayer.class.getSimpleName());
+        this.neuralNum = neuralNum;
+
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -56,6 +60,7 @@ public class FullLayer extends Layer {
 
     public FullLayer(String name, String activationType, int neuralNum, double lambda) {
         super(FullLayer.class.getSimpleName());
+        this.neuralNum = neuralNum;
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -65,6 +70,7 @@ public class FullLayer extends Layer {
     }
 
     private void init(int neuralNum) {
+        //init bias
         tensorBias = new Tensor();
         tensorBias.setWidth(neuralNum);
         tensorBias.createArray();
@@ -73,7 +79,7 @@ public class FullLayer extends Layer {
     private void initW(int inputs) {
         if (tensorWeight == null) {
             tensorWeight = new Tensor();
-            tensorWeight.setHeight(tensorBias.getWidth());
+            tensorWeight.setHeight(neuralNum);
             tensorWeight.setWidth(inputs);
             tensorWeight.createArray();
             UtilNeuralNet.initWeight(tensorWeight.getArray());

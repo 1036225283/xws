@@ -206,8 +206,9 @@ public class Tensor {
 
     //tensorInput * tensorW
     public Tensor multiplyW(Tensor tensorW) {
-        Tensor tensorInputMultiplyWeight = this.copy();
-        tensorInputMultiplyWeight.zero();
+        Tensor tensorInputMultiplyWeight = new Tensor();
+        tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
+        tensorInputMultiplyWeight.createArray();
         for (int h = 0; h < tensorW.getHeight(); h++) {
             for (int w = 0; w < tensorW.getWidth(); w++) {
                 tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
@@ -253,6 +254,16 @@ public class Tensor {
             }
         }
         return tensorInputMultiplyWeight;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByMse(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            tensorPartialDerivative.set(i, this.get(i) - expect.get(i));
+        }
+        return tensorPartialDerivative;
     }
 
 

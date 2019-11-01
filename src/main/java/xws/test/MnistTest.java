@@ -423,7 +423,7 @@ public class MnistTest {
         netWork.addLayer(new SigmoidLayer("sigmoid0"));
         netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
         netWork.addLayer(new SigmoidLayer("sigmoid1"));
-        netWork.addLayer(new MseLayer(1));
+        netWork.addLayer(new MseLayer("mse"));
 
         netWork.setLearnRate(0.35);
 
