@@ -1,13 +1,12 @@
 package xws.neuron.layer;
 
-import xws.neuron.ActivationFunction;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.util.UtilFile;
 
 
 /**
- * 全连接层
+ * 全连接层,没有激活函数
  * 初始化时，需要指定有多少个神经元
  * Created by xws on 2019/2/20.
  */
@@ -30,14 +29,6 @@ public class FullLayer extends Layer {
     private Tensor tensorWeight;//存放权重信息
     private Tensor tensorBias;//每个神经元的偏置
     private Tensor tensorAddBias;//input * tensorWeight + tensorBias
-    //以下三个变量，在每次计算之前必须清空
-    private Tensor pdi;//∂C/∂I - I是上一层的输入
-    private Tensor pdw;//∂C/∂W
-    private Tensor pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-    //输入数据和输出数据的维度
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
     //正则化
     private double lambda = 0;
 
@@ -74,26 +65,20 @@ public class FullLayer extends Layer {
     }
 
     private void init(int neuralNum) {
-        tensorOut = new Tensor();
-        tensorOut.setWidth(neuralNum);
-        tensorOut.createArray();
-
         tensorBias = new Tensor();
         tensorBias.setWidth(neuralNum);
         tensorBias.createArray();
-
-        tensorAddBias = new Tensor();
-        tensorAddBias.setWidth(neuralNum);
-        tensorAddBias.createArray();
     }
 
     private void initW(int inputs) {
-        tensorWeight = new Tensor();
-        tensorWeight.setHeight(tensorBias.getWidth());
-        tensorWeight.setWidth(inputs);
-        tensorWeight.createArray();
-        UtilNeuralNet.initWeight(tensorWeight.getArray());
-        UtilNeuralNet.initBias(tensorBias.getArray());
+        if (tensorWeight == null) {
+            tensorWeight = new Tensor();
+            tensorWeight.setHeight(tensorBias.getWidth());
+            tensorWeight.setWidth(inputs);
+            tensorWeight.createArray();
+            UtilNeuralNet.initWeight(tensorWeight.getArray());
+            UtilNeuralNet.initBias(tensorBias.getArray());
+        }
     }
 
 
@@ -101,32 +86,11 @@ public class FullLayer extends Layer {
     @Override
     public Tensor forward(Tensor tensor) {
 
-        initFile();
-
-        inputDepth = tensor.getDepth();
-        inputHeight = tensor.getHeight();
-        inputWidth = tensor.getWidth();
-
         this.tensorInput = tensor;
+
+        initW(tensor.getWidth());
         tensorInputMultiplyWeight = tensorInput.multiplyW(tensorWeight);
-        tensorAddBias = tensorInputMultiplyWeight.add(tensorBias);
-
-        if (tensorOut == null) {
-            tensorOut = new Tensor();
-            tensorOut.setWidth(tensorBias.getWidth());
-            tensorOut.createArray();
-        }
-
-        tensorOut.zero();
-
-        for (int i = 0; i < tensorWeight.getHeight(); i++) {
-            //计算神经元的输出
-            for (int k = 0; k < tensorWeight.getWidth(); k++) {
-                tensorAddBias.set(i, tensorAddBias.get(i) + tensorWeight.get(i, k) * tensorInput.get(k));
-            }
-            tensorAddBias.set(i, tensorAddBias.get(i) + tensorBias.get(i));
-            tensorOut.set(i, ActivationFunction.activation(tensorAddBias.get(i), getActivationType()));
-        }
+        tensorOut = tensorInputMultiplyWeight.add(tensorBias);
 
         return tensorOut;
     }
@@ -146,82 +110,21 @@ public class FullLayer extends Layer {
      */
     @Override
     public Tensor backPropagation(Tensor tensor) {
-
-        //取出误差∂C/∂A
-        double[] pda = tensor.getArray();
-//        logE.append(tensor.toString());
-
-        //先把pdb清空
-        pdb = new Tensor();
-        pdb.setWidth(tensorBias.getWidth());
-        pdb.createArray();
-        //inputs决定了有多少个输入，也就是这一层的神经元会有多少个w
-        pdi = new Tensor();
-        pdi.setWidth(inputDepth * inputHeight * inputWidth);
-        pdi.createArray();
-
-        pdw = new Tensor();
-        pdw.setHeight(tensorBias.getWidth());
-        pdb.setWidth(tensorWeight.getWidth());
-        pdb.createArray();
-
-        //计算pdz = ∂C/∂A * ∂A/∂Z
-        for (int i = 0; i < pda.length; i++) {
-            pdb.set(i, pda[i] * ActivationFunction.derivation(tensorAddBias.get(i), getActivationType()));
-        }
-
-        pdi();
+        Tensor tensorPartialDerivative = tensor.calculateInputPartialDerivative(tensorWeight);
         if (!isTest()) {
-            pdw();
-            pdb();
+            // update bias
+            tensorBias.updateBias(tensor, getLearnRate());
+            // update weight
+            Tensor tensorWeightPartialDerivative = tensorWeight.calculateWeightPartialDerivative(tensor, tensorInput);
+            tensorWeight.updateWeight(tensorWeightPartialDerivative, getLearnRate());
         }
-
-        return pdi;
+        return tensorPartialDerivative;
     }
 
     //误差计算 ∂C/∂A
     @Override
     public Tensor error() {
-
-        Tensor pda = new Tensor();
-        pda.setWidth(tensorBias.getWidth());
-        pda.createArray();
-
-        for (int i = 0; i < tensorWeight.getHeight(); i++) {
-            pda.set(i, (tensorOut.get(i) - getExpect()[i]));//二次损失函数
-        }
-
-        return pda;
-    }
-
-    //神经元计算∂C/∂A(l-1)，在这，好汇集所有输入的误差
-    public void pdi() {
-        for (int i = 0; i < pdi.getWidth(); i++) {
-            for (int k = 0; k < tensorWeight.getHeight(); k++) {
-                pdi.set(i, pdi.get(i) + pdb.get(k) * tensorWeight.get(k, i));
-            }
-        }
-    }
-
-    //神经元计算∂C/∂W
-    public void pdw() {
-//        for (int i = 0; i < tensorWeight.getHeight(); i++) {
-//
-//            double[] pdw = this.pdw[i];
-//            double pdz = this.pdb.get(i);
-//            for (int k = 0; k < tensorWeight.getWidth(); k++) {
-//                pdw[k] = pdz * tensorInput.get(k);
-//                double val = tensorWeight.get(i, k) - getLearnRate() * pdw[k] - lambda * tensorWeight.get(i, k);
-//                tensorWeight.set(i, k, val);
-//            }
-//        }
-    }
-
-    //神经元计算∂C/∂B =
-    public void pdb() {
-        for (int i = 0; i < tensorBias.getWidth(); i++) {
-            tensorBias.set(i, tensorBias.get(i) - getLearnRate() * pdb.get(i));
-        }
+        return null;
     }
 
     public Tensor getTensorWeight() {

@@ -212,6 +212,46 @@ public class Tensor {
         return tensorInputMultiplyWeight;
     }
 
+    //update back propagation bias error
+    public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < getWidth(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+    //update back propagation weight error
+    public void updateWeight(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < getWidth(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+
+    // please use the tensorW call the method
+    public Tensor calculateWeightPartialDerivative(Tensor tensorPartialDerivative, Tensor tensorInput) {
+        Tensor tensorInputMultiplyWeight = this.copy();
+        tensorInputMultiplyWeight.zero();
+        for (int h = 0; h < tensorInput.getHeight(); h++) {
+            for (int w = 0; w < tensorInput.getWidth(); w++) {
+                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + tensorPartialDerivative.get(h) * tensorInput.get(h));
+            }
+        }
+        return tensorInputMultiplyWeight;
+    }
+
+    // please use the tensorBiasPartialDerivative call the method
+    public Tensor calculateInputPartialDerivative(Tensor tensorW) {
+        Tensor tensorInputMultiplyWeight = this.copy();
+        tensorInputMultiplyWeight.zero();
+        for (int h = 0; h < tensorW.getHeight(); h++) {
+            for (int w = 0; w < tensorW.getWidth(); w++) {
+                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+            }
+        }
+        return tensorInputMultiplyWeight;
+    }
+
+
     public int size() {
         return array.length;
     }

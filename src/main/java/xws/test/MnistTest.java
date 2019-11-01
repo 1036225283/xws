@@ -5,8 +5,10 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.activation.SigmoidLayer;
 import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.output.MseLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.util.Cifar10;
@@ -33,8 +35,8 @@ public class MnistTest {
     public static void main(String[] args) {
 //        testBN();
 
-        createCNNetWork();
-        learnMNIST();//训练手写字符识别
+//        createCNNetWork();
+//        learnMNIST();//训练手写字符识别
 //        testMNIST();//识别手写字符
 
 
@@ -44,7 +46,7 @@ public class MnistTest {
 //        testFilterLayer();//测试卷积操作
 //        testPoolLayer();//测试卷积层
 //        System.out.println(ActivationFunction.sigmoid(2));
-//        and();
+        and();
 
 //        xor();
 //        and_or_xor();
@@ -418,7 +420,11 @@ public class MnistTest {
         CNNetWork netWork = new CNNetWork();
 //
         netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
         netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer(1));
+
         netWork.setLearnRate(0.35);
 
         if (netWork == null) {
