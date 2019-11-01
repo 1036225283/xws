@@ -8,8 +8,7 @@ import xws.util.UtilFile;
 
 
 /**
- * 全连接层
- * 初始化时，需要指定有多少个神经元
+ * 均方误差
  * Created by xws on 2019/2/20.
  */
 public class MseLayer extends Layer {
@@ -101,41 +100,14 @@ public class MseLayer extends Layer {
     //计算每一个神经元的输出值
     @Override
     public Tensor forward(Tensor tensor) {
-
-        initFile();
-
-        inputDepth = tensor.getDepth();
-        inputHeight = tensor.getHeight();
-        inputWidth = tensor.getWidth();
-
-        this.tensorInput = tensor;
-        tensorInputMultiplyWeight = tensorInput.multiplyW(tensorWeight);
-        tensorAddBias = tensorInputMultiplyWeight.add(tensorBias);
-
-        if (tensorOut == null) {
-            tensorOut = new Tensor();
-            tensorOut.setWidth(tensorBias.getWidth());
-            tensorOut.createArray();
-        }
-
-        tensorOut.zero();
-
-        for (int i = 0; i < tensorWeight.getHeight(); i++) {
-            //计算神经元的输出
-            for (int k = 0; k < tensorWeight.getWidth(); k++) {
-                tensorAddBias.set(i, tensorAddBias.get(i) + tensorWeight.get(i, k) * tensorInput.get(k));
-            }
-            tensorAddBias.set(i, tensorAddBias.get(i) + tensorBias.get(i));
-            tensorOut.set(i, ActivationFunction.activation(tensorAddBias.get(i), getActivationType()));
-        }
-
-        return tensorOut;
+        tensorInput = tensor;
+        return tensor;
     }
 
     //获取这一层神经网络的输出
     @Override
     public Tensor a() {
-        return tensorOut;
+        return tensorInput;
     }
 
 
@@ -147,49 +119,20 @@ public class MseLayer extends Layer {
      */
     @Override
     public Tensor backPropagation(Tensor tensor) {
-
-        //取出误差∂C/∂A
-        double[] pda = tensor.getArray();
-//        logE.append(tensor.toString());
-
-        //先把pdb清空
-        pdb = new Tensor();
-        pdb.setWidth(tensorBias.getWidth());
-        pdb.createArray();
-        //inputs决定了有多少个输入，也就是这一层的神经元会有多少个w
-        pdi = new Tensor();
-        pdi.setWidth(inputDepth * inputHeight * inputWidth);
-        pdi.createArray();
-
-        pdw = new Tensor();
-        pdw.setHeight(tensorBias.getWidth());
-        pdb.setWidth(tensorWeight.getWidth());
-        pdb.createArray();
-
-        //计算pdz = ∂C/∂A * ∂A/∂Z
-        for (int i = 0; i < pda.length; i++) {
-            pdb.set(i, pda[i] * ActivationFunction.derivation(tensorAddBias.get(i), getActivationType()));
-        }
-
-        pdi();
-        if (!isTest()) {
-            pdw();
-            pdb();
-        }
-
-        return pdi;
+        return null;
     }
 
     //误差计算 ∂C/∂A
     @Override
     public Tensor error() {
 
+
         Tensor pda = new Tensor();
         pda.setWidth(tensorBias.getWidth());
         pda.createArray();
 
         for (int i = 0; i < tensorWeight.getHeight(); i++) {
-            pda.set(i, (tensorOut.get(i) - getExpect()[i]));//二次损失函数
+            pda.set(i, (tensorOut.get(i) - getExpect().get(i)));//二次损失函数
         }
 
         return pda;

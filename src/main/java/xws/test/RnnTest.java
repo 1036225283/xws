@@ -36,7 +36,6 @@ public class RnnTest {
     }
 
 
-
     //第1个数+第2个数+第3个数+第n个数
     public static void createCNNetWork() {
         CNNetWork cnNetWork = new CNNetWork();
@@ -49,7 +48,7 @@ public class RnnTest {
         cnNetWork.entryTest();
         cnNetWork.setStep(0);
         for (int i = 0; i < list.size(); i++) {
-            cnNetWork.learn(cifar10.getRgb(), new double[]{cifar10.getValue()});
+            cnNetWork.learn(cifar10.getRgb(), new Tensor(new double[]{cifar10.getValue()}));
         }
 
         cnNetWork.save(strName);
@@ -180,11 +179,11 @@ public class RnnTest {
 
                 for (int k = 0; k < 5; k++) {
                     cnNetWork.setStep(0);
-                    cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                    cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
-                    cnNetWork.learn(rnnSequence.getData(2), rnnSequence.getExpect(2));
-                    cnNetWork.learn(rnnSequence.getData(3), rnnSequence.getExpect(3));
-                    cnNetWork.learn(rnnSequence.getData(4), rnnSequence.getExpect(4));
+                    cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                    cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
+                    cnNetWork.learn(rnnSequence.getData(2), new Tensor(rnnSequence.getExpect(2)));
+                    cnNetWork.learn(rnnSequence.getData(3), new Tensor(rnnSequence.getExpect(3)));
+                    cnNetWork.learn(rnnSequence.getData(4), new Tensor(rnnSequence.getExpect(4)));
                 }
 
             }
@@ -253,27 +252,27 @@ public class RnnTest {
             for (int i = 0; i < list.size(); i++) {
                 RnnSequence rnnSequence = list.get(i);
                 cnNetWork.setStep(0);
-                cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
+                cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
 
                 cnNetWork.setStep(0);
-                cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
-
-
-                cnNetWork.setStep(0);
-                cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
+                cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
 
 
                 cnNetWork.setStep(0);
-                cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
+                cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
 
 
                 cnNetWork.setStep(0);
-                cnNetWork.learn(rnnSequence.getData(0), rnnSequence.getExpect(0));
-                cnNetWork.learn(rnnSequence.getData(1), rnnSequence.getExpect(1));
+                cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
+
+
+                cnNetWork.setStep(0);
+                cnNetWork.learn(rnnSequence.getData(0), new Tensor(rnnSequence.getExpect(0)));
+                cnNetWork.learn(rnnSequence.getData(1), new Tensor(rnnSequence.getExpect(1)));
 
 
             }

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.FullNetWork;
 import xws.neuron.MnistRead;
+import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.util.UtilFile;
 
@@ -419,7 +420,7 @@ public class FullNetWorkTest {
 
                 //组织输出期望数据
                 double val = labels[i];
-                double[] expect = expectMNIST(val);
+                double[] expect = expectMNIST(val).getArray();
                 double[] out = netWork.forward(image, expect);
                 int maxIndex = UtilNeuralNet.maxIndex(out);
                 if (maxIndex == (int) val) {
@@ -507,15 +508,17 @@ public class FullNetWorkTest {
     }
 
     //加工手写字符的期望数据
-    public static double[] expectMNIST(double val) {
+    public static Tensor expectMNIST(double val) {
         return expectMNIST(val, 10);
     }
 
-    public static double[] expectMNIST(double val, int total) {
+    public static Tensor expectMNIST(double val, int total) {
+        Tensor tensor = new Tensor();
         double[] expect = new double[total];
         int index = (int) val;
         expect[index] = 1;
-        return expect;
+        tensor.setArray(expect);
+        return tensor;
     }
 
     //保存图片到文件中

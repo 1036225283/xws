@@ -212,7 +212,7 @@ public class CrossEntropyLayer extends Layer {
         pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
-            pda.set(i, tensorOut.get(i) - getExpect()[i]);//使用交叉熵作为损失函数，所以，这里传递的不是pda(l-1),而是pdb(l-1)
+            pda.set(i, tensorOut.get(i) - getExpect().get(i));//使用交叉熵作为损失函数，所以，这里传递的不是pda(l-1),而是pdb(l-1)
         }
 
         return pda;

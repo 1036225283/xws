@@ -2,6 +2,7 @@ package xws.test;
 
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.CNNetWork;
+import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
 import xws.neuron.layer.bn.LnLayer;
@@ -172,7 +173,7 @@ public class Cifar10Test {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = listLearn.get(i + j);
-                        double[] expect = expectMNIST(cifar10.getLabel());
+                        Tensor expect = expectMNIST(cifar10.getLabel());
                         cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }

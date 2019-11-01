@@ -275,7 +275,7 @@ public class DropoutLayer extends Layer {
         pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
-            pda.set(i, (tensorOut.get(i) - getExpect()[i]) * getGamma());
+            pda.set(i, (tensorOut.get(i) - getExpect().get(i)) * getGamma());
         }
 
         return pda;

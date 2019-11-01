@@ -131,7 +131,7 @@ public class CNNetWork extends NeuralNetWork {
     }
 
     //卷积神经网络学习
-    public int learn(Tensor tensorInput, double[] expect, double gamma) {
+    public int learn(Tensor tensorInput, Tensor expect, double gamma) {
 //        tensorInput.show();
 
 
@@ -166,7 +166,7 @@ public class CNNetWork extends NeuralNetWork {
 
     }
 
-    public int learn(Tensor tensorInput, double[] expect) {
+    public int learn(Tensor tensorInput, Tensor expect) {
         return learn(tensorInput, expect, 1);
     }
 
@@ -193,11 +193,11 @@ public class CNNetWork extends NeuralNetWork {
     public double totalError() {
         Layer lastLayer = layers.get(layers.size() - 1);
         //拿到期望值
-        double[] expect = lastLayer.getExpect();
+        Tensor expect = lastLayer.getExpect();
         double[] a = lastLayer.a().getArray();
         double totalError = 0;
-        for (int i = 0; i < expect.length; i++) {
-            totalError = totalError + Math.pow(expect[i] - a[i], 2);
+        for (int i = 0; i < expect.getWidth(); i++) {
+            totalError = totalError + Math.pow(expect.get(i) - a[i], 2);
         }
         return totalError;
     }

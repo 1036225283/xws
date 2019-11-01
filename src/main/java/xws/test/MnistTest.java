@@ -379,7 +379,7 @@ public class MnistTest {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = list.get(i + j);
-                        double[] expect = expectMNIST(cifar10.getLabel());
+                        Tensor expect = expectMNIST(cifar10.getLabel());
                         int result = cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }
@@ -464,16 +464,16 @@ public class MnistTest {
         for (int i = 1; i < 10000; i++) {
             netWork.entryLearn();
 
-            netWork.learn(tensor11, new double[]{1});
+            netWork.learn(tensor11, new Tensor(new double[]{1}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{0});
+            netWork.learn(tensor10, new Tensor(new double[]{0}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{0});
+            netWork.learn(tensor01, new Tensor(new double[]{0}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0});
+            netWork.learn(tensor00, new Tensor(new double[]{0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
@@ -540,16 +540,16 @@ public class MnistTest {
 
         for (int i = 1; i < 10000; i++) {
             netWork.entryLearn();
-            netWork.learn(tensor11, new double[]{0});
+            netWork.learn(tensor11, new Tensor(new double[]{0}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{1});
+            netWork.learn(tensor10, new Tensor(new double[]{1}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{1});
+            netWork.learn(tensor01, new Tensor(new double[]{1}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0});
+            netWork.learn(tensor00, new Tensor(new double[]{0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
@@ -621,16 +621,16 @@ public class MnistTest {
         for (int i = 1; i < 10000; i++) {
             netWork.entryLearn();
             System.out.println("i = ---------------------------------------" + i);
-            netWork.learn(tensor11, new double[]{1, 1, 0});
+            netWork.learn(tensor11, new Tensor(new double[]{1, 1, 0}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{0, 1, 1});
+            netWork.learn(tensor10, new Tensor(new double[]{0, 1, 1}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{0, 1, 1});
+            netWork.learn(tensor01, new Tensor(new double[]{0, 1, 1}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0, 0, 0});
+            netWork.learn(tensor00, new Tensor(new double[]{0, 0, 0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
             netWork.entryTest();

@@ -221,7 +221,7 @@ public class SoftMaxLayer extends Layer {
         pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
-            pda.set(i, (tensorOut.get(i) - getExpect()[i]) * getGamma());
+            pda.set(i, (tensorOut.get(i) - getExpect().get(i)) * getGamma());
 //            if (getExpect()[i] == 1) {
 //                pda[i] = tensorOut[i] - 1;
 //            } else {

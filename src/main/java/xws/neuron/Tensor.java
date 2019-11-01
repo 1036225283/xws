@@ -20,6 +20,10 @@ public class Tensor {
         array = new double[size];
     }
 
+    public Tensor(double[] array) {
+        this.array = array;
+    }
+
     public static void main(String[] args) {
         Tensor tensor = new Tensor(10000);
         tensor.setWidth(10);
