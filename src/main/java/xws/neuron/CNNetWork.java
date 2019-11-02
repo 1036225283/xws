@@ -168,8 +168,8 @@ public class CNNetWork extends NeuralNetWork {
             maxIndex = UtilNeuralNet.maxIndex(result);
             //反向传播
             Tensor error = lastLayer.error();
-            System.out.println(lastLayer.getName() + " back ...\n");
-            error.show("error");
+//            System.out.println(lastLayer.getName() + " back ...\n");
+//            error.show("error");
             for (int i = layers.size() - 1; i >= 0; i--) {
                 lastLayer = layers.get(i);
                 error = lastLayer.backPropagation(error);

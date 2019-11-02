@@ -12,6 +12,9 @@ public class MseLayer extends Layer {
 
     private Tensor tensorInput;//把上一层的输入也保存起来
 
+    public MseLayer() {
+    }
+
     public MseLayer(String name) {
         super(MseLayer.class.getSimpleName());
         setName(name);

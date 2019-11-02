@@ -513,12 +513,10 @@ public class FullNetWorkTest {
     }
 
     public static Tensor expectMNIST(double val, int total) {
-        Tensor tensor = new Tensor();
         double[] expect = new double[total];
         int index = (int) val;
         expect[index] = 1;
-        tensor.setArray(expect);
-        return tensor;
+        return new Tensor(expect);
     }
 
     //保存图片到文件中

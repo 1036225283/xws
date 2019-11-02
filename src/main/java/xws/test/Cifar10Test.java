@@ -76,7 +76,7 @@ public class Cifar10Test {
         cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
         cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 1, 1));
         cnNetWork.addLayer(new LnLayer("ln2"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new FullLayer("full2", 64, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 

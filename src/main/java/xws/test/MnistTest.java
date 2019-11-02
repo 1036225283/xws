@@ -35,8 +35,8 @@ public class MnistTest {
     public static void main(String[] args) {
 //        testBN();
 
-//        createCNNetWork();
-//        learnMNIST();//训练手写字符识别
+        createCNNetWork();
+        learnMNIST();//训练手写字符识别
 //        testMNIST();//识别手写字符
 
 
@@ -46,7 +46,7 @@ public class MnistTest {
 //        testFilterLayer();//测试卷积操作
 //        testPoolLayer();//测试卷积层
 //        System.out.println(ActivationFunction.sigmoid(2));
-        and();
+//        and();
 
 //        xor();
 //        and_or_xor();
@@ -176,6 +176,16 @@ public class MnistTest {
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
 //
 
+        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+        cnNetWork.addLayer(new MseLayer("mse"));
+
+//
+
         //97.45%
 //        cnNetWork.addLayer(new FullLayer("full1", "relu", 64, UtilNeuralNet.e() * 0.000000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.000000000001));
@@ -242,19 +252,19 @@ public class MnistTest {
 
 
         //99.03%    ||  99.01%  ||  99.00%
-        cnNetWork.addLayer(new BnLayer("bn1"));
-        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
-        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn2"));
-        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
-        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn3"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new BnLayer("bn4"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn1"));
+//        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn2"));
+//        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn3"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn4"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 //        cnNetWork.addLayer(new LnLayer("bn1"));
 //        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
@@ -419,9 +429,9 @@ public class MnistTest {
 //        CNNetWork netWork = CNNetWork.load("and_cnn");
         CNNetWork netWork = new CNNetWork();
 //
-        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
+        netWork.addLayer(new FullLayer("full1", 2));
         netWork.addLayer(new SigmoidLayer("sigmoid0"));
-        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
+        netWork.addLayer(new FullLayer("full2", 1));
         netWork.addLayer(new SigmoidLayer("sigmoid1"));
         netWork.addLayer(new MseLayer("mse"));
 
@@ -499,9 +509,12 @@ public class MnistTest {
     public static void xor() {
 //        CNNetWork netWork = CNNetWork.load("xor_cnn");
         CNNetWork netWork = new CNNetWork();
-//
-        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
-        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
+
+        netWork.addLayer(new FullLayer("full1", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
+        netWork.addLayer(new FullLayer("full2", 1));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer("mse"));
         netWork.setLearnRate(1);
 
         if (netWork == null) {
@@ -575,13 +588,18 @@ public class MnistTest {
     public static void and_or_xor() {
 //        CNNetWork netWork = CNNetWork.load("and_or_xor_cnn");
         CNNetWork netWork = new CNNetWork();
-//        netWork.setLearnRate(1);
 //
-        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
+
+        netWork.addLayer(new FullLayer("full1", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
+        netWork.addLayer(new FullLayer("full2", 3));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer("mse"));
+        netWork.setLearnRate(1);
+
+
         //用二次方，果然慢了很多
-        netWork.addLayer(new FullLayer("full2", "sigmoid", 3));
         //用交叉熵，果然快了很多
-//        netWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 3));
 
 
         if (netWork == null) {

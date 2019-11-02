@@ -42,7 +42,7 @@ public class RnnTest {
 //        cnNetWork.addLayer(new BnLayer("bn1"));
         cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 3));
 //        cnNetWork.addLayer(new BnLayer("bn2"));
-        cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new FullLayer("full2", 1, UtilNeuralNet.e() * 0.00000000001));
 
         Cifar10 cifar10 = list.get(0);
         cnNetWork.entryTest();

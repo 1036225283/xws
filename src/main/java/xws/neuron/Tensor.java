@@ -22,6 +22,7 @@ public class Tensor {
 
     public Tensor(double[] array) {
         this.array = array;
+        width = array.length;
     }
 
     public static void main(String[] args) {

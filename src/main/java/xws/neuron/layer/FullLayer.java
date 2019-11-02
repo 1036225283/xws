@@ -47,22 +47,20 @@ public class FullLayer extends Layer {
 
     }
 
-    public FullLayer(String name, String activationType, int neuralNum) {
+    public FullLayer(String name, int neuralNum) {
         super(FullLayer.class.getSimpleName());
         this.neuralNum = neuralNum;
 
         setName(name);
-        setActivationType(activationType);
         //初始化每个神经元的权重和偏置
 
         init(neuralNum);
     }
 
-    public FullLayer(String name, String activationType, int neuralNum, double lambda) {
+    public FullLayer(String name, int neuralNum, double lambda) {
         super(FullLayer.class.getSimpleName());
         this.neuralNum = neuralNum;
         setName(name);
-        setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         this.lambda = lambda;
 
