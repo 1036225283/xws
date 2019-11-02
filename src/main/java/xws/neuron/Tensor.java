@@ -163,7 +163,7 @@ public class Tensor {
             System.out.print(msg);
         }
         for (int d = 0; d < depth; d++) {
-            System.out.print(" 深度：" + d);
+            System.out.print(" 深度" + d + " ");
             for (int h = 0; h < height; h++) {
                 for (int w = 0; w < width; w++) {
                     System.out.print(this.get(d, h, w) + "\t");
@@ -224,9 +224,9 @@ public class Tensor {
         }
     }
 
-    //update back propagation weight error
+    //please use the tensorW call the method, update back propagation weight error
     public void updateWeight(Tensor tensorPartialDerivative, double learnRate) {
-        for (int i = 0; i < getWidth(); i++) {
+        for (int i = 0; i < size(); i++) {
             set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
         }
     }
