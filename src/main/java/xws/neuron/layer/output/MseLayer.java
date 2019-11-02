@@ -40,7 +40,7 @@ public class MseLayer extends Layer {
      */
     @Override
     public Tensor backPropagation(Tensor tensor) {
-        return null;
+        return tensor;
     }
 
     //误差计算 ∂C/∂A

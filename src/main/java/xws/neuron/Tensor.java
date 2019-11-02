@@ -160,10 +160,10 @@ public class Tensor {
     //展示数据
     public void show(String msg) {
         if (msg != null) {
-            System.out.println(msg);
+            System.out.print(msg);
         }
         for (int d = 0; d < depth; d++) {
-            System.out.println("深度：" + d);
+            System.out.print(" 深度：" + d);
             for (int h = 0; h < height; h++) {
                 for (int w = 0; w < width; w++) {
                     System.out.print(this.get(d, h, w) + "\t");

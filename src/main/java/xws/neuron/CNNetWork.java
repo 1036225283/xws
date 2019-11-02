@@ -168,11 +168,13 @@ public class CNNetWork extends NeuralNetWork {
             maxIndex = UtilNeuralNet.maxIndex(result);
             //反向传播
             Tensor error = lastLayer.error();
-            for (int i = layers.size() - 2; i >= 0; i--) {
+            System.out.println(lastLayer.getName() + " back ...\n");
+            error.show("error");
+            for (int i = layers.size() - 1; i >= 0; i--) {
                 lastLayer = layers.get(i);
+                error = lastLayer.backPropagation(error);
 //                System.out.println(lastLayer.getName() + " back propagation ...\n");
 //                error.show("error = ");
-                error = lastLayer.backPropagation(error);
             }
         }
 
@@ -201,6 +203,7 @@ public class CNNetWork extends NeuralNetWork {
                 maxPoolBackLayer.setMaxPoolLayer((MaxPoolLayer) targetLayer);
             }
             tensorInput = layer.forward(tensorInput);
+//            tensorInput.show();
         }
         double[] result = tensorInput.getArray();
         return result;

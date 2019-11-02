@@ -13,6 +13,7 @@ public class SigmoidLayer extends Layer {
 
 
     private Tensor tensorInput;
+    private Tensor tensorOut;
 
 
     public SigmoidLayer() {
@@ -29,20 +30,17 @@ public class SigmoidLayer extends Layer {
     @Override
     public Tensor forward(Tensor tensor) {
         tensorInput = tensor;
-
-        Tensor tensorOut = tensorInput.copy();
-
+        tensorOut = tensorInput.copy();
         for (int i = 0; i < tensorInput.size(); i++) {
-            tensorOut.set(i, ActivationFunction.sigmoid(tensorOut.get(i)));
+            tensorOut.set(i, ActivationFunction.sigmoid(tensorInput.get(i)));
         }
-
         return tensorOut;
     }
 
     //获取这一层神经网络的输出
     @Override
     public Tensor a() {
-        return null;
+        return tensorOut;
     }
 
 
@@ -56,7 +54,7 @@ public class SigmoidLayer extends Layer {
 
         //先计算输入误差
         for (int i = 0; i < tensorError.size(); i++) {
-            tensorError.set(i, ActivationFunction.sigmoid_d(tensorError.get(i)));
+            tensorError.set(i, tensorError.get(i) * ActivationFunction.sigmoid_d(tensorOut.get(i)));
         }
 
         return tensorError;

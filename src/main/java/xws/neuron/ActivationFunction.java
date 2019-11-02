@@ -11,8 +11,8 @@ public class ActivationFunction {
         return 1 / (1 + Math.pow(Math.E, -z));
     }
 
-    public static double sigmoid_d(double z) {
-        double a = sigmoid(z);
+    public static double sigmoid_d(double a) {
+//        double a = sigmoid(z);
         return a * (1 - a);
     }
 
