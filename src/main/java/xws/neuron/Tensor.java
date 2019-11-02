@@ -217,7 +217,7 @@ public class Tensor {
         return tensorInputMultiplyWeight;
     }
 
-    //update back propagation bias error
+    // please use the tensorBias call the method, update back propagation bias error
     public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
         for (int i = 0; i < getWidth(); i++) {
             set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
@@ -244,16 +244,17 @@ public class Tensor {
         return tensorInputMultiplyWeight;
     }
 
-    // please use the tensorBiasPartialDerivative call the method
-    public Tensor calculateInputPartialDerivative(Tensor tensorW) {
-        Tensor tensorInputMultiplyWeight = this.copy();
-        tensorInputMultiplyWeight.zero();
-        for (int h = 0; h < tensorW.getHeight(); h++) {
-            for (int w = 0; w < tensorW.getWidth(); w++) {
-                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+    // please use the tensorW call the method
+    public Tensor calculateInputPartialDerivative(Tensor tensorPartialDerivative) {
+        Tensor tensorInputPartialDerivative = new Tensor();
+        tensorInputPartialDerivative.setWidth(this.getWidth());
+        tensorInputPartialDerivative.createArray();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorInputPartialDerivative.set(w, tensorInputPartialDerivative.get(w) + tensorPartialDerivative.get(h) * this.get(h, w));
             }
         }
-        return tensorInputMultiplyWeight;
+        return tensorInputPartialDerivative;
     }
 
     // please use the tensorOut call the method

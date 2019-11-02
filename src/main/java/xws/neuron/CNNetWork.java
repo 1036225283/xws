@@ -168,8 +168,10 @@ public class CNNetWork extends NeuralNetWork {
             maxIndex = UtilNeuralNet.maxIndex(result);
             //反向传播
             Tensor error = lastLayer.error();
-            for (int i = layers.size() - 1; i >= 0; i--) {
+            for (int i = layers.size() - 2; i >= 0; i--) {
                 lastLayer = layers.get(i);
+//                System.out.println(lastLayer.getName() + " back propagation ...\n");
+//                error.show("error = ");
                 error = lastLayer.backPropagation(error);
             }
         }
@@ -189,6 +191,7 @@ public class CNNetWork extends NeuralNetWork {
         //前向传播
         for (int i = 0; i < layers.size(); i++) {
             Layer layer = layers.get(i);
+//            System.out.println(layer.getName() + " forward ...\n");
             layer.setBatch(getBatch());
             //需要判断layer的类型，如果是反池化，反卷积，或者合并和裁剪的时候，需要获取前面层的信息
             if (layer.getType().equals("MaxPoolBackLayer")) {

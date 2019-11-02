@@ -116,7 +116,7 @@ public class FullLayer extends Layer {
      */
     @Override
     public Tensor backPropagation(Tensor tensor) {
-        Tensor tensorPartialDerivative = tensor.calculateInputPartialDerivative(tensorWeight);
+        Tensor tensorInputPartialDerivative = tensorWeight.calculateInputPartialDerivative(tensor);
         if (!isTest()) {
             // update bias
             tensorBias.updateBias(tensor, getLearnRate());
@@ -124,7 +124,7 @@ public class FullLayer extends Layer {
             Tensor tensorWeightPartialDerivative = tensorWeight.calculateWeightPartialDerivative(tensor, tensorInput);
             tensorWeight.updateWeight(tensorWeightPartialDerivative, getLearnRate());
         }
-        return tensorPartialDerivative;
+        return tensorInputPartialDerivative;
     }
 
     //误差计算 ∂C/∂A

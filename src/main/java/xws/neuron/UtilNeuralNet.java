@@ -110,7 +110,7 @@ public class UtilNeuralNet {
 
     //初始化单个数据
     public static double initData() {
-        Random random = new Random();
+        Random random = new Random(100);
         return random.nextGaussian() * 0.1;
     }
 
@@ -123,7 +123,7 @@ public class UtilNeuralNet {
 
     //初始化weight
     public static void initWeight(double[] weight) {
-        Random random = new Random();
+        Random random = new Random(100);
         for (int i = 0; i < weight.length; i++) {
             weight[i] = (random.nextGaussian() * 0.1);
         }
