@@ -234,14 +234,14 @@ public class Tensor {
 
     // please use the tensorW call the method
     public Tensor calculateWeightPartialDerivative(Tensor tensorPartialDerivative, Tensor tensorInput) {
-        Tensor tensorInputMultiplyWeight = this.copy();
-        tensorInputMultiplyWeight.zero();
-        for (int h = 0; h < tensorInput.getHeight(); h++) {
-            for (int w = 0; w < tensorInput.getWidth(); w++) {
-                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + tensorPartialDerivative.get(h) * tensorInput.get(h));
+        Tensor tensorWeightPartialDerivative = this.copy();
+        tensorWeightPartialDerivative.zero();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorWeightPartialDerivative.set(h, w, tensorWeightPartialDerivative.get(h, w) + tensorPartialDerivative.get(h) * tensorInput.get(w));
             }
         }
-        return tensorInputMultiplyWeight;
+        return tensorWeightPartialDerivative;
     }
 
     // please use the tensorW call the method
