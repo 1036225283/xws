@@ -268,6 +268,22 @@ public class Tensor {
         return tensorPartialDerivative;
     }
 
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByCrossEntropy(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            if (expect.get(i) == 0) {
+                tensorPartialDerivative.set(i, (this.get(i)));
+            } else {
+                tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+            }
+//            tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+
+        }
+        return tensorPartialDerivative;
+    }
+
     public double sum() {
         double total = 0;
         for (int i = 0; i < array.length; i++) {

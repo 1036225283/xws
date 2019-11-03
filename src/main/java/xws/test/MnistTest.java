@@ -5,9 +5,12 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.activation.ReLuLayer;
 import xws.neuron.layer.activation.SigmoidLayer;
+import xws.neuron.layer.activation.TanhLayer;
 import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.output.CrossEntropyLayer;
 import xws.neuron.layer.output.MseLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
@@ -170,26 +173,51 @@ public class MnistTest {
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
 
 
-        //97.56%
-//        cnNetWork.addLayer(new FullLayer("full1", "relu", 64,                    UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 64,                    UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
-//
+        //94.87%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
 
+        //96.83%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
+
+        //96.08%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
+
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+//        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
+//
+//
         cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
         cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
         cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
-        cnNetWork.addLayer(new MseLayer("mse"));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
 
 //
-
-        //97.45%
-//        cnNetWork.addLayer(new FullLayer("full1", "relu", 64, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
 
 
         //97.02

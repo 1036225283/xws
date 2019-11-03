@@ -77,7 +77,7 @@ public class Cifar10Test {
         cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 1, 1));
         cnNetWork.addLayer(new LnLayer("ln2"));
         cnNetWork.addLayer(new FullLayer("full2", 64, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftMaxLayer("softmax"));
 
 
         //37.22%    ||  40.87%

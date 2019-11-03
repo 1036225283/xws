@@ -56,7 +56,7 @@ public class TanhLayer extends Layer {
 
         //先计算输入误差
         for (int i = 0; i < tensorError.size(); i++) {
-            tensorError.set(i, ActivationFunction.tanh_d(tensorError.get(i)));
+            tensorError.set(i, tensorError.get(i) * ActivationFunction.tanh_d(tensorInput.get(i)));
         }
 
         return tensorError;

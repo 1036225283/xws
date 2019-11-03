@@ -196,12 +196,12 @@ public class CNNetWork extends NeuralNetWork {
 //            System.out.println(layer.getName() + " forward ...\n");
             layer.setBatch(getBatch());
             //需要判断layer的类型，如果是反池化，反卷积，或者合并和裁剪的时候，需要获取前面层的信息
-            if (layer.getType().equals("MaxPoolBackLayer")) {
-                MaxPoolBackLayer maxPoolBackLayer = (MaxPoolBackLayer) layer;
-                String layerName = maxPoolBackLayer.getTargetName();
-                Layer targetLayer = getLayer(layerName);
-                maxPoolBackLayer.setMaxPoolLayer((MaxPoolLayer) targetLayer);
-            }
+//            if (layer.getType().equals("MaxPoolBackLayer")) {
+//                MaxPoolBackLayer maxPoolBackLayer = (MaxPoolBackLayer) layer;
+//                String layerName = maxPoolBackLayer.getTargetName();
+//                Layer targetLayer = getLayer(layerName);
+//                maxPoolBackLayer.setMaxPoolLayer((MaxPoolLayer) targetLayer);
+//            }
             tensorInput = layer.forward(tensorInput);
 //            tensorInput.show();
         }
