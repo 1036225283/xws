@@ -7,6 +7,7 @@ package xws.neuron;
  */
 public class Tensor {
 
+    private int batch = 1;
     private int height = 1;
     private int width = 1;
     private int depth = 1;
@@ -84,6 +85,14 @@ public class Tensor {
         return array[depth * this.height * this.width + height * this.width + width];
     }
 
+    //虚拟三维数组，根据索引获取值
+    public double get(int batch, int depth, int height, int width) {
+        if (height >= this.height || width >= this.width) {
+            return 0;
+        }
+        return array[batch * this.depth * this.height * this.width + depth * this.height * this.width + height * this.width + width];
+    }
+
     //虚拟一维数组，根据索引设置值
     public void set(int index, double value) {
         array[index] = value;
@@ -99,6 +108,10 @@ public class Tensor {
         array[depth * this.height * this.width + height * this.width + width] = value;
     }
 
+    public void set(int batch, int depth, int height, int width, double value) {
+        array[batch * this.depth * this.height * this.width + depth * this.height * this.width + height * this.width + width] = value;
+    }
+
     //获取实际索引
     public int index(int height, int width) {
         return height * this.width + width;
@@ -108,22 +121,28 @@ public class Tensor {
         return depth * this.height * this.width + height * this.width + width;
     }
 
+    public int index(int batch, int depth, int height, int width) {
+        return batch * this.depth * this.height * this.width + depth * this.height * this.width + height * this.width + width;
+    }
+
     //创建一维数组
     public void createArray() {
-        if (depth != 0 && height != 0 && width != 0) {
-            array = new double[depth * height * width];
-        } else if (height != 0 && width != 0) {
-            array = new double[height * width];
-        } else if (width != 0) {
-            array = new double[width];
-        } else {
-            throw new RuntimeException("传教一维数组异常");
-        }
+//        if (depth != 0 && height != 0 && width != 0) {
+//            array = new double[depth * height * width];
+//        } else if (height != 0 && width != 0) {
+//            array = new double[height * width];
+//        } else if (width != 0) {
+//            array = new double[width];
+//        } else {
+//            throw new RuntimeException("传教一维数组异常");
+//        }
+        array = new double[batch * depth * height * width];
     }
 
     //创建当前对象的一份拷贝
     public Tensor copy() {
         Tensor copy = new Tensor();
+        copy.setBatch(batch);
         copy.setDepth(depth);
         copy.setHeight(height);
         copy.setWidth(width);
@@ -163,15 +182,19 @@ public class Tensor {
         if (msg != null) {
             System.out.print(msg);
         }
-        for (int d = 0; d < depth; d++) {
-            System.out.print(" 深度" + d + " ");
-            for (int h = 0; h < height; h++) {
-                for (int w = 0; w < width; w++) {
-                    System.out.print(this.get(d, h, w) + "\t");
+        for (int b = 0; b < batch; b++) {
+            System.out.println(" 批次" + b + " ");
+            for (int d = 0; d < depth; d++) {
+                System.out.print(" 深度" + d + " ");
+                for (int h = 0; h < height; h++) {
+                    for (int w = 0; w < width; w++) {
+                        System.out.print(this.get(d, h, w) + "\t");
+                    }
+                    System.out.println();
                 }
-                System.out.println();
             }
         }
+
     }
 
     public void show() {
@@ -403,6 +426,14 @@ public class Tensor {
 
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    public int getBatch() {
+        return batch;
+    }
+
+    public void setBatch(int batch) {
+        this.batch = batch;
     }
 
     public double[] getArray() {
