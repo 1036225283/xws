@@ -181,7 +181,7 @@ public class MnistTest {
         cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
         cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
         cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
         cnNetWork.addLayer(new MseLayer("mse"));
 
 //

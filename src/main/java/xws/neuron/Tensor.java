@@ -268,6 +268,14 @@ public class Tensor {
         return tensorPartialDerivative;
     }
 
+    public double sum() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
 
     public int size() {
         return array.length;
