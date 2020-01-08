@@ -1,6 +1,8 @@
 package xws.neuron;
 
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 张量,虚拟的一维数组对象
  * Created by xws on 2019/2/21.
@@ -27,41 +29,51 @@ public class Tensor {
     }
 
     public static void main(String[] args) {
-        Tensor tensor = new Tensor(10000);
-        tensor.setWidth(10);
-        tensor.setHeight(10);
-        tensor.setDepth(100);
-//        for (int i = 0; i < 10000; i++) {
-//            tensor.set(i, i);
-//        }
-//        System.out.println(JSON.toJSONString(tensor));
-//
-//        for (int i = 0; i < 100; i++) {
-//            for (int w = 0; w < 100; w++) {
-//                System.out.print(tensor.get(i, w) + " | ");
-//            }
-//            System.out.println();
-//        }
+        Tensor tensor = new Tensor();
+        tensor.setBatch(2);
+        tensor.setDepth(1);
+        tensor.setHeight(1);
+        tensor.setWidth(4);
+        tensor.createArray();
 
-        for (int d = 0; d < 100; d++) {
-            for (int h = 0; h < 10; h++) {
-                for (int w = 0; w < 10; w++) {
-                    tensor.set(d, h, w, w);
+        for (int b = 0; b < tensor.getBatch(); b++) {
+            for (int d = 0; d < tensor.getDepth(); d++) {
+                for (int h = 0; h < tensor.getHeight(); h++) {
+                    for (int w = 0; w < tensor.getWidth(); w++) {
+                        tensor.set(b, d, h, w, w + 1);
+                    }
                 }
             }
         }
 
-//        System.out.println(JSON.toJSONString(tensor));
+        tensor.show();
 
-        for (int d = 0; d < 100; d++) {
-            System.out.println("深度：" + d);
-            for (int h = 0; h < 10; h++) {
-                for (int w = 0; w < 10; w++) {
-                    System.out.print(tensor.get(d, h, w) + " | ");
-                }
-                System.out.println();
+//        test input * width
+        Tensor tensorW = new Tensor();
+        tensorW.setHeight(3);
+        tensorW.setWidth(4);
+        tensorW.createArray();
+        for (int h = 0; h < tensorW.getHeight(); h++) {
+            for (int w = 0; w < tensorW.getWidth(); w++) {
+                tensorW.set(h, w, w + 1);
             }
         }
+
+        tensorW.show();
+
+        Tensor tensorInputMultiplyWeight = tensor.multiplyW(tensorW);
+        tensorInputMultiplyWeight.show();
+
+//        test input + bias
+        Tensor tensorB = new Tensor();
+        tensorB.setWidth(3);
+        tensorB.createArray();
+        for (int w = 0; w < tensorB.getWidth(); w++) {
+            tensorB.set(w, 1);
+        }
+
+        Tensor out = tensorInputMultiplyWeight.addBias(tensorB);
+        out.show();
     }
 
     //虚拟一维数组，根据索引获取值
@@ -84,6 +96,7 @@ public class Tensor {
         }
         return array[depth * this.height * this.width + height * this.width + width];
     }
+
 
     //虚拟三维数组，根据索引获取值
     public double get(int batch, int depth, int height, int width) {
@@ -127,15 +140,6 @@ public class Tensor {
 
     //创建一维数组
     public void createArray() {
-//        if (depth != 0 && height != 0 && width != 0) {
-//            array = new double[depth * height * width];
-//        } else if (height != 0 && width != 0) {
-//            array = new double[height * width];
-//        } else if (width != 0) {
-//            array = new double[width];
-//        } else {
-//            throw new RuntimeException("传教一维数组异常");
-//        }
         array = new double[batch * depth * height * width];
     }
 
@@ -185,7 +189,7 @@ public class Tensor {
         for (int b = 0; b < batch; b++) {
             System.out.println(" 批次" + b + " ");
             for (int d = 0; d < depth; d++) {
-                System.out.print(" 深度" + d + " ");
+                System.out.print(" 深度" + d + " \n");
                 for (int h = 0; h < height; h++) {
                     for (int w = 0; w < width; w++) {
                         System.out.print(this.get(d, h, w) + "\t");
@@ -228,21 +232,57 @@ public class Tensor {
         return out;
     }
 
+    //tensorInputMultiplyWeight + tensorB
+    public Tensor addBias(Tensor tensorB) {
+
+        Tensor out = this.copy();
+
+        if (this.getWidth() != tensorB.getWidth()) {
+            throw new RuntimeException("两个tensor的长度不一致");
+        }
+
+        for (int b = 0; b < getBatch(); b++) {
+            for (int w = 0; w < getWidth(); w++) {
+                out.set(b, 0, 0, w, out.get(b, 0, 0, w) + tensorB.get(w));
+            }
+        }
+
+        return out;
+    }
+
     //tensorInput * tensorW
     public Tensor multiplyW(Tensor tensorW) {
         Tensor tensorInputMultiplyWeight = new Tensor();
         tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
+        tensorInputMultiplyWeight.setBatch(getBatch());
         tensorInputMultiplyWeight.createArray();
-        for (int h = 0; h < tensorW.getHeight(); h++) {
-            for (int w = 0; w < tensorW.getWidth(); w++) {
-                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+        for (int b = 0; b < getBatch(); b++) {
+            for (int h = 0; h < tensorW.getHeight(); h++) {
+                for (int w = 0; w < tensorW.getWidth(); w++) {
+                    tensorInputMultiplyWeight.set(b, 0, 0, h,
+                            tensorInputMultiplyWeight.get(b, 0, 0, h) + this.get(b, 0, 0, w) * tensorW.get(h, w));
+                }
             }
         }
+
         return tensorInputMultiplyWeight;
     }
 
     // please use the tensorBias call the method, update back propagation bias error
     public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
+        Tensor tensor = new Tensor();
+        tensor.setWidth(tensorPartialDerivative.getWidth());
+        tensor.createArray();
+        for (int b = 0; b < tensorPartialDerivative.getHeight(); b++) {
+            for (int w = 0; w < tensorPartialDerivative.getWidth(); w++) {
+                tensor.set(w, tensor.get(w) + tensorPartialDerivative.get(b, w));
+            }
+        }
+
+        for (int i = 0; i < tensor.getWidth(); i++) {
+            tensor.set(i, tensor.get(i) / tensorPartialDerivative.getHeight());
+        }
+
         for (int i = 0; i < getWidth(); i++) {
             set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
         }
