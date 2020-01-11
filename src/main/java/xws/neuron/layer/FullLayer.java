@@ -23,12 +23,13 @@ public class FullLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
-    private Tensor tensorOut;//某一层的输出
-    private Tensor tensorInput;//把上一层的输入也保存起来
-    private Tensor tensorInputMultiplyWeight;//input * tensorWeight
-    private Tensor tensorWeight;//存放权重信息
-    private Tensor tensorBias;//每个神经元的偏置
-    private Tensor tensorAddBias;//input * tensorWeight + tensorBias
+    private Tensor tensorOut;//某一层的输出  在批次梯度下降过程中,批次必须和输入,输出一致
+    private Tensor tensorInput;//把上一层的输入也保存起来  在批次梯度下降过程中,批次必须和输入,输出一致
+    private Tensor tensorInputMultiplyWeight;//input * tensorWeight 在批次梯度下降过程中,批次必须和输入,输出一致
+    private Tensor tensorAddBias;//input * tensorWeight + tensorBias 在批次梯度下降过程中,批次必须和输入,输出一致
+
+    private Tensor tensorWeight;//存放权重信息,在批次梯度下降的过程中,权重数量不变
+    private Tensor tensorBias;//每个神经元的偏置,在批次梯度下降的过程中,偏置数量不变
     //正则化
     private double lambda = 0;
     //神经元的个数
@@ -92,7 +93,7 @@ public class FullLayer extends Layer {
 
         this.tensorInput = tensor;
 
-        initW(tensor.size());
+        initW(tensor.getWidth());
         tensorInputMultiplyWeight = tensorInput.multiplyW(tensorWeight);
         tensorOut = tensorInputMultiplyWeight.add(tensorBias);
 

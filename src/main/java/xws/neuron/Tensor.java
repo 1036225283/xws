@@ -298,24 +298,33 @@ public class Tensor {
 
     // please use the tensorW call the method
     public Tensor calculateWeightPartialDerivative(Tensor tensorPartialDerivative, Tensor tensorInput) {
-        Tensor tensorWeightPartialDerivative = this.copy();
-        tensorWeightPartialDerivative.zero();
-        for (int h = 0; h < this.getHeight(); h++) {
-            for (int w = 0; w < this.getWidth(); w++) {
-                tensorWeightPartialDerivative.set(h, w, tensorWeightPartialDerivative.get(h, w) + tensorPartialDerivative.get(h) * tensorInput.get(w));
+        Tensor tensorWeightPartialDerivative = new Tensor();
+        tensorWeightPartialDerivative.setBatch(tensorPartialDerivative.getBatch());
+        tensorWeightPartialDerivative.setHeight(getHeight());
+        tensorWeightPartialDerivative.setWidth(getWidth());
+        tensorWeightPartialDerivative.createArray();
+        for (int b = 0; b < tensorPartialDerivative.getBatch(); b++) {
+            for (int h = 0; h < this.getHeight(); h++) {
+                for (int w = 0; w < this.getWidth(); w++) {
+                    tensorWeightPartialDerivative.set(b, 0, h, w, tensorWeightPartialDerivative.get(b, 0, h, w) + tensorPartialDerivative.get(b, 0, 0, h) * tensorInput.get(b, 0, 0, w));
+                }
             }
         }
+
         return tensorWeightPartialDerivative;
     }
 
     // please use the tensorW call the method
     public Tensor calculateInputPartialDerivative(Tensor tensorPartialDerivative) {
         Tensor tensorInputPartialDerivative = new Tensor();
+        tensorInputPartialDerivative.setBatch(tensorInputPartialDerivative.getBatch());
         tensorInputPartialDerivative.setWidth(this.getWidth());
         tensorInputPartialDerivative.createArray();
-        for (int h = 0; h < this.getHeight(); h++) {
-            for (int w = 0; w < this.getWidth(); w++) {
-                tensorInputPartialDerivative.set(w, tensorInputPartialDerivative.get(w) + tensorPartialDerivative.get(h) * this.get(h, w));
+        for (int b = 0; b < tensorPartialDerivative.getBatch(); b++) {
+            for (int h = 0; h < this.getHeight(); h++) {
+                for (int w = 0; w < this.getWidth(); w++) {
+                    tensorInputPartialDerivative.set(b, 0, 0, w, tensorInputPartialDerivative.get(b, 0, 0, w) + tensorPartialDerivative.get(h) * this.get(h, w));
+                }
             }
         }
         return tensorInputPartialDerivative;

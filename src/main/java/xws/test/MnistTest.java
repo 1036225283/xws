@@ -183,13 +183,13 @@ public class MnistTest {
 //        cnNetWork.addLayer(new MseLayer("mse"));
 
         //96.83%
-//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
-//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
-//        cnNetWork.addLayer(new MseLayer("mse"));
+        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
+        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+        cnNetWork.addLayer(new MseLayer("mse"));
 
         //96.08%
 //        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
@@ -209,13 +209,13 @@ public class MnistTest {
 //        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
 //
 //
-        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
-        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
-        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
-        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+//        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
 
 //
 
@@ -375,6 +375,8 @@ public class MnistTest {
         List<Cifar10> list = UtilMnist.testData();
         Cifar10 cifar10 = list.get(0);
         UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
+        cifar10.getRgb().setWidth(28 * 28);
+        cifar10.getRgb().setHeight(1);
         cnNetWork.entryTest();
         cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
         cnNetWork.save(strName);
@@ -391,11 +393,18 @@ public class MnistTest {
         //对所有的数据进行归一化
         for (int i = 0; i < list.size(); i++) {
             UtilNeuralNet.initMinst(list.get(i).getRgb().getArray());
+            list.get(i).getRgb().setWidth(28 * 28);
+            list.get(i).getRgb().setHeight(1);
+
         }
 //
         for (int i = 0; i < listTest.size(); i++) {
             UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            listTest.get(i).getRgb().setWidth(28 * 28);
+            listTest.get(i).getRgb().setHeight(1);
         }
+
+//        组建批次数据
 
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
