@@ -51,7 +51,7 @@ public class BatchDataFactory {
             }
 
 //            batch expect
-            Tensor singleExpect = expectMNIST(list.get(index * batch + i).getLabel());
+            Tensor singleExpect = list.get(index * batch + i).getLabel();
             for (int size = 0; size < singleExpect.size(); size++) {
                 expect.set(i, 0, 0, size, singleExpect.get(size));
             }

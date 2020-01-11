@@ -9,8 +9,9 @@ import xws.neuron.Tensor;
 public class Cifar10 {
 
     private Tensor rgb;
-    private int label;
+    private Tensor label;
     private double value;
+    private int index;
 
     public Tensor getRgb() {
         return rgb;
@@ -20,11 +21,11 @@ public class Cifar10 {
         this.rgb = rgb;
     }
 
-    public int getLabel() {
+    public Tensor getLabel() {
         return label;
     }
 
-    public void setLabel(int label) {
+    public void setLabel(Tensor label) {
         this.label = label;
     }
 
@@ -34,5 +35,13 @@ public class Cifar10 {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

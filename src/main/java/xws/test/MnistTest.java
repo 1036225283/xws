@@ -378,7 +378,7 @@ public class MnistTest {
         cifar10.getRgb().setWidth(28 * 28);
         cifar10.getRgb().setHeight(1);
         cnNetWork.entryTest();
-        cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
+        cnNetWork.learn(cifar10.getRgb(), cifar10.getLabel());
         cnNetWork.save(strName);
     }
 
@@ -426,7 +426,7 @@ public class MnistTest {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = list.get(i + j);
-                        Tensor expect = expectMNIST(cifar10.getLabel());
+                        Tensor expect = cifar10.getLabel();
                         int result = cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }

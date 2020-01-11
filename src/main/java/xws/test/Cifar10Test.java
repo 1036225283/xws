@@ -140,7 +140,7 @@ public class Cifar10Test {
         Cifar10 cifar10 = listTest.get(0);
 //        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
         cnNetWork.entryTest();
-        cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
+        cnNetWork.learn(cifar10.getRgb(), cifar10.getLabel());
         cnNetWork.save(strName);
     }
 
@@ -173,7 +173,7 @@ public class Cifar10Test {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = listLearn.get(i + j);
-                        Tensor expect = expectMNIST(cifar10.getLabel());
+                        Tensor expect = cifar10.getLabel();
                         cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }

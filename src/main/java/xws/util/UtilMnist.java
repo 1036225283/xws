@@ -9,6 +9,8 @@ import xws.neuron.Tensor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static xws.test.FullNetWorkTest.expectMNIST;
+
 /**
  * Created by xws on 2019/3/22.
  */
@@ -21,13 +23,9 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < images.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel((int) labels[i]);
-            Tensor tensor = new Tensor();
-            tensor.setDepth(1);
-            tensor.setHeight(28);
-            tensor.setWidth(28);
-            tensor.setArray(images[i]);
-            cifar10.setRgb(tensor);
+            cifar10.setLabel(expectMNIST((int) labels[i]));
+            cifar10.setRgb(createData(images[i]));
+            cifar10.setIndex((int) labels[i]);
             list.add(cifar10);
         }
         return list;
@@ -42,13 +40,9 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < imagesTest.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel((int) labelsTest[i]);
-            Tensor tensor = new Tensor();
-            tensor.setDepth(1);
-            tensor.setHeight(28);
-            tensor.setWidth(28);
-            tensor.setArray(imagesTest[i]);
-            cifar10.setRgb(tensor);
+            cifar10.setLabel(expectMNIST((int) labelsTest[i]));
+            cifar10.setRgb(createData(imagesTest[i]));
+            cifar10.setIndex((int) labelsTest[i]);
             list.add(cifar10);
         }
         return list;
@@ -79,7 +73,7 @@ public class UtilMnist {
             }
 
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(i);
+            cifar10.setLabel(expectMNIST((int) i));
             Tensor tensor = new Tensor();
             tensor.setDepth(1);
             tensor.setHeight(size);
@@ -89,6 +83,15 @@ public class UtilMnist {
             list.add(cifar10);
         }
         return list;
+    }
+
+    private static Tensor createData(double[] image) {
+        Tensor tensor = new Tensor();
+        tensor.setDepth(1);
+        tensor.setHeight(28);
+        tensor.setWidth(28);
+        tensor.setArray(image);
+        return tensor;
     }
 
 

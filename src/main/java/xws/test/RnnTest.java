@@ -85,7 +85,7 @@ public class RnnTest {
 //            UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
             RnnSequence rnnSequence = new RnnSequence();
             for (int k = 0; k < 28; k++) {
-                rnnSequence.add(cifar10.getRgb().data(k), cifar10.getLabel());
+                rnnSequence.add(cifar10.getRgb().data(k), cifar10.getIndex());
             }
             rnnList.add(rnnSequence);
         }

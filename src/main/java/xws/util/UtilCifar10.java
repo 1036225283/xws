@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static xws.test.FullNetWorkTest.expectMNIST;
+
 /**
  * cifar10 工具类
  * Created by xws on 2019/3/14.
@@ -27,7 +29,8 @@ public class UtilCifar10 {
             for (int j = 0; j < 10000; j++) {
                 Cifar10 cifar10 = new Cifar10();
                 int label = fileInputStream.read();
-                cifar10.setLabel(label);
+                cifar10.setLabel(expectMNIST(label));
+                cifar10.setIndex(label);
                 byte[] buffer = new byte[32 * 32 * 3];  //32*32*3
                 fileInputStream.read(buffer);
                 Tensor tensor = new Tensor();
@@ -79,7 +82,7 @@ public class UtilCifar10 {
             Cifar10 cifar10 = list.get(i);
             double[] out = netWork.work(cifar10.getRgb());
             int maxIndex = UtilNeuralNet.maxIndex(out);
-            if (maxIndex == cifar10.getLabel()) {
+            if (maxIndex == cifar10.getIndex()) {
                 right = right + 1;
             }
         }
