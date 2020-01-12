@@ -192,7 +192,7 @@ public class Tensor {
                 System.out.print(" 深度" + d + " \n");
                 for (int h = 0; h < height; h++) {
                     for (int w = 0; w < width; w++) {
-                        System.out.print(this.get(d, h, w) + "\t");
+                        System.out.print(this.get(b, d, h, w) + "\t");
                     }
                     System.out.println();
                 }

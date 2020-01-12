@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.data.BatchDataFactory;
 import xws.neuron.layer.*;
 import xws.neuron.layer.activation.ReLuLayer;
 import xws.neuron.layer.activation.SigmoidLayer;
@@ -14,6 +15,7 @@ import xws.neuron.layer.output.CrossEntropyLayer;
 import xws.neuron.layer.output.MseLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
+import xws.util.BatchData;
 import xws.util.Cifar10;
 import xws.util.UtilCifar10;
 import xws.util.UtilMnist;
@@ -39,7 +41,8 @@ public class MnistTest {
 //        testBN();
 
         createCNNetWork();
-        learnMNIST();//训练手写字符识别
+//        learnMNIST();//训练手写字符识别
+        learnMNISTBatch();//batch train mnist data
 //        testMNIST();//识别手写字符
 
 
@@ -383,7 +386,7 @@ public class MnistTest {
     }
 
 
-    //测试手写数组识别
+    //once train mnist data
     public static void learnMNIST() {
 
         //加载数据
@@ -434,6 +437,54 @@ public class MnistTest {
 
                 UtilCifar10.test(cnNetWork, listTest);
             }
+            cnNetWork.save(strName);
+        }
+
+
+    }
+
+
+    //batch train mnist data
+    public static void learnMNISTBatch() {
+
+        //加载数据
+        List<Cifar10> list = UtilMnist.learnData();
+        List<Cifar10> listTest = UtilMnist.testData();
+
+        //对所有的数据进行归一化
+        for (int i = 0; i < list.size(); i++) {
+            UtilNeuralNet.initMinst(list.get(i).getRgb().getArray());
+            list.get(i).getRgb().setWidth(28 * 28);
+            list.get(i).getRgb().setHeight(1);
+
+        }
+//
+        for (int i = 0; i < listTest.size(); i++) {
+            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            listTest.get(i).getRgb().setWidth(28 * 28);
+            listTest.get(i).getRgb().setHeight(1);
+        }
+
+//        组建批次数据
+
+        BatchDataFactory batchDataFactory = new BatchDataFactory(5, list);
+
+
+        double learnRate = UtilNeuralNet.e() * 0.001;
+        for (int x = 0; x < 100; x++) {
+
+            CNNetWork cnNetWork = CNNetWork.load(strName);
+            cnNetWork.setBatchSize(1);
+            cnNetWork.setBatch(1);
+            learnRate = learnRate * 0.9;
+            cnNetWork.setLearnRate(learnRate);
+            System.out.println("第 " + x + "次");
+            BatchData batchData = batchDataFactory.batch();
+            cnNetWork.entryLearn();
+            cnNetWork.learn(batchData.getData(), batchData.getExpect());
+            cnNetWork.entryTest();
+
+            UtilCifar10.test(cnNetWork, listTest);
             cnNetWork.save(strName);
         }
 

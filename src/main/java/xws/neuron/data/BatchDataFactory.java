@@ -6,7 +6,6 @@ import xws.util.Cifar10;
 
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.expectMNIST;
 
 public class BatchDataFactory {
 
@@ -41,7 +40,7 @@ public class BatchDataFactory {
 
         Tensor expect = new Tensor();
         expect.setBatch(batch);
-        expect.setWidth(data.getWidth());
+        expect.setWidth(list.get(0).getLabel().size());
         expect.createArray();
 
         for (int i = 0; i < batch; i++) {
