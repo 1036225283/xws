@@ -95,7 +95,7 @@ public class FullLayer extends Layer {
 
         initW(tensor.getWidth());
         tensorInputMultiplyWeight = tensorInput.multiplyW(tensorWeight);
-        tensorOut = tensorInputMultiplyWeight.add(tensorBias);
+        tensorOut = tensorInputMultiplyWeight.addBias(tensorBias);
 
         return tensorOut;
     }

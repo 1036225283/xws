@@ -40,7 +40,7 @@ public class MnistTest {
     public static void main(String[] args) {
 //        testBN();
 
-        createCNNetWork();
+//        createCNNetWork();
 //        learnMNIST();//训练手写字符识别
         learnMNISTBatch();//batch train mnist data
 //        testMNIST();//识别手写字符
@@ -467,7 +467,7 @@ public class MnistTest {
 
 //        组建批次数据
 
-        BatchDataFactory batchDataFactory = new BatchDataFactory(5, list);
+        BatchDataFactory batchDataFactory = new BatchDataFactory(5, listTest);
 
 
         double learnRate = UtilNeuralNet.e() * 0.001;
