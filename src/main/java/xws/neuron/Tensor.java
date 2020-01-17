@@ -253,14 +253,14 @@ public class Tensor {
     //tensorInput * tensorW
     public Tensor multiplyW(Tensor tensorW) {
         Tensor tensorInputMultiplyWeight = new Tensor();
-        tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
         tensorInputMultiplyWeight.setBatch(getBatch());
+        tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
         tensorInputMultiplyWeight.createArray();
         for (int b = 0; b < getBatch(); b++) {
-            for (int h = 0; h < tensorW.getHeight(); h++) {
-                for (int w = 0; w < tensorW.getWidth(); w++) {
-                    tensorInputMultiplyWeight.set(b, 0, 0, h,
-                            tensorInputMultiplyWeight.get(b, 0, 0, h) + this.get(b, 0, 0, w) * tensorW.get(h, w));
+            for (int h = 0; h < tensorW.getHeight(); h++) {             //every one
+                for (int w = 0; w < tensorW.getWidth(); w++) {          //every weight
+                    double value = tensorInputMultiplyWeight.get(b, 0, 0, h) + this.get(b, 0, 0, w) * tensorW.get(0, 0, h, w);
+                    tensorInputMultiplyWeight.set(b, 0, 0, h, value);
                 }
             }
         }
