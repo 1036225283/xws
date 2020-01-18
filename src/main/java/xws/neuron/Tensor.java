@@ -271,27 +271,50 @@ public class Tensor {
     // please use the tensorBias call the method, update back propagation bias error
     public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
         Tensor tensor = new Tensor();
-        tensor.setWidth(tensorPartialDerivative.getWidth());
+        tensor.setWidth(getWidth());
         tensor.createArray();
+
+        //sum
         for (int b = 0; b < tensorPartialDerivative.getHeight(); b++) {
             for (int w = 0; w < tensorPartialDerivative.getWidth(); w++) {
-                tensor.set(w, tensor.get(w) + tensorPartialDerivative.get(b, w));
+                tensor.set(w, tensor.get(w) + tensorPartialDerivative.get(b, 0, 0, w));
             }
         }
-
+        //average
         for (int i = 0; i < tensor.getWidth(); i++) {
-            tensor.set(i, tensor.get(i) / tensorPartialDerivative.getHeight());
+            tensor.set(i, tensor.get(i) / tensorPartialDerivative.getBatch());
         }
 
         for (int i = 0; i < getWidth(); i++) {
-            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+            set(i, get(i) - learnRate * tensor.get(i));
         }
     }
 
     //please use the tensorW call the method, update back propagation weight error
     public void updateWeight(Tensor tensorPartialDerivative, double learnRate) {
-        for (int i = 0; i < size(); i++) {
-            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+
+        Tensor tensor = copy();
+        tensor.zero();
+        //sum
+        for (int b = 0; b < tensorPartialDerivative.getBatch(); b++) {
+            for (int h = 0; h < tensorPartialDerivative.getHeight(); h++) {
+                for (int w = 0; w < tensorPartialDerivative.getWidth(); w++) {
+                    double val = tensor.get(h, w) + tensorPartialDerivative.get(b, 0, h, w);
+                    tensor.set(h, w, val);
+                }
+            }
+        }
+
+        //average
+        for (int i = 0; i < tensor.getWidth(); i++) {
+            tensor.set(i, tensor.get(i) / tensorPartialDerivative.getBatch());
+        }
+
+        for (int h = 0; h < getHeight(); h++) {
+            for (int w = 0; w < getWidth(); w++) {
+                double val = get(h, w) - learnRate * tensor.get(h, w);
+                set(h, w, val);
+            }
         }
     }
 
