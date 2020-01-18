@@ -42,7 +42,8 @@ public class MnistTest {
 
 //        createCNNetWork();
 //        learnMNIST();//训练手写字符识别
-        learnMNISTBatch();//batch train mnist data
+//        learnMNISTBatch();//batch train mnist data
+        learnMNISTBatch2();
 //        testMNIST();//识别手写字符
 
 
@@ -448,6 +449,36 @@ public class MnistTest {
     public static void learnMNISTBatch() {
 
         //加载数据
+        List<Cifar10> listTest = UtilMnist.testData();
+
+        for (int i = 0; i < listTest.size(); i++) {
+            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            listTest.get(i).getRgb().setWidth(28 * 28);
+            listTest.get(i).getRgb().setHeight(1);
+        }
+
+//        组建批次数据
+
+        BatchDataFactory batchDataFactory = new BatchDataFactory(2, listTest);
+
+
+        double learnRate = UtilNeuralNet.e() * 0.001;
+
+        CNNetWork cnNetWork = CNNetWork.load(strName);
+        cnNetWork.setBatchSize(1);
+        cnNetWork.setBatch(1);
+        learnRate = learnRate * 0.9;
+        cnNetWork.setLearnRate(learnRate);
+        BatchData batchData = batchDataFactory.batch();
+        cnNetWork.entryLearn();
+        cnNetWork.learn(batchData.getData(), batchData.getExpect());
+
+    }
+
+    //batch train mnist data
+    public static void learnMNISTBatch2() {
+
+        //加载数据
         List<Cifar10> list = UtilMnist.learnData();
         List<Cifar10> listTest = UtilMnist.testData();
 
@@ -467,30 +498,27 @@ public class MnistTest {
 
 //        组建批次数据
 
-        BatchDataFactory batchDataFactory = new BatchDataFactory(5, listTest);
+        BatchDataFactory batchDataFactory = new BatchDataFactory(64, list);
 
 
-        double learnRate = UtilNeuralNet.e() * 0.001;
-        for (int x = 0; x < 100; x++) {
+        double learnRate = UtilNeuralNet.e() * 0.00001;
 
-            CNNetWork cnNetWork = CNNetWork.load(strName);
-            cnNetWork.setBatchSize(1);
-            cnNetWork.setBatch(1);
-            learnRate = learnRate * 0.9;
-            cnNetWork.setLearnRate(learnRate);
-            System.out.println("第 " + x + "次");
+
+        CNNetWork cnNetWork = CNNetWork.load(strName);
+        cnNetWork.setBatchSize(1);
+        cnNetWork.setBatch(1);
+        cnNetWork.setLearnRate(learnRate);
+        for (int i = 0; i < 20000; i++) {
             BatchData batchData = batchDataFactory.batch();
             cnNetWork.entryLearn();
-            cnNetWork.learn(batchData.getData(), batchData.getExpect());
+            for (int k = 0; k < 20; k++) {
+                cnNetWork.learn(batchData.getData(), batchData.getExpect());
+            }
             cnNetWork.entryTest();
 
             UtilCifar10.test(cnNetWork, listTest);
-            cnNetWork.save(strName);
         }
-
-
     }
-
 
     //手写识别成功率
     public static void testMNIST() {
