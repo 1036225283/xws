@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static xws.neuron.UtilNeuralNet.oneHot;
+
 /**
  * 神经网络的测试
  * Created by xws on 2019/1/22.
@@ -507,23 +509,7 @@ public class FullNetWorkTest {
         utilFile.append(value + "\t\t" + version + "\n");
     }
 
-    //加工手写字符的期望数据
-    public static Tensor oneHot(double val) {
-        return oneHot(val, 10);
-    }
 
-    public static Tensor oneHot(double val, int total) {
-        double[] expect = new double[total];
-        int index = (int) val;
-        expect[index] = 1;
-        return new Tensor(expect);
-    }
-
-    public static Tensor oneHot(int index, double val, int total) {
-        double[] expect = new double[total];
-        expect[index] = val;
-        return new Tensor(expect);
-    }
 
     //保存图片到文件中
     public static void saveMNIST(double[] arr, Object i) {

@@ -252,6 +252,24 @@ public class UtilNeuralNet {
 
     }
 
+    //加工手写字符的期望数据
+    public static Tensor oneHot(double val) {
+        return oneHot(val, 10);
+    }
+
+    public static Tensor oneHot(double val, int total) {
+        double[] expect = new double[total];
+        int index = (int) val;
+        expect[index] = 1;
+        return new Tensor(expect);
+    }
+
+    public static Tensor oneHot(int index, double val, int total) {
+        double[] expect = new double[total];
+        expect[index] = val;
+        return new Tensor(expect);
+    }
+
     public static void main(String[] args) {
 
         double[] a = new double[]{2, 2, 3, 3};

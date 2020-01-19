@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.MnistRead;
 import xws.neuron.Tensor;
+import xws.neuron.UtilNeuralNet;
 import xws.test.FullNetWorkTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.oneHot;
 
 /**
  * Created by xws on 2019/3/22.
@@ -24,7 +24,7 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < images.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(FullNetWorkTest.oneHot((int) labels[i]));
+            cifar10.setLabel(UtilNeuralNet.oneHot((int) labels[i]));
             cifar10.setRgb(createData(images[i]));
             cifar10.setIndex((int) labels[i]);
             list.add(cifar10);
@@ -41,7 +41,7 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < imagesTest.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(FullNetWorkTest.oneHot((int) labelsTest[i]));
+            cifar10.setLabel(UtilNeuralNet.oneHot((int) labelsTest[i]));
             cifar10.setRgb(createData(imagesTest[i]));
             cifar10.setIndex((int) labelsTest[i]);
             list.add(cifar10);
@@ -74,7 +74,7 @@ public class UtilMnist {
             }
 
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(FullNetWorkTest.oneHot((int) i));
+            cifar10.setLabel(UtilNeuralNet.oneHot((int) i));
             Tensor tensor = new Tensor();
             tensor.setDepth(1);
             tensor.setHeight(size);

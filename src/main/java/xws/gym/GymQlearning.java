@@ -13,8 +13,6 @@ import xws.neuron.layer.output.MseLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.oneHot;
-
 
 /**
  * 强化学习-Q learning
@@ -222,7 +220,7 @@ public class GymQlearning {
                     reward = reward + gamma * max;
                 }
                 int action = gymStore.getAction();
-                Tensor expects = oneHot(action, reward, actionCount);
+                Tensor expects = UtilNeuralNet.oneHot(action, reward, actionCount);
 
                 int result = cnNetWork.learn(tensor, expects);
 
