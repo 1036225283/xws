@@ -9,11 +9,12 @@ import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.FullLayer;
 import xws.neuron.layer.activation.ReLuLayer;
 import xws.neuron.layer.output.MseLayer;
+import xws.test.FullNetWorkTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.expect;
+import static xws.test.FullNetWorkTest.oneHot;
 
 
 /**
@@ -247,7 +248,7 @@ public class GymPolicyGradient {
 
                 int action = gymStore.getAction();
 
-                Tensor expects = expect(action, actionCount);
+                Tensor expects = FullNetWorkTest.oneHot(action, actionCount);
                 int result = cnNetWork.learn(tensor, expects, gymStore.getExpect());
             }
         }
@@ -261,7 +262,7 @@ public class GymPolicyGradient {
             Tensor tensor = observationToTensor(observation);
             int action = gymStore.getAction();
             int expect = (int) gymStore.getExpect();
-            Tensor expects = expect(action, gymStore.getExpect(), actionCount);
+            Tensor expects = oneHot(action, gymStore.getExpect(), actionCount);
             double[] result = cnNetWork.work(tensor);
 
         }

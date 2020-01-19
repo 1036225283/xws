@@ -373,7 +373,7 @@ public class FullNetWork extends NeuralNetWork {
 
 //                double totalError = 0;
 //                for (int i = 0; i < w.length; i++) {
-//                    totalError = totalError + (a[i] - expect[i]);
+//                    totalError = totalError + (a[i] - oneHot[i]);
 //                }
 
 
