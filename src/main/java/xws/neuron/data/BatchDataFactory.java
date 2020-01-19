@@ -20,7 +20,7 @@ public class BatchDataFactory {
 
 
     public BatchData batch() {
-        if (index * batch > list.size()) {
+        if ((index + 1) * batch >= list.size()) {
             index = 0;
         }
 

@@ -519,6 +519,12 @@ public class FullNetWorkTest {
         return new Tensor(expect);
     }
 
+    public static Tensor expect(int index, double val, int total) {
+        double[] expect = new double[total];
+        expect[index] = val;
+        return new Tensor(expect);
+    }
+
     //保存图片到文件中
     public static void saveMNIST(double[] arr, Object i) {
         try {

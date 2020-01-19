@@ -40,7 +40,7 @@ public class MnistTest {
     public static void main(String[] args) {
 //        testBN();
 
-//        createCNNetWork();
+        createCNNetWork();
 //        learnMNIST();//训练手写字符识别
 //        learnMNISTBatch();//batch train mnist data
         learnMNISTBatch2();
@@ -187,13 +187,15 @@ public class MnistTest {
 //        cnNetWork.addLayer(new MseLayer("mse"));
 
         //96.83%
-        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.00000001));
         cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
-        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.00000001));
         cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.00000001));
         cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
-        cnNetWork.addLayer(new MseLayer("mse"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
+        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
+
 
         //96.08%
 //        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
@@ -498,7 +500,7 @@ public class MnistTest {
 
 //        组建批次数据
 
-        BatchDataFactory batchDataFactory = new BatchDataFactory(64, list);
+        BatchDataFactory batchDataFactory = new BatchDataFactory(256, list);
 
 
         double learnRate = UtilNeuralNet.e() * 0.00001;
@@ -514,6 +516,8 @@ public class MnistTest {
             for (int k = 0; k < 20; k++) {
                 cnNetWork.learn(batchData.getData(), batchData.getExpect());
             }
+            cnNetWork.learn(batchData.getData(), batchData.getExpect());
+
             cnNetWork.entryTest();
 
             UtilCifar10.test(cnNetWork, listTest);
