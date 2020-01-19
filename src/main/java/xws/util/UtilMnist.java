@@ -9,7 +9,7 @@ import xws.neuron.Tensor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.expectMNIST;
+import static xws.test.FullNetWorkTest.expect;
 
 /**
  * Created by xws on 2019/3/22.
@@ -23,7 +23,7 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < images.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(expectMNIST((int) labels[i]));
+            cifar10.setLabel(expect((int) labels[i]));
             cifar10.setRgb(createData(images[i]));
             cifar10.setIndex((int) labels[i]);
             list.add(cifar10);
@@ -40,7 +40,7 @@ public class UtilMnist {
         List<Cifar10> list = new ArrayList<>();
         for (int i = 0; i < imagesTest.length; i++) {
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(expectMNIST((int) labelsTest[i]));
+            cifar10.setLabel(expect((int) labelsTest[i]));
             cifar10.setRgb(createData(imagesTest[i]));
             cifar10.setIndex((int) labelsTest[i]);
             list.add(cifar10);
@@ -73,7 +73,7 @@ public class UtilMnist {
             }
 
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setLabel(expectMNIST((int) i));
+            cifar10.setLabel(expect((int) i));
             Tensor tensor = new Tensor();
             tensor.setDepth(1);
             tensor.setHeight(size);

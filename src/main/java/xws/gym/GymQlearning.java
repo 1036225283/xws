@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static xws.test.FullNetWorkTest.expect;
-import static xws.test.FullNetWorkTest.expectMNIST;
 
 
 /**

@@ -420,7 +420,7 @@ public class FullNetWorkTest {
 
                 //组织输出期望数据
                 double val = labels[i];
-                double[] expect = expectMNIST(val).getArray();
+                double[] expect = expect(val).getArray();
                 double[] out = netWork.forward(image, expect);
                 int maxIndex = UtilNeuralNet.maxIndex(out);
                 if (maxIndex == (int) val) {
@@ -508,11 +508,11 @@ public class FullNetWorkTest {
     }
 
     //加工手写字符的期望数据
-    public static Tensor expectMNIST(double val) {
-        return expectMNIST(val, 10);
+    public static Tensor expect(double val) {
+        return expect(val, 10);
     }
 
-    public static Tensor expectMNIST(double val, int total) {
+    public static Tensor expect(double val, int total) {
         double[] expect = new double[total];
         int index = (int) val;
         expect[index] = 1;

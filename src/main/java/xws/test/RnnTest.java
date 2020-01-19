@@ -14,7 +14,7 @@ import xws.util.UtilMnist;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.expectMNIST;
+import static xws.test.FullNetWorkTest.expect;
 
 
 /**
@@ -129,7 +129,7 @@ public class RnnTest {
                         for (int r = 0; r < rnnSequence.size() - 1; r++) {
                             cnNetWork.learn(rnnSequence.getData(r), null);
                         }
-                        cnNetWork.learn(rnnSequence.getData(27), expectMNIST(rnnSequence.get(27).getValue()));
+                        cnNetWork.learn(rnnSequence.getData(27), expect(rnnSequence.get(27).getValue()));
                     }
                 }
 
