@@ -8,7 +8,7 @@ import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.FullLayer;
 import xws.neuron.layer.activation.ReLuLayer;
-import xws.neuron.layer.output.MseLayer;
+import xws.neuron.layer.output.SoftMaxLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,20 +162,10 @@ public class GymPolicyGradient {
             cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
             cnNetWork.addLayer(new FullLayer("full1", 32, UtilNeuralNet.e() * 0.00000001));
             cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-            cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.00000001));
-            cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
-            cnNetWork.addLayer(new MseLayer("mse"));
+            cnNetWork.addLayer(new FullLayer("full2", actionCount, UtilNeuralNet.e() * 0.00000001));
+            cnNetWork.addLayer(new SoftMaxLayer("softmax"));
 
-            //98.91%    ||  98.87%  ||  99.02%
-//        cnNetWork.addLayer(new BnLayer("ln1"));
-//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new BnLayer("ln1"));
-//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
-//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new BnLayer("ln1"));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.0000001));
+
             cnNetWork.entryTest();
             Tensor tensor = observationToTensor(observation);
             cnNetWork.work(tensor);

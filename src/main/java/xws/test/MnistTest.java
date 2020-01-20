@@ -500,7 +500,7 @@ public class MnistTest {
 
 //        组建批次数据
 
-        BatchDataFactory batchDataFactory = new BatchDataFactory(256, list);
+        BatchDataFactory batchDataFactory = new BatchDataFactory(512, list);
 
 
         double learnRate = UtilNeuralNet.e() * 0.00001;
@@ -513,10 +513,9 @@ public class MnistTest {
         for (int i = 0; i < 20000; i++) {
             BatchData batchData = batchDataFactory.batch();
             cnNetWork.entryLearn();
-            for (int k = 0; k < 20; k++) {
+            for (int k = 0; k < 50; k++) {
                 cnNetWork.learn(batchData.getData(), batchData.getExpect());
             }
-            cnNetWork.learn(batchData.getData(), batchData.getExpect());
 
             cnNetWork.entryTest();
 
