@@ -138,6 +138,18 @@ public class Tensor {
         return batch * this.depth * this.height * this.width + depth * this.height * this.width + height * this.width + width;
     }
 
+    //get every batch max value
+    public double batchMax(int batch) {
+        int batchSize = depth * height * width;
+        double max = 0;
+        for (int i = batch * batchSize; i < (batch + 1) * batchSize; i++) {
+            if (get(i) > max) {
+                max = get(i);
+            }
+        }
+        return max;
+    }
+
     //创建一维数组
     public void createArray() {
         array = new double[batch * depth * height * width];

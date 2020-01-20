@@ -43,21 +43,43 @@ public class SoftMaxLayer extends Layer {
         tensorOut = tensorInput.copy();
         tensorOut.zero();
 
-        //先求输入数据的最大值
-        double max = max(tensorInput.getArray());
+        //计算每个批次的最大值
+        Tensor maxTensor = new Tensor();
+        maxTensor.setWidth(tensor.getBatch());
+        maxTensor.createArray();
 
-        //求分子numerator
-        for (int i = 0; i < tensorInput.getWidth(); i++) {
-            tensorOut.set(i, Math.exp(tensorInput.get(i) - max));
+        Tensor denominatorTensor = new Tensor();
+        denominatorTensor.setWidth(tensor.getBatch());
+        denominatorTensor.createArray();
+
+        // get every batch max value
+        for (int b = 0; b < tensor.getBatch(); b++) {
+            maxTensor.set(b, tensor.batchMax(b));
         }
-        //求分母denominator
-        double denominator = 0;
-        for (int i = 0; i < tensorOut.getWidth(); i++) {
-            denominator = denominator + tensorOut.get(i);
+
+        // get numerator
+        for (int b = 0; b < tensor.getBatch(); b++) {
+            for (int w = 0; w < tensorInput.getWidth(); w++) {
+                double val = Math.exp(tensorInput.get(b, 0, 0, w) - maxTensor.get(b));
+                tensorOut.set(b, 0, 0, w, val);
+            }
         }
-        //输出结果
-        for (int i = 0; i < tensorOut.getWidth(); i++) {
-            tensorOut.set(i, tensorOut.get(i) / denominator);
+
+        // get denominator
+        for (int b = 0; b < tensor.getBatch(); b++) {
+            double denominator = 0;
+            for (int w = 0; w < tensorOut.getWidth(); w++) {
+                denominator = denominator + tensorOut.get(b, 0, 0, w);
+            }
+            denominatorTensor.set(b, denominator);
+
+        }
+
+        // result
+        for (int b = 0; b < tensor.getBatch(); b++) {
+            for (int w = 0; w < tensorOut.getWidth(); w++) {
+                tensorOut.set(b, 0, 0, w, tensorOut.get(b, 0, 0, w) / denominatorTensor.get(b));
+            }
         }
 
         return tensorOut;
