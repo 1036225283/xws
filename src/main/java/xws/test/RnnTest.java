@@ -46,7 +46,7 @@ public class RnnTest {
         cnNetWork.entryTest();
         cnNetWork.setStep(0);
         for (int i = 0; i < list.size(); i++) {
-            cnNetWork.learn(cifar10.getRgb(), new Tensor(new double[]{cifar10.getValue()}));
+            cnNetWork.learn(cifar10.getData(), new Tensor(new double[]{cifar10.getValue()}));
         }
 
         cnNetWork.save(strName);
@@ -64,7 +64,7 @@ public class RnnTest {
             tensor.setWidth(1);
             tensor.createArray();
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setRgb(tensor);
+            cifar10.setData(tensor);
             double val = Math.random();
             tensor.set(0, val);
             total = total + tensor.get(0);
@@ -80,10 +80,10 @@ public class RnnTest {
         List<RnnSequence> rnnList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Cifar10 cifar10 = list.get(i);
-//            UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
+//            UtilNeuralNet.initMinst(cifar10.getData().getArray());
             RnnSequence rnnSequence = new RnnSequence();
             for (int k = 0; k < 28; k++) {
-                rnnSequence.add(cifar10.getRgb().data(k), cifar10.getIndex());
+                rnnSequence.add(cifar10.getData().data(k), cifar10.getIndex());
             }
             rnnList.add(rnnSequence);
         }

@@ -3,7 +3,6 @@ package xws.util;
 import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
-import xws.test.FullNetWorkTest;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class UtilCifar10 {
             for (int j = 0; j < 10000; j++) {
                 Cifar10 cifar10 = new Cifar10();
                 int label = fileInputStream.read();
-                cifar10.setLabel(UtilNeuralNet.oneHot(label));
+                cifar10.setExpect(UtilNeuralNet.oneHot(label));
                 cifar10.setIndex(label);
                 byte[] buffer = new byte[32 * 32 * 3];  //32*32*3
                 fileInputStream.read(buffer);
@@ -42,7 +41,7 @@ public class UtilCifar10 {
                 for (int i = 0; i < array.length; i++) {
                     array[i] = buffer[i];
                 }
-                cifar10.setRgb(tensor);
+                cifar10.setData(tensor);
                 list.add(cifar10);
 
             }
@@ -80,7 +79,7 @@ public class UtilCifar10 {
         int right = 0;
         for (int i = 0; i < list.size(); i++) {
             Cifar10 cifar10 = list.get(i);
-            double[] out = netWork.work(cifar10.getRgb());
+            double[] out = netWork.work(cifar10.getData());
             int maxIndex = UtilNeuralNet.maxIndex(out);
             if (maxIndex == cifar10.getIndex()) {
                 right = right + 1;

@@ -106,23 +106,7 @@ public class SoftMaxLayer extends Layer {
     //误差计算 ∂C/∂A
     @Override
     public Tensor error() {
-
-        return tensorInput.calculateOutPartialDerivativeByCrossEntropy(getExpect());
-
-//        Tensor pda = new Tensor();
-//        pda.setWidth(bias.length);
-//        pda.createArray();
-//
-//        for (int i = 0; i < w.getHeight(); i++) {
-//            pda.set(i, (tensorOut.get(i) - getExpect().get(i)) * getGamma());
-////            if (getExpect()[i] == 1) {
-////                pda[i] = tensorOut[i] - 1;
-////            } else {
-////                pda[i] = tensorOut[i];
-////            }
-//        }
-//
-//        return pda;
+        return tensorInput.calculateOutPartialDerivativeBySoftmax(getExpect(), getGamma());
     }
 
 

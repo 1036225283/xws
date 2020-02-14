@@ -380,14 +380,43 @@ public class Tensor {
         Tensor tensorPartialDerivative = expect.copy();
         tensorPartialDerivative.zero();
         for (int i = 0; i < expect.size(); i++) {
-            if (expect.get(i) == 0) {
-                tensorPartialDerivative.set(i, (this.get(i)));
+            if (expect.get(i) > 0) {
+                tensorPartialDerivative.set(i, (this.get(i) - 1));
             } else {
-                tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+                tensorPartialDerivative.set(i, (this.get(i)));
             }
-//            tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
-
         }
+        return tensorPartialDerivative;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeBySoftmax(Tensor expect, Tensor g) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+
+        if (g == null) {
+            for (int b = 0; b < expect.getBatch(); b++) {
+                for (int w = 0; w < expect.getWidth(); w++) {
+                    if (expect.get(b, 0, 0, w) > 0) {
+                        tensorPartialDerivative.set(b, 0, 0, w, this.get(b, 0, 0, w) - 1);
+                    } else {
+                        tensorPartialDerivative.set(b, 0, 0, w, this.get(b, 0, 0, w));
+                    }
+                }
+            }
+        } else {
+
+            for (int b = 0; b < expect.getBatch(); b++) {
+                for (int w = 0; w < expect.getWidth(); w++) {
+                    if (expect.get(b, 0, 0, w) > 0) {
+                        tensorPartialDerivative.set(b, 0, 0, w, (this.get(b, 0, 0, w) - 1) * g.get(b, 0, 0, 0));
+                    } else {
+                        tensorPartialDerivative.set(b, 0, 0, w, this.get(b, 0, 0, w) * g.get(b, 0, 0, 0));
+                    }
+                }
+            }
+        }
+
         return tensorPartialDerivative;
     }
 

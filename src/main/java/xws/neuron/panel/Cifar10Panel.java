@@ -35,7 +35,7 @@ public class Cifar10Panel extends JPanel {
         for (int ih = 0; ih < 50; ih++) {
             for (int jw = 0; jw < 50; jw++) {
                 Cifar10 cifar10 = list.get(ih * 50 + jw);
-                Tensor rgb = cifar10.getRgb();
+                Tensor rgb = cifar10.getData();
                 image = UtilImage.tensorToImage3(rgb);
 //                Image tmp = image.getScaledInstance(50, 50, BufferedImage.SCALE_SMOOTH);
 //                BufferedImage te = toBufferedImage(tmp);

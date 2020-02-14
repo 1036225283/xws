@@ -8,10 +8,8 @@ import xws.neuron.data.BatchDataFactory;
 import xws.neuron.layer.*;
 import xws.neuron.layer.activation.ReLuLayer;
 import xws.neuron.layer.activation.SigmoidLayer;
-import xws.neuron.layer.activation.TanhLayer;
-import xws.neuron.layer.bn.BnLayer;
+import xws.neuron.layer.bn.MnLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
-import xws.neuron.layer.output.CrossEntropyLayer;
 import xws.neuron.layer.output.MseLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
@@ -187,13 +185,13 @@ public class MnistTest {
 //        cnNetWork.addLayer(new MseLayer("mse"));
 
         //96.83%
-        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.00000001));
+        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
         cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
-        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.00000001));
+//        cnNetWork.addLayer(new MnLayer("max"));
+        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
         cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.00000001));
-        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
-//        cnNetWork.addLayer(new MseLayer("mse"));
+        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
         cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
 
 
@@ -380,11 +378,11 @@ public class MnistTest {
 
         List<Cifar10> list = UtilMnist.testData();
         Cifar10 cifar10 = list.get(0);
-        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
-        cifar10.getRgb().setWidth(28 * 28);
-        cifar10.getRgb().setHeight(1);
+        UtilNeuralNet.initMinst(cifar10.getData().getArray());
+        cifar10.getData().setWidth(28 * 28);
+        cifar10.getData().setHeight(1);
         cnNetWork.entryTest();
-        cnNetWork.learn(cifar10.getRgb(), cifar10.getLabel());
+        cnNetWork.learn(cifar10.getData(), cifar10.getExpect());
         cnNetWork.save(strName);
     }
 
@@ -398,16 +396,16 @@ public class MnistTest {
 
         //对所有的数据进行归一化
         for (int i = 0; i < list.size(); i++) {
-            UtilNeuralNet.initMinst(list.get(i).getRgb().getArray());
-            list.get(i).getRgb().setWidth(28 * 28);
-            list.get(i).getRgb().setHeight(1);
+            UtilNeuralNet.initMinst(list.get(i).getData().getArray());
+            list.get(i).getData().setWidth(28 * 28);
+            list.get(i).getData().setHeight(1);
 
         }
 //
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
-            listTest.get(i).getRgb().setWidth(28 * 28);
-            listTest.get(i).getRgb().setHeight(1);
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
+            listTest.get(i).getData().setWidth(28 * 28);
+            listTest.get(i).getData().setHeight(1);
         }
 
 //        组建批次数据
@@ -432,8 +430,8 @@ public class MnistTest {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = list.get(i + j);
-                        Tensor expect = cifar10.getLabel();
-                        int result = cnNetWork.learn(cifar10.getRgb(), expect);
+                        Tensor expect = cifar10.getExpect();
+                        int result = cnNetWork.learn(cifar10.getData(), expect);
                     }
                 }
                 cnNetWork.entryTest();
@@ -454,9 +452,9 @@ public class MnistTest {
         List<Cifar10> listTest = UtilMnist.testData();
 
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
-            listTest.get(i).getRgb().setWidth(28 * 28);
-            listTest.get(i).getRgb().setHeight(1);
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
+            listTest.get(i).getData().setWidth(28 * 28);
+            listTest.get(i).getData().setHeight(1);
         }
 
 //        组建批次数据
@@ -486,16 +484,16 @@ public class MnistTest {
 
         //对所有的数据进行归一化
         for (int i = 0; i < list.size(); i++) {
-            UtilNeuralNet.initMinst(list.get(i).getRgb().getArray());
-            list.get(i).getRgb().setWidth(28 * 28);
-            list.get(i).getRgb().setHeight(1);
+            UtilNeuralNet.initMinst(list.get(i).getData().getArray());
+            list.get(i).getData().setWidth(28 * 28);
+            list.get(i).getData().setHeight(1);
 
         }
 //
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
-            listTest.get(i).getRgb().setWidth(28 * 28);
-            listTest.get(i).getRgb().setHeight(1);
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
+            listTest.get(i).getData().setWidth(28 * 28);
+            listTest.get(i).getData().setHeight(1);
         }
 
 //        组建批次数据
@@ -503,7 +501,7 @@ public class MnistTest {
         BatchDataFactory batchDataFactory = new BatchDataFactory(512, list);
 
 
-        double learnRate = UtilNeuralNet.e() * 0.00001;
+        double learnRate = UtilNeuralNet.e() * 0.0001;
 
 
         CNNetWork cnNetWork = CNNetWork.load(strName);
@@ -513,14 +511,33 @@ public class MnistTest {
         for (int i = 0; i < 20000; i++) {
             BatchData batchData = batchDataFactory.batch();
             cnNetWork.entryLearn();
-            for (int k = 0; k < 50; k++) {
+
+            //96.51%
+//            for (int k = 0; k < 15; k++) {
                 cnNetWork.learn(batchData.getData(), batchData.getExpect());
-            }
+//            }
+
 
             cnNetWork.entryTest();
 
-            UtilCifar10.test(cnNetWork, listTest);
+            double successRate = UtilCifar10.test(cnNetWork, listTest);
+            learnRate = getRate(learnRate, successRate);
+            System.out.println("learnRate = " + learnRate);
+
+            cnNetWork.setLearnRate(learnRate);
+
         }
+    }
+
+    public static double getRate(double learnRate, double successRate) {
+        return  learnRate;
+//        return learnRate * (1 - successRate);
+
+//        if (successRate <= 0.8) {
+//            return learnRate * (1 - successRate);
+//        } else {
+//            return learnRate * successRate * (1 - successRate + 0.1);
+//        }
     }
 
     //手写识别成功率
@@ -531,7 +548,7 @@ public class MnistTest {
         //对所有的数据进行归一化
 
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
         }
 
         List<String> list = CNNetWork.loadAll("FC");

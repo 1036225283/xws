@@ -145,7 +145,7 @@ public class CNNetWork extends NeuralNetWork {
     }
 
     //卷积神经网络学习
-    public int learn(Tensor tensorInput, Tensor expect, double gamma) {
+    public int learn(Tensor tensorInput, Tensor expect, Tensor gamma) {
 //        tensorInput.show();
 
 
@@ -163,9 +163,6 @@ public class CNNetWork extends NeuralNetWork {
             Layer lastLayer = layers.get(layers.size() - 1);
             lastLayer.setExpect(expect);
             lastLayer.setGamma(gamma);
-            //获取识别的值
-            double[] result = lastLayer.a().getArray();
-            maxIndex = UtilNeuralNet.maxIndex(result);
             //反向传播
             Tensor error = lastLayer.error();
 //            System.out.println(lastLayer.getName() + " back ...\n");
@@ -180,12 +177,12 @@ public class CNNetWork extends NeuralNetWork {
 
         setBatch(getBatch() + 1);//批次号自增
 
-        return maxIndex;
+        return 0;
 
     }
 
     public int learn(Tensor tensorInput, Tensor expect) {
-        return learn(tensorInput, expect, 1);
+        return learn(tensorInput, expect, null);
     }
 
     //卷积神经网络工作

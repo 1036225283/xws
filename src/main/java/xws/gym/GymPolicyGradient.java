@@ -6,9 +6,13 @@ import com.alibaba.fastjson.JSONObject;
 import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
+import xws.neuron.data.BatchDataFactory;
 import xws.neuron.layer.FullLayer;
 import xws.neuron.layer.activation.ReLuLayer;
+import xws.neuron.layer.activation.SigmoidLayer;
 import xws.neuron.layer.output.SoftMaxLayer;
+import xws.util.BatchData;
+import xws.util.Cifar10;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +32,7 @@ public class GymPolicyGradient {
     private String instanceId;
     private String envName = "CartPole-v0";
     private JSONArray observation;
-    private double gamma = 0.99;
+    private double gamma = 0.9;
     private int episodeIndex = 0;
 
 
@@ -102,7 +106,7 @@ public class GymPolicyGradient {
 //        UtilPanel utilPanel = new UtilPanel();
 
 //        主循环开始了
-        for (int episode = 0; episode < 3000; episode++) {
+        for (int episode = 0; episode < 30000; episode++) {
             System.out.println("episode = " + episode);
             for (int nStep = 0; nStep < max_steps; nStep++) {
 //                observationSpace(instanceId);
@@ -125,7 +129,7 @@ public class GymPolicyGradient {
 //                reward
                 double reward = stepInfo.getDouble("reward");
                 if (done) {
-                    reward = -3;
+                    reward = -1;
                 }
                 store(observation, reward, nAction);
 //                System.out.println("reward = " + reward);
@@ -158,11 +162,11 @@ public class GymPolicyGradient {
             cnNetWork = new CNNetWork();
 
 
-            cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.00000001));
-            cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
-            cnNetWork.addLayer(new FullLayer("full1", 32, UtilNeuralNet.e() * 0.00000001));
-            cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
-            cnNetWork.addLayer(new FullLayer("full2", actionCount, UtilNeuralNet.e() * 0.00000001));
+//            cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.00000001));
+//            cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+            cnNetWork.addLayer(new FullLayer("full1", 32, UtilNeuralNet.e() * 0.0001));
+            cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+            cnNetWork.addLayer(new FullLayer("full2", actionCount, UtilNeuralNet.e() * 0.0001));
             cnNetWork.addLayer(new SoftMaxLayer("softmax"));
 
 
@@ -176,13 +180,12 @@ public class GymPolicyGradient {
 
     //    测试手写数组识别
     public void learn() {
-//        storeEpisode();
-//        for (int i = 0; i < episodes.size(); i++) {
-//            learn(episodes.get(i).getPolicies());
-//        }
-//
-        rewards();
-        learn(stores);
+        storeEpisode();
+        for (int i = 0; i < episodes.size(); i++) {
+            learn(episodes.get(i).getPolicies());
+        }
+//        rewards();
+//        learn(stores);
         stores = new ArrayList<>(); //  Policy Gradient every episode clean train data
     }
 
@@ -215,30 +218,52 @@ public class GymPolicyGradient {
     }
 
     public void learn(List<GymStorePolicy> stores) {
-        double learnRate = UtilNeuralNet.e() * 0.0000000000001;
+        double learnRate = UtilNeuralNet.e() * 0.0001;
+        Tensor tensorGm = new Tensor();
+        tensorGm.createArray();
+
+        List<Cifar10> cifar10s = gymStoreToCifa(stores);
+        BatchDataFactory batchDataFactory = new BatchDataFactory(cifar10s.size(), cifar10s);
+        BatchData batchData = batchDataFactory.batch();
+
         for (int x = 0; x < 1; x++) {
             cnNetWork.entryLearn();
-            cnNetWork.setBatchSize(5);
-            cnNetWork.setBatch(5);
-//            learnRate = learnRate * 0.9;
+            cnNetWork.setBatchSize(1);
+            cnNetWork.setBatch(1);
             cnNetWork.setLearnRate(learnRate);
-            for (int i = 0; i < stores.size(); i++) {
+
+//            for (int i = 0; i < 100; i++) {
+                cnNetWork.learn(batchData.getData(), batchData.getExpect(), batchData.getGamma());
+//            }
+//
+//            for (int i = 0; i < stores.size(); i++) {
 //                int index = (int) (Math.random() * stores.size());
-                GymStorePolicy gymStore = stores.get(i);
-
-                if (gymStore.getExpect() > 0) {
-                    continue;
-                }
-
-                JSONArray observation = gymStore.getObservation();
-                Tensor tensor = observationToTensor(observation);
-
-                int action = gymStore.getAction();
-
-                Tensor expects = UtilNeuralNet.oneHot(action, actionCount);
-                int result = cnNetWork.learn(tensor, expects, gymStore.getExpect());
-            }
+//                GymStorePolicy gymStore = stores.get(i);
+//                JSONArray observation = gymStore.getObservation();
+//                Tensor tensor = observationToTensor(observation);
+//                int action = gymStore.getAction();
+//                Tensor expects = UtilNeuralNet.oneHot(action, actionCount);
+//                tensorGm.set(0, gymStore.getExpect());
+//                cnNetWork.learn(tensor, expects, tensorGm);
+//            }
         }
+    }
+
+    public List<Cifar10> gymStoreToCifa(List<GymStorePolicy> stores) {
+        List<Cifar10> cifar10s = new ArrayList<>();
+        for (int i = 0; i < stores.size(); i++) {
+            GymStorePolicy gymStore = stores.get(i);
+            Cifar10 cifar10 = new Cifar10();
+            Tensor tensor = observationToTensor(gymStore.getObservation());
+            Tensor expect = UtilNeuralNet.oneHot(gymStore.getAction(), actionCount);
+            cifar10.setData(tensor);
+            cifar10.setExpect(expect);
+            cifar10.setIndex(gymStore.getAction());
+            cifar10.setValue(gymStore.getReward());
+            cifar10s.add(cifar10);
+        }
+
+        return cifar10s;
     }
 
     public boolean test() {
@@ -271,7 +296,7 @@ public class GymPolicyGradient {
             totalReward = rewards[i] + totalReward;
         }
 
-        System.out.println("totalReward = " + totalReward);
+        System.out.println("totalReward = " + totalReward + " size = " + rewards.length);
 
         double average = UtilNeuralNet.average(rewards);
         for (int i = 0; i < rewards.length; i++) {
@@ -288,16 +313,10 @@ public class GymPolicyGradient {
 
 //        set expect
         for (int i = 0; i < rewards.length; i++) {
-            stores.get(i).setExpect(0.01 * rewards[i]);
-//
-//            if (rewards[i] > 0) {
-//                stores.get(i).setExpect(1);
-//            } else {
-//                stores.get(i).setExpect(-1);
-//            }
+            stores.get(i).setExpect(rewards[i]);
         }
 
-        System.out.println(JSON.toJSONString(rewards));
+//        System.out.println(JSON.toJSONString(rewards));
 
         return totalReward;
 

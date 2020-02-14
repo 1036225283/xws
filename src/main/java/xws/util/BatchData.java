@@ -11,6 +11,7 @@ public class BatchData {
     private Tensor data;
     private Tensor expect;
     private Tensor value;
+    private Tensor gamma;//policy gradient
 
     public Tensor getData() {
         return data;
@@ -34,5 +35,13 @@ public class BatchData {
 
     public void setValue(Tensor value) {
         this.value = value;
+    }
+
+    public Tensor getGamma() {
+        return gamma;
+    }
+
+    public void setGamma(Tensor gamma) {
+        this.gamma = gamma;
     }
 }

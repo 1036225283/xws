@@ -14,8 +14,6 @@ import xws.util.UtilCifar10;
 
 import java.util.List;
 
-import static xws.test.FullNetWorkTest.*;
-
 /**
  * Cifar10测试
  * Created by xws on 2019/1/22.
@@ -138,9 +136,9 @@ public class Cifar10Test {
         System.out.println(JSONObject.toJSONString(cnNetWork));
 
         Cifar10 cifar10 = listTest.get(0);
-//        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
+//        UtilNeuralNet.initMinst(cifar10.getData().getArray());
         cnNetWork.entryTest();
-        cnNetWork.learn(cifar10.getRgb(), cifar10.getLabel());
+        cnNetWork.learn(cifar10.getData(), cifar10.getExpect());
         cnNetWork.save(strName);
     }
 
@@ -150,11 +148,11 @@ public class Cifar10Test {
 
         //数据归一化
 //        for (int i = 0; i < listLearn.size(); i++) {
-//            UtilNeuralNet.initStock(listLearn.get(i).getRgb().getArray());
+//            UtilNeuralNet.initStock(listLearn.get(i).getData().getArray());
 //        }
 //
 //        for (int i = 0; i < listTest.size(); i++) {
-//            UtilNeuralNet.initStock(listTest.get(i).getRgb().getArray());
+//            UtilNeuralNet.initStock(listTest.get(i).getData().getArray());
 //        }
 
         double learnRate = UtilNeuralNet.e() * 0.001;
@@ -173,8 +171,8 @@ public class Cifar10Test {
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = listLearn.get(i + j);
-                        Tensor expect = cifar10.getLabel();
-                        cnNetWork.learn(cifar10.getRgb(), expect);
+                        Tensor expect = cifar10.getExpect();
+                        cnNetWork.learn(cifar10.getData(), expect);
                     }
                 }
                 UtilCifar10.test(cnNetWork, listTest);

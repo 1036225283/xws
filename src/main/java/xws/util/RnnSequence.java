@@ -20,7 +20,7 @@ public class RnnSequence {
     }
 
     public Tensor getData(int index) {
-        return list.get(index).getRgb();
+        return list.get(index).getData();
     }
 
 
@@ -38,7 +38,7 @@ public class RnnSequence {
         tensor.setArray(key);
 
         Cifar10 cifar10 = new Cifar10();
-        cifar10.setRgb(tensor);
+        cifar10.setData(tensor);
         cifar10.setValue(val);
         list.add(cifar10);
     }

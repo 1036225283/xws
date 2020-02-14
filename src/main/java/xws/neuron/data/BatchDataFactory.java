@@ -33,29 +33,37 @@ public class BatchDataFactory {
     private BatchData createTensor() {
         Tensor data = new Tensor();
         data.setBatch(batch);
-        data.setDepth(list.get(0).getRgb().getDepth());
-        data.setHeight(list.get(0).getRgb().getHeight());
-        data.setWidth(list.get(0).getRgb().getWidth());
+        data.setDepth(list.get(0).getData().getDepth());
+        data.setHeight(list.get(0).getData().getHeight());
+        data.setWidth(list.get(0).getData().getWidth());
         data.createArray();
 
         Tensor expect = new Tensor();
         expect.setBatch(batch);
-        expect.setWidth(list.get(0).getLabel().size());
+        expect.setWidth(list.get(0).getExpect().size());
         expect.createArray();
 
+        Tensor gamma = new Tensor();
+        gamma.setBatch(batch);
+        gamma.createArray();
+
         for (int i = 0; i < batch; i++) {
-            Tensor single = list.get(index * batch + i).getRgb();
+            Cifar10 item = list.get(index * batch + i);
+            Tensor single = item.getData();
             for (int size = 0; size < single.size(); size++) {
                 data.set(i, 0, 0, size, single.get(size));
             }
 
 //            batch expect
-            Tensor singleExpect = list.get(index * batch + i).getLabel();
+            Tensor singleExpect = item.getExpect();
             for (int size = 0; size < singleExpect.size(); size++) {
                 expect.set(i, 0, 0, size, singleExpect.get(size));
             }
 
+            gamma.set(i, 0, 0, item.getValue());
+
         }
+
 
         BatchData batchData = new BatchData();
         batchData.setData(data);

@@ -29,7 +29,7 @@ public class Layer {
 
     private int step = 0;//run step
 
-    private double gamma = 1;//loss rate
+    private Tensor gamma;//loss rate
 
 
     public Layer() {
@@ -138,11 +138,11 @@ public class Layer {
         this.step = step;
     }
 
-    public double getGamma() {
+    public Tensor getGamma() {
         return gamma;
     }
 
-    public void setGamma(double gamma) {
+    public void setGamma(Tensor gamma) {
         this.gamma = gamma;
     }
 }
