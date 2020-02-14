@@ -11,8 +11,8 @@ public class ActivationFunction {
         return 1 / (1 + Math.pow(Math.E, -z));
     }
 
-    public static double sigmoid_d(double z) {
-        double a = sigmoid(z);
+    public static double sigmoid_d(double a) {
+//        double a = sigmoid(z);
         return a * (1 - a);
     }
 
@@ -43,9 +43,19 @@ public class ActivationFunction {
         }
     }
 
+    public static double not(double z) {
+        return z;
+    }
+
+    public static double not_d(double z) {
+        return 1;
+    }
+
 
     public static double activation(double val, String type) {
-        if ("sigmoid".equals(type)) {
+        if ("not".equals(type)) {
+            return not(val);
+        } else if ("sigmoid".equals(type)) {
             return sigmoid(val);
         } else if ("tanh".equals(type)) {
             return tanh(val);
@@ -56,7 +66,9 @@ public class ActivationFunction {
     }
 
     public static double derivation(double val, String type) {
-        if ("sigmoid".equals(type)) {
+        if ("not".equals(type)) {
+            return not_d(val);
+        } else if ("sigmoid".equals(type)) {
             return sigmoid_d(val);
         } else if ("tanh".equals(type)) {
             return tanh_d(val);

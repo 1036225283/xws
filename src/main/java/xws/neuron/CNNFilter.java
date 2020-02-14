@@ -40,6 +40,7 @@ public class CNNFilter {
     private UtilFile[] files;
 
 
+    //正向卷积
     public double convolution(int heightIndex, int widthIndex, Tensor tensor) {
         double total = 0;
         for (int d = 0; d < depth; d++) {
@@ -52,7 +53,21 @@ public class CNNFilter {
         return total;
     }
 
-    //卷积求导
+    //反向卷积
+    public void deconvolution(int outDepth, int heightIndex, int widthIndex, Tensor tensorInput, Tensor tensorOut) {
+        for (int d = 0; d < depth; d++) {
+            for (int h = 0; h < height; h++) {
+                for (int w = 0; w < width; w++) {
+                    //首先，取出指定位置的值
+                    double val = tensorOut.get(outDepth, heightIndex + h, widthIndex + w);
+                    val = val + filter.get(d, h, w) * tensorInput.get(d, heightIndex + h, widthIndex + w);
+                    tensorOut.set(outDepth, heightIndex + h, widthIndex + w, val);
+                }
+            }
+        }
+    }
+
+    //正向卷积求导
     public void convolution_d(int heightIndex, int widthIndex, Tensor tensorError, double error) {
         for (int d = 0; d < depth; d++) {
             for (int h = 0; h < height; h++) {
@@ -64,6 +79,22 @@ public class CNNFilter {
             }
         }
 
+    }
+
+    //反向卷积求导
+    public double deconvolution_d(int depthError, int heightIndex, int widthIndex, Tensor tensorError, Tensor tensorErrorInput) {
+        //输入通道的数量=卷积核的通道数量
+        double total = 0;
+        for (int d = 0; d < depth; d++) {
+            for (int h = 0; h < height; h++) {
+                for (int w = 0; w < width; w++) {
+                    //取出误差
+                    double error = tensorError.get(depthError, heightIndex + h, widthIndex + w);
+                    total = total + filter.get(d, h, w) * error;
+                }
+            }
+        }
+        return total;
     }
 
     public void initTensorW() {

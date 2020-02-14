@@ -12,36 +12,11 @@ import java.util.TreeSet;
 /**
  * 全连接层
  * 初始化时，需要指定有多少个神经元
+ * 先放一放，有点问题！！！
  * Created by xws on 2019/2/20.
  */
 public class DropoutLayer extends Layer {
 
-
-    private double[] a;//某一层的输出
-    private double[] input;//把上一层的输入也保存起来
-
-    private Tensor w;//存放权重信息
-    //    private double[][] w;//一维是神经元的数量，二维是每个神经元的权重
-    private double[] bias;//每个神经元的偏置
-    private double[] z;//每个神经元的z值
-
-    //一下三个变量，在每次计算之前必须清空
-    private double[] pdi;//∂C/∂I - I是上一层的输入
-    private double[][] pdw;//∂C/∂W
-    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
-    private double[] pda;//∂C/∂A
-
-    //输入数据和输出数据的维度
-    private int inputDepth;
-    private int inputHeight;
-    private int inputWidth;
-
-    //正则化
-    private double lambda = 0;
-
-
-    private double dropoutRate = 0;//默认不丢任何权重0/0.5
-    private Set<Integer> dropouts;
 
     //查看w的变化
     UtilFile logW;
@@ -53,6 +28,24 @@ public class DropoutLayer extends Layer {
     UtilFile logE;
     //查看z的变化
     UtilFile logZ;
+    private Tensor tensorOut;//某一层的输出
+    private Tensor tensorInput;//把上一层的输入也保存起来
+    private Tensor w;//存放权重信息
+    //    private double[][] w;//一维是神经元的数量，二维是每个神经元的权重
+    private double[] bias;//每个神经元的偏置
+    private double[] z;//每个神经元的z值
+    //一下三个变量，在每次计算之前必须清空
+    private Tensor pdi;//∂C/∂I - I是上一层的输入
+    private double[][] pdw;//∂C/∂W
+    private double[] pdb;//∂C/∂Z = ∂C/∂B - Z是这一层的输出
+    //输入数据和输出数据的维度
+    private int inputDepth;
+    private int inputHeight;
+    private int inputWidth;
+    //正则化
+    private double lambda = 0;
+    private double dropoutRate = 0;//默认不丢任何权重0/0.5
+    private Set<Integer> dropouts;
 
     public DropoutLayer() {
 
@@ -60,47 +53,55 @@ public class DropoutLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public DropoutLayer(int num) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
+
+        init(num);
 
     }
 
     public DropoutLayer(String name, String activationType, int num) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
+        init(num);
 
     }
 
     public DropoutLayer(String name, String activationType, int num, double dropoutRate) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
         this.dropoutRate = dropoutRate;
+        init(num);
     }
 
     public DropoutLayer(String name, String activationType, int num, double dropoutRate, double lambda) {
-        super("DropoutLayer");
+        super(PaddingLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
-        a = new double[num];
         z = new double[num];
         this.dropoutRate = dropoutRate;
         this.lambda = lambda;
+
+        init(num);
+    }
+
+    private void init(int num) {
+        tensorOut = new Tensor();
+        tensorOut.setWidth(num);
+        tensorOut.createArray();
     }
 
     private void initW(int inputs) {
@@ -144,11 +145,11 @@ public class DropoutLayer extends Layer {
         inputHeight = tensor.getHeight();
         inputWidth = tensor.getWidth();
 
-        this.input = tensor.getArray();
+        this.tensorInput = tensor;
 
         //如果权重为空，则进行权重的初始化
         if (w == null) {
-            initW(input.length);
+            initW(tensorInput.getWidth());
         }
 
         //如果z为空，则进行初始化
@@ -156,9 +157,12 @@ public class DropoutLayer extends Layer {
             z = new double[bias.length];
         }
 
-        if (a == null) {
-            a = new double[bias.length];
+        if (tensorOut == null) {
+            tensorOut = new Tensor();
+            tensorOut.setWidth(bias.length);
+            tensorOut.createArray();
         }
+        tensorOut.zero();
 
         //使用神经元丢弃技术
         if (!isTest()) {
@@ -184,7 +188,6 @@ public class DropoutLayer extends Layer {
         for (int i = 0; i < w.getHeight(); i++) {
             //计算神经元的输出
             z[i] = 0;//把之前的数据清理掉
-            a[i] = 0;
             if (!isTest()) {
                 if (dropouts.contains(i)) {
                     continue;
@@ -192,13 +195,13 @@ public class DropoutLayer extends Layer {
             }
 
             for (int k = 0; k < w.getWidth(); k++) {
-                z[i] = z[i] + w.get(i, k) * input[k];
+                z[i] = z[i] + w.get(i, k) * tensorInput.get(k);
             }
             z[i] = z[i] + bias[i];
-            a[i] = ActivationFunction.activation(z[i], getActivationType());
+            tensorOut.set(i, ActivationFunction.activation(z[i], getActivationType()));
 
 //            if (isTest() && dropoutRate != 0) {
-//                a[i] = a[i] * dropoutRate;
+//                tensorOut[i] = tensorOut[i] * dropoutRate;
 //            }
         }
 
@@ -209,12 +212,6 @@ public class DropoutLayer extends Layer {
 //        sbz.append("\n");
 //        logZ.append(sbz.toString());
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(a.length);
-        tensorOut.setArray(a);
-
 //        logA.append(tensorOut.toString());
 
         return tensorOut;
@@ -223,11 +220,6 @@ public class DropoutLayer extends Layer {
     //获取这一层神经网络的输出
     @Override
     public Tensor a() {
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(a.length);
-        tensorOut.setArray(a);
         return tensorOut;
     }
 
@@ -248,7 +240,10 @@ public class DropoutLayer extends Layer {
         //先把pdb清空
         pdb = new double[bias.length];
         //inputs决定了有多少个输入，也就是这一层的神经元会有多少个w
-        pdi = new double[inputDepth * inputHeight * inputWidth];
+        pdi = new Tensor();
+        pdi.setWidth(inputDepth * inputHeight * inputWidth);
+        pdi.createArray();
+
         pdw = new double[bias.length][w.getWidth()];
 
         //计算pdz = ∂C/∂A * ∂A/∂Z
@@ -263,41 +258,34 @@ public class DropoutLayer extends Layer {
         }
 
         pdi();
-        pdw();
-        pdb();
+        if (!isTest()) {
+            pdw();
+            pdb();
+        }
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(pdi.length);
-        tensorOut.setArray(pdi);
-
-        return tensorOut;
+        return pdi;
     }
 
     //误差计算
     @Override
     public Tensor error() {
 
-        pda = new double[bias.length];
+        Tensor pda = new Tensor();
+        pda.setWidth(bias.length);
+        pda.createArray();
 
         for (int i = 0; i < w.getHeight(); i++) {
-            pda[i] = (a[i] - getExpect()[i]);//二次损失函数
+            pda.set(i, (tensorOut.get(i) - getExpect().get(i)) * getGamma());
         }
 
-        Tensor tensorOut = new Tensor();
-        tensorOut.setDepth(1);
-        tensorOut.setHeight(1);
-        tensorOut.setWidth(pda.length);
-        tensorOut.setArray(pda);
-        return tensorOut;
+        return pda;
     }
 
     //神经元计算∂C/∂A(l-1)，在这，好汇集所有输入的误差
     public void pdi() {
-        for (int i = 0; i < pdi.length; i++) {
+        for (int i = 0; i < pdi.getWidth(); i++) {
             for (int k = 0; k < w.getHeight(); k++) {
-                pdi[i] = pdi[i] + pdb[k] * w.get(k, i);
+                pdi.set(i, pdi.get(i) + pdb[k] * w.get(k, i));
             }
         }
     }
@@ -313,7 +301,7 @@ public class DropoutLayer extends Layer {
             double[] pdw = this.pdw[i];
             double pdz = this.pdb[i];
             for (int k = 0; k < w.getWidth(); k++) {
-                pdw[k] = pdz * input[k];
+                pdw[k] = pdz * tensorInput.get(k);
                 double val = w.get(i, k) - getLearnRate() * pdw[k] - lambda * w.get(i, k);
                 w.set(i, k, val);
             }
@@ -366,7 +354,7 @@ public class DropoutLayer extends Layer {
 
     private void initFile() {
         if (logA == null) {
-            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".a.csv");
+            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".tensorOut.csv");
         }
 
         if (logB == null) {

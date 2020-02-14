@@ -17,7 +17,7 @@ public class Layer {
 
     private String activationType = "sigmoid";//激活函数类型
 
-    private double[] expect;//期望值
+    private Tensor expect;//期望值
 
     private boolean isTest;//是否工作状态/学习状态
 
@@ -28,6 +28,8 @@ public class Layer {
     private double learnRate = 0;//学习率
 
     private int step = 0;//run step
+
+    private double gamma = 1;//loss rate
 
 
     public Layer() {
@@ -68,11 +70,11 @@ public class Layer {
         this.type = type;
     }
 
-    public double[] getExpect() {
+    public Tensor getExpect() {
         return expect;
     }
 
-    public void setExpect(double[] expect) {
+    public void setExpect(Tensor expect) {
         this.expect = expect;
     }
 
@@ -134,5 +136,13 @@ public class Layer {
 
     public void setStep(int step) {
         this.step = step;
+    }
+
+    public double getGamma() {
+        return gamma;
+    }
+
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
     }
 }

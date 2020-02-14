@@ -1,15 +1,13 @@
 package xws.util;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.List;
 
 public class UtilFile {
 
-    private static Logger log = LoggerFactory.getLogger(UtilFile.class);
+    private static Logger log = Logger.getLogger(UtilFile.class);
 
     private FileOutputStream fileOutputStream;
 

@@ -5,6 +5,15 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.activation.ReLuLayer;
+import xws.neuron.layer.activation.SigmoidLayer;
+import xws.neuron.layer.activation.TanhLayer;
+import xws.neuron.layer.bn.BnLayer;
+import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.output.CrossEntropyLayer;
+import xws.neuron.layer.output.MseLayer;
+import xws.neuron.layer.output.SoftMaxLayer;
+import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.util.Cifar10;
 import xws.util.UtilCifar10;
 import xws.util.UtilMnist;
@@ -115,11 +124,11 @@ public class MnistTest {
         Tensor tensor = createTensor();
         System.out.println("前向传播输入数据：");
         tensor.show();
-        PoolLayer poolLayer = new PoolLayer("test", 2, 2, 2, 2);
-        tensor = poolLayer.forward(tensor);
+        MaxPoolLayer maxPoolLayer = new MaxPoolLayer("test", 2, 2, 2, 2);
+        tensor = maxPoolLayer.forward(tensor);
         System.out.println("前向传播结果数据");
         tensor.show();
-        tensor = poolLayer.backPropagation(tensor);
+        tensor = maxPoolLayer.backPropagation(tensor);
         System.out.println("反向传播结果数据");
 
         tensor.show();
@@ -132,12 +141,12 @@ public class MnistTest {
         System.out.println("前向传播输入数据：");
         tensor.show();
 
-        FilterLayer filterLayer = new FilterLayer("test", "relu", 3, 3, 3, 1, 1, 0);
-        tensor = filterLayer.forward(tensor);
+        ConvolutionLayer convolutionLayer = new ConvolutionLayer("test", "relu", 3, 3, 3, 1, 1, 0);
+        tensor = convolutionLayer.forward(tensor);
         System.out.println("前向传播结果数据：");
         tensor.show();
 
-        tensor = filterLayer.backPropagation(tensor);
+        tensor = convolutionLayer.backPropagation(tensor);
         System.out.println("反向传播输出数据：");
         tensor.show();
 
@@ -151,7 +160,7 @@ public class MnistTest {
         //97.07%
 //        cnNetWork.addLayer(new DropoutLayer("drop1", "relu", 64, 0.5, UtilNeuralNet.e() * 0.000000000001));
 //        cnNetWork.addLayer(new DropoutLayer("drop2", "relu", 64, 0.5, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("SoftMaxLayer", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("SoftMaxLayer", 10, UtilNeuralNet.e() * 0.000000000001));
 
         //96.81%
 //        cnNetWork.addLayer(new DropoutLayer("drop1", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
@@ -164,150 +173,196 @@ public class MnistTest {
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
 
 
-        //97.56%
-//        cnNetWork.addLayer(new FullLayer("full1", "relu", 64,                    UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 64,                    UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
-//
+        //94.87%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
 
-        //97.45%
-//        cnNetWork.addLayer(new FullLayer("full1", "relu", 64, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.000000000001));
-//        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.000000000001));
+        //96.83%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
+
+        //96.08%
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new TanhLayer("sigmoid2"));
+//        cnNetWork.addLayer(new MseLayer("mse"));
+
+//        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid0"));
+//        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid1"));
+//        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+//        cnNetWork.addLayer(new SigmoidLayer("sigmoid2"));
+//        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
+//
+//
+        cnNetWork.addLayer(new FullLayer("full0", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid0"));
+        cnNetWork.addLayer(new FullLayer("full1", 64, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid1"));
+        cnNetWork.addLayer(new FullLayer("full2", 10, UtilNeuralNet.e() * 0.000000000001));
+        cnNetWork.addLayer(new ReLuLayer("sigmoid2"));
+        cnNetWork.addLayer(new SoftMaxLayer("crossEntropy"));
+
+//
 
 
         //97.02
 //        cnNetWork.addLayer(new FullLayer("full1", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() *    0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() *    0.00000000001));
 //
 
 
         //98.78%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //98.60%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //98.55%    ||  98.71%
 //        cnNetWork.addLayer(new LnLayer("ln1"));
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new LnLayer("ln2"));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
         //98.91%    ||  98.87%  ||  99.02%
 //        cnNetWork.addLayer(new BnLayer("ln1"));
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("ln1"));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("ln1"));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.0000001));
 
 
         //98.86%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //99.05%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=8   filter2=8
         //99.17%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=9   filter2=9
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
         //99.03%    ||  99.01%  ||  99.00%
-        cnNetWork.addLayer(new BnLayer("bn1"));
-        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn2"));
-        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn3"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new BnLayer("bn4"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn1"));
+//        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn2"));
+//        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn3"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn4"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+
+//        cnNetWork.addLayer(new LnLayer("bn1"));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MeanPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MeanPoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
         //98.98%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 10, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 10, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //98.81%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new LnLayer("bn1"));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new LnLayer("bn2"));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //98.88%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("bn1"));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("bn2"));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
         //98.32%
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 1, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 1, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 9, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new MnLayer("ln"));
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new MnLayer("ln"));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
-//        cnNetWork.addLayer(new FilterLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new PoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FilterLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
-//        cnNetWork.addLayer(new PoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 16, 5, 5, 1, 1, 0));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new FullLayer("full1", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftMaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10, UtilNeuralNet.e() * 0.0000001));
 
 
@@ -345,7 +400,6 @@ public class MnistTest {
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
             CNNetWork cnNetWork = CNNetWork.load(strName);
-            cnNetWork.entryLearn();
             cnNetWork.setBatchSize(5);
 //            cnNetWork.setBatchSize(20);
             cnNetWork.setBatch(10);
@@ -357,14 +411,18 @@ public class MnistTest {
             int batch = 2000;
             for (int i = 0; i < list.size(); i = i + batch) {
 
+                cnNetWork.entryLearn();
+
                 //将这一批数据，反复喂给
                 for (int k = 0; k < 3; k++) {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = list.get(i + j);
-                        double[] expect = expectMNIST(cifar10.getLabel());
+                        Tensor expect = expectMNIST(cifar10.getLabel());
                         int result = cnNetWork.learn(cifar10.getRgb(), expect);
                     }
                 }
+                cnNetWork.entryTest();
+
                 UtilCifar10.test(cnNetWork, listTest);
             }
             cnNetWork.save(strName);
@@ -396,12 +454,16 @@ public class MnistTest {
 
     //当两个都为1是才为1
     public static void and() {
-        CNNetWork netWork = CNNetWork.load("and_cnn");
-//        CNNetWork netWork = new CNNetWork();
+//        CNNetWork netWork = CNNetWork.load("and_cnn");
+        CNNetWork netWork = new CNNetWork();
+//
+        netWork.addLayer(new FullLayer("full1", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
+        netWork.addLayer(new FullLayer("full2", 1));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer("mse"));
 
-//        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
-//        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
-
+        netWork.setLearnRate(0.35);
 
         if (netWork == null) {
             return;
@@ -437,20 +499,23 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 1000; i++) {
-            netWork.learn(tensor11, new double[]{1});
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
+
+            netWork.learn(tensor11, new Tensor(new double[]{1}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{0});
+            netWork.learn(tensor10, new Tensor(new double[]{0}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{0});
+            netWork.learn(tensor01, new Tensor(new double[]{0}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0});
+            netWork.learn(tensor00, new Tensor(new double[]{0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
+            netWork.entryTest();
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));
 
@@ -472,10 +537,13 @@ public class MnistTest {
     public static void xor() {
 //        CNNetWork netWork = CNNetWork.load("xor_cnn");
         CNNetWork netWork = new CNNetWork();
-//
-        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
-        netWork.addLayer(new FullLayer("full2", "sigmoid", 1));
 
+        netWork.addLayer(new FullLayer("full1", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
+        netWork.addLayer(new FullLayer("full2", 1));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer("mse"));
+        netWork.setLearnRate(1);
 
         if (netWork == null) {
             return;
@@ -511,20 +579,22 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 1000; i++) {
-            netWork.learn(tensor11, new double[]{0});
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
+            netWork.learn(tensor11, new Tensor(new double[]{0}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{1});
+            netWork.learn(tensor10, new Tensor(new double[]{1}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{1});
+            netWork.learn(tensor01, new Tensor(new double[]{1}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0});
+            netWork.learn(tensor00, new Tensor(new double[]{0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
 
+            netWork.entryTest();
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));
 
@@ -547,11 +617,17 @@ public class MnistTest {
 //        CNNetWork netWork = CNNetWork.load("and_or_xor_cnn");
         CNNetWork netWork = new CNNetWork();
 //
-        netWork.addLayer(new FullLayer("full1", "sigmoid", 2));
+
+        netWork.addLayer(new FullLayer("full1", 2));
+        netWork.addLayer(new SigmoidLayer("sigmoid0"));
+        netWork.addLayer(new FullLayer("full2", 3));
+        netWork.addLayer(new SigmoidLayer("sigmoid1"));
+        netWork.addLayer(new MseLayer("mse"));
+        netWork.setLearnRate(1);
+
+
         //用二次方，果然慢了很多
-//        netWork.addLayer(new FullLayer("full2", "sigmoid", 3));
         //用交叉熵，果然快了很多
-        netWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 3));
 
 
         if (netWork == null) {
@@ -588,20 +664,22 @@ public class MnistTest {
         tensor00.set(1, 0);
 
 
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 10000; i++) {
+            netWork.entryLearn();
             System.out.println("i = ---------------------------------------" + i);
-            netWork.learn(tensor11, new double[]{1, 1, 0});
+            netWork.learn(tensor11, new Tensor(new double[]{1, 1, 0}));
             System.out.println("error-11----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor10, new double[]{0, 1, 1});
+            netWork.learn(tensor10, new Tensor(new double[]{0, 1, 1}));
             System.out.println("error-10----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor01, new double[]{0, 1, 1});
+            netWork.learn(tensor01, new Tensor(new double[]{0, 1, 1}));
             System.out.println("error-01----------------------------------------------" + netWork.totalError());
 
-            netWork.learn(tensor00, new double[]{0, 0, 0});
+            netWork.learn(tensor00, new Tensor(new double[]{0, 0, 0}));
             System.out.println("error-00----------------------------------------------" + netWork.totalError());
 
+            netWork.entryTest();
 
             double[] out = netWork.work(tensor11);
             System.out.println("11 = " + JSON.toJSONString(out));

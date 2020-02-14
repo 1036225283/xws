@@ -13,6 +13,18 @@ public class Tensor {
     private double[] array;
 
 
+    public Tensor() {
+    }
+
+    public Tensor(int size) {
+        array = new double[size];
+    }
+
+    public Tensor(double[] array) {
+        this.array = array;
+        width = array.length;
+    }
+
     public static void main(String[] args) {
         Tensor tensor = new Tensor(10000);
         tensor.setWidth(10);
@@ -96,7 +108,6 @@ public class Tensor {
         return depth * this.height * this.width + height * this.width + width;
     }
 
-
     //创建一维数组
     public void createArray() {
         if (depth != 0 && height != 0 && width != 0) {
@@ -131,6 +142,15 @@ public class Tensor {
         }
     }
 
+    //累加值
+    public double val() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
     //缩放数据
     public void scale(double val) {
         for (int i = 0; i < array.length; i++) {
@@ -139,9 +159,12 @@ public class Tensor {
     }
 
     //展示数据
-    public void show() {
+    public void show(String msg) {
+        if (msg != null) {
+            System.out.print(msg);
+        }
         for (int d = 0; d < depth; d++) {
-            System.out.println("深度：" + d);
+            System.out.print(" 深度" + d + " ");
             for (int h = 0; h < height; h++) {
                 for (int w = 0; w < width; w++) {
                     System.out.print(this.get(d, h, w) + "\t");
@@ -149,6 +172,10 @@ public class Tensor {
                 System.out.println();
             }
         }
+    }
+
+    public void show() {
+        show(null);
     }
 
     //一维点乘
@@ -163,15 +190,111 @@ public class Tensor {
     }
 
     //向量加法
-    public void add(Tensor tensor) {
+    public Tensor add(Tensor tensor) {
 
-        if (array.length != tensor.getArray().length) {
+        Tensor out = tensor.copy();
+
+        if (array.length != tensor.size()) {
             throw new RuntimeException("两个tensor的长度不一致");
         }
 
         for (int i = 0; i < array.length; i++) {
-            array[i] = array[i] + tensor.get(i);
+            out.set(i, out.get(i) + array[i]);
         }
+
+        return out;
+    }
+
+    //tensorInput * tensorW
+    public Tensor multiplyW(Tensor tensorW) {
+        Tensor tensorInputMultiplyWeight = new Tensor();
+        tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
+        tensorInputMultiplyWeight.createArray();
+        for (int h = 0; h < tensorW.getHeight(); h++) {
+            for (int w = 0; w < tensorW.getWidth(); w++) {
+                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+            }
+        }
+        return tensorInputMultiplyWeight;
+    }
+
+    // please use the tensorBias call the method, update back propagation bias error
+    public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < getWidth(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+    //please use the tensorW call the method, update back propagation weight error
+    public void updateWeight(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < size(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+
+    // please use the tensorW call the method
+    public Tensor calculateWeightPartialDerivative(Tensor tensorPartialDerivative, Tensor tensorInput) {
+        Tensor tensorWeightPartialDerivative = this.copy();
+        tensorWeightPartialDerivative.zero();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorWeightPartialDerivative.set(h, w, tensorWeightPartialDerivative.get(h, w) + tensorPartialDerivative.get(h) * tensorInput.get(w));
+            }
+        }
+        return tensorWeightPartialDerivative;
+    }
+
+    // please use the tensorW call the method
+    public Tensor calculateInputPartialDerivative(Tensor tensorPartialDerivative) {
+        Tensor tensorInputPartialDerivative = new Tensor();
+        tensorInputPartialDerivative.setWidth(this.getWidth());
+        tensorInputPartialDerivative.createArray();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorInputPartialDerivative.set(w, tensorInputPartialDerivative.get(w) + tensorPartialDerivative.get(h) * this.get(h, w));
+            }
+        }
+        return tensorInputPartialDerivative;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByMse(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            tensorPartialDerivative.set(i, this.get(i) - expect.get(i));
+        }
+        return tensorPartialDerivative;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByCrossEntropy(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            if (expect.get(i) == 0) {
+                tensorPartialDerivative.set(i, (this.get(i)));
+            } else {
+                tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+            }
+//            tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+
+        }
+        return tensorPartialDerivative;
+    }
+
+    public double sum() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
+
+    public int size() {
+        return array.length;
     }
 
     //根据高度获取数据
@@ -192,6 +315,63 @@ public class Tensor {
         return val;
     }
 
+    //从byte[]拷贝数据
+    public void copy(byte[] bs) {
+        if (bs.length != array.length) {
+            throw new RuntimeException("数据长度不匹配");
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            array[i] = bs[i];
+        }
+    }
+
+    //裁剪数据
+    public Tensor subtensor(int startDepth, int endDepth, int startHeight, int endHeight, int startWidth, int endWidth) {
+
+        if (startDepth < 0 || startHeight < 0 || startWidth < 0) {
+            throw new RuntimeException("start must >=0 ");
+        }
+
+        if (endDepth >= depth || endHeight >= height || endWidth >= width) {
+            throw new RuntimeException("end must < length");
+        }
+
+        if (startDepth >= (depth - endDepth) || startHeight >= (height - endHeight) || startWidth >= (width - endWidth)) {
+            throw new RuntimeException("length - end must > start");
+        }
+
+        Tensor tensorNew = new Tensor();
+        tensorNew.setDepth(depth - endDepth - startDepth);
+        tensorNew.setHeight(height - endHeight - startHeight);
+        tensorNew.setWidth(width - endWidth - startWidth);
+        tensorNew.createArray();
+        for (int d = 0; d < tensorNew.getDepth(); d++) {
+            for (int h = 0; h < tensorNew.getHeight(); h++) {
+                for (int w = 0; w < tensorNew.getWidth(); w++) {
+                    double val = get(d + startDepth, h + startHeight, w + startWidth);
+                    tensorNew.set(d, h, w, val);
+                }
+            }
+        }
+        return tensorNew;
+    }
+
+    //裁剪宽度
+    public Tensor subWidth(int start, int end) {
+        return subtensor(0, 0, 0, 0, start, end);
+    }
+
+    //裁剪高度
+    public Tensor subHeight(int start, int end) {
+        return subtensor(0, 0, start, end, 0, 0);
+    }
+
+    //裁剪深度
+    public Tensor subDepth(int start, int end) {
+        return subtensor(start, end, 0, 0, 0, 0);
+    }
+
     public String toString() {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length; i++) {
@@ -200,14 +380,6 @@ public class Tensor {
         sb.append("\n");
         return sb.toString();
     }
-
-    public Tensor() {
-    }
-
-    public Tensor(int size) {
-        array = new double[size];
-    }
-
 
     public int getHeight() {
         return height;
@@ -237,16 +409,16 @@ public class Tensor {
         return array;
     }
 
+    public void setArray(double[] array) {
+        this.array = array;
+    }
+
     public byte[] toByteArray() {
         byte[] bs = new byte[array.length];
         for (int i = 0; i < bs.length; i++) {
             bs[i] = (byte) array[i];
         }
         return bs;
-    }
-
-    public void setArray(double[] array) {
-        this.array = array;
     }
 
 
