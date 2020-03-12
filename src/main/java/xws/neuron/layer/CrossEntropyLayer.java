@@ -40,17 +40,6 @@ public class CrossEntropyLayer extends Layer {
     private double lambda = 0;
 
 
-    //查看w的变化
-    UtilFile logW;
-    //查看b的变化
-    UtilFile logB;
-    //查看a的变化
-    UtilFile logA;
-    //查看e的变化
-    UtilFile logE;
-    //查看z的变化
-    UtilFile logZ;
-
     public CrossEntropyLayer() {
 
     }
@@ -101,8 +90,6 @@ public class CrossEntropyLayer extends Layer {
     //计算每一个神经元的输出值
     @Override
     public Tensor forward(Tensor tensor) {
-
-        initFile();
 
 
         inputDepth = tensor.getDepth();
@@ -163,7 +150,6 @@ public class CrossEntropyLayer extends Layer {
         tensorOut.setWidth(a.length);
         tensorOut.setArray(a);
 
-//        logA.append(tensorOut.toString());
         return tensorOut;
     }
 
@@ -284,26 +270,4 @@ public class CrossEntropyLayer extends Layer {
         this.lambda = lambda;
     }
 
-    private void initFile() {
-        if (logA == null) {
-            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".a.csv");
-        }
-
-        if (logB == null) {
-            logB = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".b.csv");
-        }
-
-        if (logW == null) {
-            logW = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".w.csv");
-        }
-
-        if (logE == null) {
-            logE = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".e.csv");
-        }
-
-        if (logZ == null) {
-            logZ = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".z.csv");
-        }
-
-    }
 }

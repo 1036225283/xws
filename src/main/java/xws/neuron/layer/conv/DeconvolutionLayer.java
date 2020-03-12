@@ -32,18 +32,6 @@ public class DeconvolutionLayer extends Layer {
     private double lambda = 0;
 
 
-    //查看w的变化
-    UtilFile logW;
-    //查看b的变化
-    UtilFile logB;
-    //查看a的变化
-    UtilFile logA;
-    //查看e的变化
-    UtilFile logE;
-    //查看z的变化
-    UtilFile logZ;
-
-
     //输入数据存储
     private Tensor tensorInput;
 
@@ -99,8 +87,6 @@ public class DeconvolutionLayer extends Layer {
 
     @Override
     public Tensor forward(Tensor tensor) {
-
-        initFile();
 
         //反向卷积，传递正向卷积结果进来
         //首先，计算反卷积后的大小，并开辟空间
@@ -287,26 +273,4 @@ public class DeconvolutionLayer extends Layer {
         this.lambda = lambda;
     }
 
-    private void initFile() {
-        if (logA == null) {
-            logA = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".a.csv");
-        }
-
-        if (logB == null) {
-            logB = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".b.csv");
-        }
-
-        if (logW == null) {
-            logW = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".w.csv");
-        }
-
-        if (logE == null) {
-            logE = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".e.csv");
-        }
-
-        if (logZ == null) {
-            logZ = new UtilFile("/Users/xws/Desktop/xws/log/" + getName() + ".z.csv");
-        }
-
-    }
 }
