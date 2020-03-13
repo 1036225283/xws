@@ -16,7 +16,6 @@ import java.util.List;
 public class UtilCifar10 {
 
     private static String path = "/Users/xws/Desktop/data/cifar10/";
-    private static UtilFile fileLog = new UtilFile("/Users/xws/Desktop/data/log.txt");
 
     //读取数据
     public static void loadData(String fileName, List<Cifar10> list) {
