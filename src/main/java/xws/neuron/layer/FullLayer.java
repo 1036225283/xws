@@ -41,7 +41,7 @@ public class FullLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public FullLayer(int num) {
-        super("full");
+        super(FullLayer.class.getName());
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -51,7 +51,7 @@ public class FullLayer extends Layer {
     }
 
     public FullLayer(String name, String activationType, int num) {
-        super("full");
+        super(FullLayer.class.getName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -62,7 +62,7 @@ public class FullLayer extends Layer {
     }
 
     public FullLayer(String name, String activationType, int num, double lambda) {
-        super("full");
+        super(FullLayer.class.getName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -192,6 +192,10 @@ public class FullLayer extends Layer {
         tensorOut.setHeight(1);
         tensorOut.setWidth(pdi.length);
         tensorOut.setArray(pdi);
+
+        if (UtilNeuralNet.checkDouble(w)) {
+            throw new RuntimeException("checkDouble tensor on full layer");
+        }
 
         return tensorOut;
     }

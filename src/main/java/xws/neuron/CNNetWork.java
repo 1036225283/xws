@@ -2,6 +2,7 @@ package xws.neuron;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import xws.neuron.json.LayerJson;
 import xws.neuron.layer.*;
 import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.bn.LnLayer;
@@ -129,43 +130,43 @@ public class CNNetWork extends NeuralNetWork {
 //            System.out.println(layerArr.get(i));
             JSONObject layer = layerArr.getJSONObject(i);
             String strType = layer.getString("type");
-            if ("ConvolutionLayer".equals(strType)) {
+            if (ConvolutionLayer.class.getName().equals(strType)) {
                 ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
                 cnNetWork.addLayer(convolutionLayer);
-            } else if ("MaxPoolLayer".equals(strType)) {
+            } else if (MaxPoolLayer.class.getName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
                 cnNetWork.addLayer(maxPoolLayer);
-            } else if ("MeanPoolLayer".equals(strType)) {
+            } else if (MeanPoolLayer.class.getName().equals(strType)) {
                 MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
                 cnNetWork.addLayer(meanPoolLayer);
-            } else if ("full".equals(strType)) {
+            } else if ("full".equals(strType) || FullLayer.class.getName().equals(strType)) {
                 FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
                 cnNetWork.addLayer(fullLayer);
-            } else if ("CrossEntropyLayer".equals(strType)) {
+            } else if (CrossEntropyLayer.class.getName().equals(strType)) {
                 CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
                 cnNetWork.addLayer(crossEntropyLayer);
-            } else if ("DropoutLayer".equals(strType)) {
+            } else if (DropoutLayer.class.getName().equals(strType)) {
                 DropoutLayer dropoutLayer = JSONObject.parseObject(layer.toString(), DropoutLayer.class);
                 cnNetWork.addLayer(dropoutLayer);
-            } else if ("SoftmaxLayer".equals(strType)) {
+            } else if (SoftmaxLayer.class.getName().equals(strType)) {
                 SoftmaxLayer softmaxLayer = JSONObject.parseObject(layer.toString(), SoftmaxLayer.class);
                 cnNetWork.addLayer(softmaxLayer);
-            } else if ("DepthSeparableLayer".equals(strType)) {
+            } else if (DepthSeparableLayer.class.getName().equals(strType)) {
                 DepthSeparableLayer depthSeparableLayer = JSONObject.parseObject(layer.toString(), DepthSeparableLayer.class);
                 cnNetWork.addLayer(depthSeparableLayer);
-            } else if ("MnLayer".equals(strType)) {
+            } else if (MnLayer.class.getName().equals(strType)) {
                 MnLayer mnLayer = JSONObject.parseObject(layer.toString(), MnLayer.class);
                 cnNetWork.addLayer(mnLayer);
-            } else if ("LnLayer".equals(strType)) {
+            } else if (LnLayer.class.getName().equals(strType)) {
                 LnLayer lnLayer = JSONObject.parseObject(layer.toString(), LnLayer.class);
                 cnNetWork.addLayer(lnLayer);
-            } else if ("BnLayer".equals(strType)) {
+            } else if (BnLayer.class.getName().equals(strType)) {
                 BnLayer bnLayer = JSONObject.parseObject(layer.toString(), BnLayer.class);
                 cnNetWork.addLayer(bnLayer);
-            } else if ("RnnLayer".equals(strType)) {
+            } else if (RnnLayer.class.getName().equals(strType)) {
                 RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
                 cnNetWork.addLayer(rnnLayer);
-            } else if ("PaddingLayer".equals(strType)) {
+            } else if (PaddingLayer.class.getName().equals(strType)) {
                 PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
                 cnNetWork.addLayer(paddingLayer);
             }
@@ -239,6 +240,14 @@ public class CNNetWork extends NeuralNetWork {
                 layers.get(i).setStep(step);
             }
         }
+    }
+
+    public List<LayerJson> structure() {
+        List<LayerJson> layerJsons = new ArrayList<>();
+        for (int i = 0; i < layers.size(); i++) {
+
+        }
+        return null;
     }
 }
 

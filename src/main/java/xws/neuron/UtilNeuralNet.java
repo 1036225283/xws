@@ -252,6 +252,35 @@ public class UtilNeuralNet {
 
     }
 
+    // 检测单个double的值是否合理
+    public static boolean checkDouble(double d) {
+        System.out.println("Double.isNaN = " + Double.isNaN(d));
+        if (!Double.isFinite(d) || Double.isInfinite(d) || Double.isNaN(d)) {
+            return true;
+        }
+        return false;
+    }
+
+    // 检测单个double数组的值是否合理
+    public static boolean checkDouble(double[] doubles) {
+        for (int i = 0; i < doubles.length; i++) {
+            if (checkDouble(doubles)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 检测单个tensor的值是否合理
+    public static boolean checkDouble(Tensor tensor) {
+        for (int i = 0; i < tensor.getArray().length; i++) {
+            if (checkDouble(tensor.getArray()[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
         double[] a = new double[]{2, 2, 3, 3};
@@ -265,6 +294,9 @@ public class UtilNeuralNet {
         double[] weight = new double[10];
         initWeight(weight);
         System.out.println(JSON.toJSONString(weight));
+
+        System.out.println("test double " + checkDouble(12.12));
+        System.out.println("test double " + (Double.NaN * 10));
 
 
     }

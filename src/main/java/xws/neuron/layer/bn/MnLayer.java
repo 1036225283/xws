@@ -15,11 +15,11 @@ public class MnLayer extends Layer {
     private double max;
 
     public MnLayer() {
-        super("MnLayer");
+        super(MnLayer.class.getName());
     }
 
     public MnLayer(String name) {
-        super("MnLayer");
+        super(MnLayer.class.getName());
         setName(name);
     }
 

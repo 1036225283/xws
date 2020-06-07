@@ -83,6 +83,10 @@ public class FullNetWork extends NeuralNetWork {
             layer.forward(input);
 //            System.out.println(JSONObject.toJSONString(layer.a()));
             input = layer.a();
+            if (UtilNeuralNet.checkDouble(input)) {
+                throw new RuntimeException("checkDouble layerIndex = " + i);
+            }
+
         }
 
 

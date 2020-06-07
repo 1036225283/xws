@@ -41,7 +41,7 @@ public class DepthSeparableLayer extends Layer {
 
     //构造函数时，传入filters的构造,total是特征
     public DepthSeparableLayer(int height, int width, int strideX, int strideY) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getName());
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -50,7 +50,7 @@ public class DepthSeparableLayer extends Layer {
 
 
     public DepthSeparableLayer(String name, String activationType, int height, int width, int strideX, int strideY) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getName());
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -60,7 +60,7 @@ public class DepthSeparableLayer extends Layer {
     }
 
     public DepthSeparableLayer(String name, String activationType, int height, int width, int strideX, int strideY, double lambda) {
-        super("DepthSeparableLayer");
+        super(DepthSeparableLayer.class.getName());
         setName(name);
         setActivationType(activationType);
         this.height = height;

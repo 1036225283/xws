@@ -41,7 +41,7 @@ public class SoftmaxLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public SoftmaxLayer(int num) {
-        super("SoftmaxLayer");
+        super(SoftmaxLayer.class.getName());
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -51,7 +51,7 @@ public class SoftmaxLayer extends Layer {
     }
 
     public SoftmaxLayer(String name, int num) {
-        super("SoftmaxLayer");
+        super(SoftmaxLayer.class.getName());
         setName(name);
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -61,7 +61,7 @@ public class SoftmaxLayer extends Layer {
     }
 
     public SoftmaxLayer(String name, int num, double lambda) {
-        super("SoftmaxLayer");
+        super(SoftmaxLayer.class.getName());
         setName(name);
         //初始化每个神经元的权重和偏置
         bias = new double[num];

@@ -21,11 +21,11 @@ public class AnLayer extends Layer {
 
 
     public AnLayer() {
-        super("AnLayer");
+        super(AnLayer.class.getName());
     }
 
     public AnLayer(String name) {
-        super("AnLayer");
+        super(AnLayer.class.getName());
         setName(name);
     }
 
