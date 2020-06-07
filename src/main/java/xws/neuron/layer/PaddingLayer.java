@@ -27,7 +27,7 @@ public class PaddingLayer extends Layer {
     }
 
     public PaddingLayer(int padding) {
-        super(PaddingLayer.class.getName());
+        super(PaddingLayer.class.getSimpleName());
         this.pTop = padding;
         this.pBottom = padding;
         this.pLeft = padding;
@@ -35,7 +35,7 @@ public class PaddingLayer extends Layer {
     }
 
     public PaddingLayer(String name, int padding) {
-        super(PaddingLayer.class.getName());
+        super(PaddingLayer.class.getSimpleName());
         this.pTop = padding;
         this.pBottom = padding;
         this.pLeft = padding;
@@ -45,7 +45,7 @@ public class PaddingLayer extends Layer {
 
     //构造函数时，传入filters的构造
     public PaddingLayer(int pTop, int pBottom, int pLeft, int pRight) {
-        super(PaddingLayer.class.getName());
+        super(PaddingLayer.class.getSimpleName());
         this.pTop = pTop;
         this.pBottom = pBottom;
         this.pLeft = pLeft;
@@ -53,7 +53,7 @@ public class PaddingLayer extends Layer {
     }
 
     public PaddingLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
-        super(PaddingLayer.class.getName());
+        super(PaddingLayer.class.getSimpleName());
         this.pTop = pTop;
         this.pBottom = pBottom;
         this.pLeft = pLeft;

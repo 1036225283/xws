@@ -21,11 +21,11 @@ public class BnLayer extends Layer {
 
 
     public BnLayer() {
-        super(BnLayer.class.getName());
+        super(BnLayer.class.getSimpleName());
     }
 
     public BnLayer(String name) {
-        super(BnLayer.class.getName());
+        super(BnLayer.class.getSimpleName());
         setName(name);
     }
 

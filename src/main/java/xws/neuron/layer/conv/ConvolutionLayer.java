@@ -41,7 +41,7 @@ public class ConvolutionLayer extends Layer {
 
     //构造函数时，传入filters的构造,total是特征
     public ConvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
-        super(ConvolutionLayer.class.getName());
+        super(ConvolutionLayer.class.getSimpleName());
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -53,7 +53,7 @@ public class ConvolutionLayer extends Layer {
 
 
     public ConvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding) {
-        super(ConvolutionLayer.class.getName());
+        super(ConvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;
@@ -66,7 +66,7 @@ public class ConvolutionLayer extends Layer {
     }
 
     public ConvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding, double lambda) {
-        super(ConvolutionLayer.class.getName());
+        super(ConvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;

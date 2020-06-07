@@ -130,43 +130,43 @@ public class CNNetWork extends NeuralNetWork {
 //            System.out.println(layerArr.get(i));
             JSONObject layer = layerArr.getJSONObject(i);
             String strType = layer.getString("type");
-            if (ConvolutionLayer.class.getName().equals(strType)) {
+            if (ConvolutionLayer.class.getSimpleName().equals(strType)) {
                 ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
                 cnNetWork.addLayer(convolutionLayer);
-            } else if (MaxPoolLayer.class.getName().equals(strType)) {
+            } else if (MaxPoolLayer.class.getSimpleName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
                 cnNetWork.addLayer(maxPoolLayer);
-            } else if (MeanPoolLayer.class.getName().equals(strType)) {
+            } else if (MeanPoolLayer.class.getSimpleName().equals(strType)) {
                 MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
                 cnNetWork.addLayer(meanPoolLayer);
-            } else if ("full".equals(strType) || FullLayer.class.getName().equals(strType)) {
+            } else if ("full".equals(strType) || FullLayer.class.getSimpleName().equals(strType)) {
                 FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
                 cnNetWork.addLayer(fullLayer);
-            } else if (CrossEntropyLayer.class.getName().equals(strType)) {
+            } else if (CrossEntropyLayer.class.getSimpleName().equals(strType)) {
                 CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
                 cnNetWork.addLayer(crossEntropyLayer);
-            } else if (DropoutLayer.class.getName().equals(strType)) {
+            } else if (DropoutLayer.class.getSimpleName().equals(strType)) {
                 DropoutLayer dropoutLayer = JSONObject.parseObject(layer.toString(), DropoutLayer.class);
                 cnNetWork.addLayer(dropoutLayer);
-            } else if (SoftmaxLayer.class.getName().equals(strType)) {
+            } else if (SoftmaxLayer.class.getSimpleName().equals(strType)) {
                 SoftmaxLayer softmaxLayer = JSONObject.parseObject(layer.toString(), SoftmaxLayer.class);
                 cnNetWork.addLayer(softmaxLayer);
-            } else if (DepthSeparableLayer.class.getName().equals(strType)) {
+            } else if (DepthSeparableLayer.class.getSimpleName().equals(strType)) {
                 DepthSeparableLayer depthSeparableLayer = JSONObject.parseObject(layer.toString(), DepthSeparableLayer.class);
                 cnNetWork.addLayer(depthSeparableLayer);
-            } else if (MnLayer.class.getName().equals(strType)) {
+            } else if (MnLayer.class.getSimpleName().equals(strType)) {
                 MnLayer mnLayer = JSONObject.parseObject(layer.toString(), MnLayer.class);
                 cnNetWork.addLayer(mnLayer);
-            } else if (LnLayer.class.getName().equals(strType)) {
+            } else if (LnLayer.class.getSimpleName().equals(strType)) {
                 LnLayer lnLayer = JSONObject.parseObject(layer.toString(), LnLayer.class);
                 cnNetWork.addLayer(lnLayer);
-            } else if (BnLayer.class.getName().equals(strType)) {
+            } else if (BnLayer.class.getSimpleName().equals(strType)) {
                 BnLayer bnLayer = JSONObject.parseObject(layer.toString(), BnLayer.class);
                 cnNetWork.addLayer(bnLayer);
-            } else if (RnnLayer.class.getName().equals(strType)) {
+            } else if (RnnLayer.class.getSimpleName().equals(strType)) {
                 RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
                 cnNetWork.addLayer(rnnLayer);
-            } else if (PaddingLayer.class.getName().equals(strType)) {
+            } else if (PaddingLayer.class.getSimpleName().equals(strType)) {
                 PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
                 cnNetWork.addLayer(paddingLayer);
             }
@@ -245,9 +245,44 @@ public class CNNetWork extends NeuralNetWork {
     public List<LayerJson> structure() {
         List<LayerJson> layerJsons = new ArrayList<>();
         for (int i = 0; i < layers.size(); i++) {
+            Layer layer = layers.get(i);
+            LayerJson layerJson = new LayerJson();
+            layerJson.setName(layer.getType());
+            if (layer instanceof FullLayer) {
+                FullLayer fullLayer = (FullLayer) layer;
+                layerJson.setNum(fullLayer.getBias().length);
+            } else if (layer instanceof RnnLayer) {
+                RnnLayer rnnLayer = (RnnLayer) layer;
+                layerJson.setNum(rnnLayer.getNum());
+            } else if (layer instanceof ConvolutionLayer) {
+                ConvolutionLayer convolutionLayer = (ConvolutionLayer) layer;
+                layerJson.setHeight(convolutionLayer.getHeight());
+                layerJson.setWidth(convolutionLayer.getWidth());
+                layerJson.setStrideX(convolutionLayer.getStrideX());
+                layerJson.setStrideY(convolutionLayer.getStrideY());
+            } else if (layer instanceof MaxPoolLayer) {
+                MaxPoolLayer maxPoolLayer = (MaxPoolLayer) layer;
+                layerJson.setHeight(maxPoolLayer.getPool().getHeight());
+                layerJson.setWidth(maxPoolLayer.getPool().getWidth());
+                layerJson.setStrideX(maxPoolLayer.getPool().getStrideX());
+                layerJson.setStrideY(maxPoolLayer.getPool().getStrideY());
+            } else if (layer instanceof SoftmaxLayer) {
+                SoftmaxLayer maxPoolLayer = (SoftmaxLayer) layer;
+                layerJson.setNum(maxPoolLayer.getBias().length);
+            } else if (layer instanceof LnLayer) {
+                LnLayer maxPoolLayer = (LnLayer) layer;
+            } else if (layer instanceof PaddingLayer) {
+                PaddingLayer maxPoolLayer = (PaddingLayer) layer;
+            } else if (layer instanceof BnLayer) {
+                BnLayer maxPoolLayer = (BnLayer) layer;
+            } else {
+                throw new RuntimeException("structure error");
+            }
 
+
+            layerJsons.add(layerJson);
         }
-        return null;
+        return layerJsons;
     }
 }
 

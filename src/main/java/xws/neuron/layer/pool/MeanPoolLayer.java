@@ -28,16 +28,17 @@ public class MeanPoolLayer extends Layer {
 
 
     public MeanPoolLayer() {
+        super(MeanPoolLayer.class.getSimpleName());
     }
 
     //构造函数时，传入filters的构造
     public MeanPoolLayer(int height, int width, int strideX, int strideY) {
-        super(MeanPoolLayer.class.getName());
+        super(MeanPoolLayer.class.getSimpleName());
         pool = new CNNPool(height, width, strideX, strideY);
     }
 
     public MeanPoolLayer(String name, int height, int width, int strideX, int strideY) {
-        super(MeanPoolLayer.class.getName());
+        super(MeanPoolLayer.class.getSimpleName());
         pool = new CNNPool(height, width, strideX, strideY);
         setName(name);
     }

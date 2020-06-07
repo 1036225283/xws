@@ -33,7 +33,9 @@ public class MnistTest {
 //        testBN();
 
         createCNNetWork();
-        learnMNIST();//训练手写字符识别
+        CNNetWork cnNetWork = CNNetWork.load(strName);
+        System.out.println(JSON.toJSONString(cnNetWork.structure()));
+//        learnMNIST();//训练手写字符识别
 //        testMNIST();//识别手写字符
 
 

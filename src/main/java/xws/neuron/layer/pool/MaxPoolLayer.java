@@ -31,16 +31,17 @@ public class MaxPoolLayer extends Layer {
 
 
     public MaxPoolLayer() {
+        super(MaxPoolLayer.class.getSimpleName());
     }
 
     //构造函数时，传入filters的构造
     public MaxPoolLayer(int height, int width, int strideX, int strideY) {
-        super(MaxPoolLayer.class.getName());
+        super(MaxPoolLayer.class.getSimpleName());
         pool = new CNNPool(height, width, strideX, strideY);
     }
 
     public MaxPoolLayer(String name, int height, int width, int strideX, int strideY) {
-        super(MaxPoolLayer.class.getName());
+        super(MaxPoolLayer.class.getSimpleName());
         pool = new CNNPool(height, width, strideX, strideY);
         setName(name);
     }

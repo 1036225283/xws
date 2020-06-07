@@ -46,7 +46,7 @@ public class CrossEntropyLayer extends Layer {
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public CrossEntropyLayer(int num) {
-        super(CrossEntropyLayer.class.getName());
+        super(CrossEntropyLayer.class.getSimpleName());
 
         //初始化每个神经元的权重和偏置
         bias = new double[num];
@@ -56,7 +56,7 @@ public class CrossEntropyLayer extends Layer {
     }
 
     public CrossEntropyLayer(String name, String activationType, int num) {
-        super(CrossEntropyLayer.class.getName());
+        super(CrossEntropyLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置
@@ -67,7 +67,7 @@ public class CrossEntropyLayer extends Layer {
     }
 
     public CrossEntropyLayer(String name, String activationType, int num, double lambda) {
-        super(CrossEntropyLayer.class.getName());
+        super(CrossEntropyLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         //初始化每个神经元的权重和偏置

@@ -39,11 +39,12 @@ public class DeconvolutionLayer extends Layer {
     private Tensor tensorZ;
 
     public DeconvolutionLayer() {
+        super(DeconvolutionLayer.class.getSimpleName());
     }
 
     //构造函数时，传入filters的构造,total是特征
     public DeconvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
-        super(DeconvolutionLayer.class.getName());
+        super(DeconvolutionLayer.class.getSimpleName());
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -55,7 +56,7 @@ public class DeconvolutionLayer extends Layer {
 
 
     public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding) {
-        super(DeconvolutionLayer.class.getName());
+        super(DeconvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;
