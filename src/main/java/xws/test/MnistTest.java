@@ -24,18 +24,20 @@ import static xws.test.FullNetWorkTest.*;
 public class MnistTest {
 
     private static String strName = "DROPOUT";
-//    private static String strName = "XXX";
+    //    private static String strName = "XXX";
 //    private static String strName = "LeNet-5";
 //    private static String strName = "FC";
+    static String json = "[{\"activation\":\"relu\",\"height\":5,\"num\":10,\"strideX\":1,\"strideY\":1,\"type\":\"ConvolutionLayer\",\"width\":5},{\"height\":2,\"num\":0,\"strideX\":2,\"strideY\":2,\"type\":\"MaxPoolLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":5,\"num\":10,\"strideX\":1,\"strideY\":1,\"type\":\"ConvolutionLayer\",\"width\":5},{\"height\":2,\"num\":0,\"strideX\":2,\"strideY\":2,\"type\":\"MaxPoolLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":0,\"num\":128,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"activation\":\"relu\",\"height\":0,\"num\":128,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"height\":0,\"num\":10,\"strideX\":0,\"strideY\":0,\"type\":\"SoftmaxLayer\",\"width\":0}]\n";
 
 
     public static void main(String[] args) {
 //        testBN();
 
-        createCNNetWork();
-        CNNetWork cnNetWork = CNNetWork.load(strName);
-        System.out.println(JSON.toJSONString(cnNetWork.structure()));
-//        learnMNIST();//训练手写字符识别
+
+//        createCNNetWork();
+//        CNNetWork cnNetWork = CNNetWork.load(strName);
+//        System.out.println(JSON.toJSONString(cnNetWork.structure()));
+        learnMNIST();//训练手写字符识别
 //        testMNIST();//识别手写字符
 
 
@@ -149,7 +151,7 @@ public class MnistTest {
 
     }
 
-    public static void createCNNetWork() {
+    public static CNNetWork createCNNetWork() {
         CNNetWork cnNetWork = new CNNetWork();
 
 
@@ -231,29 +233,29 @@ public class MnistTest {
 
         //99.05%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=8   filter2=8
         //99.17%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=9   filter2=9
-//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 
         //99.03%    ||  99.01%  ||  99.00%
-        cnNetWork.addLayer(new BnLayer("bn1"));
-        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
-        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn2"));
-        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
-        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
-        cnNetWork.addLayer(new BnLayer("bn3"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new BnLayer("bn4"));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn1"));
+//        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn2"));
+//        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new BnLayer("bn3"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new BnLayer("bn4"));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
 //        cnNetWork.addLayer(new LnLayer("bn1"));
 //        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
@@ -339,6 +341,8 @@ public class MnistTest {
         cnNetWork.entryTest();
         cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
         cnNetWork.save(strName);
+
+        return cnNetWork;
     }
 
 
@@ -357,10 +361,12 @@ public class MnistTest {
         for (int i = 0; i < listTest.size(); i++) {
             UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
         }
+//        CNNetWork cnNetWork = CNNetWork.load(strName);
+        CNNetWork cnNetWork = new CNNetWork();
+        cnNetWork.create(json);
 
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
-            CNNetWork cnNetWork = CNNetWork.load(strName);
             cnNetWork.setBatchSize(5);
 //            cnNetWork.setBatchSize(20);
             cnNetWork.setBatch(10);

@@ -20,6 +20,7 @@ public class ConvolutionLayer extends Layer {
     private int strideX;
     private int strideY;
     private int padding = 0;
+    private int num;
 
     //输出输入数据大小
     private int outDepth;
@@ -42,6 +43,7 @@ public class ConvolutionLayer extends Layer {
     //构造函数时，传入filters的构造,total是特征
     public ConvolutionLayer(int total, int height, int width, int strideX, int strideY, int padding) {
         super(ConvolutionLayer.class.getSimpleName());
+        this.num = total;
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -56,6 +58,7 @@ public class ConvolutionLayer extends Layer {
         super(ConvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
+        this.num = total;
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -69,6 +72,7 @@ public class ConvolutionLayer extends Layer {
         super(ConvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
+        this.num = total;
         this.height = height;
         this.width = width;
         this.strideX = strideX;
@@ -278,4 +282,11 @@ public class ConvolutionLayer extends Layer {
         this.lambda = lambda;
     }
 
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 }

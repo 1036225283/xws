@@ -13,6 +13,8 @@ import xws.neuron.UtilNeuralNet;
 public class FullLayer extends Layer {
 
 
+    private int num;
+
     private double[] a;//某一层的输出
     private double[] input;//把上一层的输入也保存起来
 
@@ -43,6 +45,7 @@ public class FullLayer extends Layer {
     public FullLayer(int num) {
         super(FullLayer.class.getSimpleName());
 
+        this.num = num;
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -54,6 +57,7 @@ public class FullLayer extends Layer {
         super(FullLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
+        this.num = num;
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -65,6 +69,7 @@ public class FullLayer extends Layer {
         super(FullLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
+        this.num = num;
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -271,4 +276,11 @@ public class FullLayer extends Layer {
         this.lambda = lambda;
     }
 
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 }

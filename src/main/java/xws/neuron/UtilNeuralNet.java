@@ -254,7 +254,6 @@ public class UtilNeuralNet {
 
     // 检测单个double的值是否合理
     public static boolean checkDouble(double d) {
-        System.out.println("Double.isNaN = " + Double.isNaN(d));
         if (!Double.isFinite(d) || Double.isInfinite(d) || Double.isNaN(d)) {
             return true;
         }

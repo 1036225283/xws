@@ -2,9 +2,11 @@ package xws.neuron.json;
 
 public class LayerJson {
 
+    private String type;
     private String name;
     //full rnn
     private int num;
+    private String activation;
     // convolution and maxPool
     private int height;
     private int width;
@@ -13,6 +15,14 @@ public class LayerJson {
 
     public static void main(String[] args) {
         System.out.println(LayerType.FullLayer.name());
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -29,6 +39,14 @@ public class LayerJson {
 
     public void setNum(int num) {
         this.num = num;
+    }
+
+    public String getActivation() {
+        return activation;
+    }
+
+    public void setActivation(String activation) {
+        this.activation = activation;
     }
 
     public int getHeight() {

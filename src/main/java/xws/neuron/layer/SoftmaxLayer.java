@@ -13,6 +13,7 @@ import xws.util.UtilFile;
 public class SoftmaxLayer extends Layer {
 
 
+    private int num;
     private double[] a;//某一层的输出
     private double[] input;//把上一层的输入也保存起来
 
@@ -43,6 +44,8 @@ public class SoftmaxLayer extends Layer {
     public SoftmaxLayer(int num) {
         super(SoftmaxLayer.class.getSimpleName());
 
+        this.num = num;
+
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -53,6 +56,8 @@ public class SoftmaxLayer extends Layer {
     public SoftmaxLayer(String name, int num) {
         super(SoftmaxLayer.class.getSimpleName());
         setName(name);
+
+        this.num = num;
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -63,6 +68,7 @@ public class SoftmaxLayer extends Layer {
     public SoftmaxLayer(String name, int num, double lambda) {
         super(SoftmaxLayer.class.getSimpleName());
         setName(name);
+        this.num = num;
         //初始化每个神经元的权重和偏置
         bias = new double[num];
         a = new double[num];
@@ -287,4 +293,11 @@ public class SoftmaxLayer extends Layer {
         this.lambda = lambda;
     }
 
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 }
