@@ -154,6 +154,7 @@ public class CNNetWork extends NeuralNetWork {
                 cnNetWork.addLayer(dropoutLayer);
             } else if (SoftmaxLayer.class.getSimpleName().equals(strType)) {
                 SoftmaxLayer softmaxLayer = JSONObject.parseObject(layer.toString(), SoftmaxLayer.class);
+                softmaxLayer.setNum(softmaxLayer.getBias().length);
                 cnNetWork.addLayer(softmaxLayer);
             } else if (DepthSeparableLayer.class.getSimpleName().equals(strType)) {
                 DepthSeparableLayer depthSeparableLayer = JSONObject.parseObject(layer.toString(), DepthSeparableLayer.class);
