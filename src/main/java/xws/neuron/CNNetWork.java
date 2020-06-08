@@ -143,6 +143,7 @@ public class CNNetWork extends NeuralNetWork {
             } else if ("full".equals(strType) || FullLayer.class.getSimpleName().equals(strType)) {
                 FullLayer fullLayer = JSONObject.parseObject(layer.toString(), FullLayer.class);
                 fullLayer.setType(FullLayer.class.getSimpleName());
+                fullLayer.setNum(fullLayer.getBias().length);
                 cnNetWork.addLayer(fullLayer);
             } else if (CrossEntropyLayer.class.getSimpleName().equals(strType)) {
                 CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
