@@ -133,6 +133,7 @@ public class CNNetWork extends NeuralNetWork {
             String strType = layer.getString("type");
             if (ConvolutionLayer.class.getSimpleName().equals(strType)) {
                 ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
+                convolutionLayer.setNum(convolutionLayer.getFilters().length);
                 cnNetWork.addLayer(convolutionLayer);
             } else if (MaxPoolLayer.class.getSimpleName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
