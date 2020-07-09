@@ -334,6 +334,7 @@ public class CNNetWork extends NeuralNetWork {
                 cnNetWork.addLayer(bnLayer);
             } else if (RnnLayer.class.getSimpleName().equals(layerJson.getType())) {
                 RnnLayer rnnLayer = new RnnLayer(layerJson.getNum());
+                rnnLayer.setInitFlag(false);
                 cnNetWork.addLayer(rnnLayer);
             } else if (PaddingLayer.class.getSimpleName().equals(layerJson.getType())) {
                 PaddingLayer paddingLayer = new PaddingLayer();
