@@ -69,7 +69,7 @@ public class DeconvolutionLayer extends Layer {
     }
 
     public DeconvolutionLayer(String name, String activationType, int total, int height, int width, int strideX, int strideY, int padding, double lambda) {
-        super(DeconvolutionLayer.class.getName());
+        super(DeconvolutionLayer.class.getSimpleName());
         setName(name);
         setActivationType(activationType);
         this.height = height;

@@ -52,12 +52,12 @@ public class RnnLayer extends Layer {
 
 
     public RnnLayer() {
-
+        super(RnnLayer.class.getSimpleName());
     }
 
     //初始化神经网络层,num为神经元的数量，inputs为输入的数量
     public RnnLayer(int num) {
-        super(RnnLayer.class.getName());
+        super(RnnLayer.class.getSimpleName());
         //初始化神经元的个数
         this.num = num;
         init();
@@ -65,7 +65,7 @@ public class RnnLayer extends Layer {
     }
 
     public RnnLayer(String name, String activationType, int num) {
-        super(RnnLayer.class.getName());
+        super(RnnLayer.class.getSimpleName());
         this.num = num;
         setName(name);
         setActivationType(activationType);
@@ -76,7 +76,7 @@ public class RnnLayer extends Layer {
     }
 
     public RnnLayer(String name, String activationType, int num, double lambda) {
-        super(RnnLayer.class.getName());
+        super(RnnLayer.class.getSimpleName());
         this.num = num;
         setName(name);
         setActivationType(activationType);

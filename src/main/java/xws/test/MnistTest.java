@@ -335,11 +335,11 @@ public class MnistTest {
 //        cnNetWork.addLayer(new CrossEntropyLayer("cross-entropy", "sigmoid", 10));
 
 
-        List<Cifar10> list = UtilMnist.testData();
-        Cifar10 cifar10 = list.get(0);
-        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
-        cnNetWork.entryTest();
-        cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
+//        List<Cifar10> list = UtilMnist.testData();
+//        Cifar10 cifar10 = list.get(0);
+//        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
+//        cnNetWork.entryTest();
+//        cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
         cnNetWork.save(strName);
 
         return cnNetWork;

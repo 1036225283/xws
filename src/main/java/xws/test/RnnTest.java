@@ -23,25 +23,23 @@ import static xws.test.FullNetWorkTest.expectMNIST;
  */
 public class RnnTest {
 
-    private static String strName = "RNN_ADD";
+    private static String strName = "RNN_MNIST_LN";
 
     private static List<Cifar10> list = createData();
 
     public static void main(String[] args) {
 //        createCNNetWork();
-//        learnMNIST();
-//        XOR();
+        XOR();
 //        ADD();
-        MNIST();
+//        MNIST();
     }
-
 
 
     //第1个数+第2个数+第3个数+第n个数
     public static void createCNNetWork() {
         CNNetWork cnNetWork = new CNNetWork();
 //        cnNetWork.addLayer(new BnLayer("bn1"));
-        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 3));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 10));
 //        cnNetWork.addLayer(new BnLayer("bn2"));
         cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
 
@@ -98,17 +96,17 @@ public class RnnTest {
         List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
         List<RnnSequence> listTest = createSequenceMNIST(UtilMnist.testData());
 
-        CNNetWork cnNetWork = CNNetWork.load("RNN_MNIST_LN");
-//        CNNetWork cnNetWork = new CNNetWork();
+//        CNNetWork cnNetWork = CNNetWork.load("RNN_MNIST_LN");
+        CNNetWork cnNetWork = new CNNetWork();
         //93.92%
         //95.52%
-//        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 28));
-//        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
-//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
-//        double learnRate = UtilNeuralNet.e() * 0.00001;
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 28));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+        double learnRate = UtilNeuralNet.e() * 0.00001;
 //        double learnRate = UtilNeuralNet.e() * 0.000001;
 //        double learnRate = UtilNeuralNet.e() * 0.0000001;
-        double learnRate = UtilNeuralNet.e() * 0.00000001;
+//        double learnRate = UtilNeuralNet.e() * 0.00000001;
 
 
 //
@@ -278,7 +276,6 @@ public class RnnTest {
 
             }
         }
-
         cnNetWork.entryTest();
         //测试
         for (int i = 0; i < list.size(); i++) {
