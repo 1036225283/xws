@@ -161,6 +161,38 @@ public class UtilNeuralNet {
         }
     }
 
+    // 标准化
+    public void normalization(double[] data) {
+        double max = max(data);
+        double min = min(data);
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (data[i] - min) / (max - min);
+        }
+    }
+
+    // 标准化-平均
+    public void normalization_mean(double[] data) {
+        double max = max(data);
+        double min = min(data);
+        double mean = average(data);
+
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (data[i] - mean) / (max - min);
+        }
+    }
+
+    // 归一化
+    public void standardization(double[] data) {
+        double average = average(data);
+        double variance = variance(data, average);
+        double standard = Math.sqrt(variance + 0.000000000001);
+
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (data[i] - average) / standard;
+        }
+    }
+
+
     //求均值
     public static double average(double[] val) {
         double total = 0;
