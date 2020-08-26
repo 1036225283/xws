@@ -162,7 +162,7 @@ public class UtilNeuralNet {
     }
 
     // 标准化
-    public void normalization(double[] data) {
+    public static void normalization(double[] data) {
         double max = max(data);
         double min = min(data);
         for (int i = 0; i < data.length; i++) {
@@ -171,7 +171,7 @@ public class UtilNeuralNet {
     }
 
     // 标准化-平均
-    public void normalization_mean(double[] data) {
+    public static void normalization_mean(double[] data) {
         double max = max(data);
         double min = min(data);
         double mean = average(data);
@@ -182,7 +182,7 @@ public class UtilNeuralNet {
     }
 
     // 归一化
-    public void standardization(double[] data) {
+    public static void standardization(double[] data) {
         double average = average(data);
         double variance = variance(data, average);
         double standard = Math.sqrt(variance + 0.000000000001);
