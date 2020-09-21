@@ -13,6 +13,19 @@ public class Tensor {
     private double[] array;
 
 
+    public Tensor() {
+    }
+
+    public Tensor(int size) {
+        array = new double[size];
+    }
+
+
+    public Tensor(double[] array) {
+        this.array = array;
+        width = array.length;
+    }
+
     public static void main(String[] args) {
         Tensor tensor = new Tensor(10000);
         tensor.setWidth(10);
@@ -131,6 +144,15 @@ public class Tensor {
         }
     }
 
+    //累加值
+    public double val() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
     //缩放数据
     public void scale(double val) {
         for (int i = 0; i < array.length; i++) {
@@ -179,6 +201,98 @@ public class Tensor {
         for (int i = 0; i < array.length; i++) {
             array[i] = array[i] + tensor.get(i);
         }
+    }
+
+    //tensorInput * tensorW
+    public Tensor multiplyW(Tensor tensorW) {
+        Tensor tensorInputMultiplyWeight = new Tensor();
+        tensorInputMultiplyWeight.setWidth(tensorW.getHeight());
+        tensorInputMultiplyWeight.createArray();
+        for (int h = 0; h < tensorW.getHeight(); h++) {
+            for (int w = 0; w < tensorW.getWidth(); w++) {
+                tensorInputMultiplyWeight.set(h, tensorInputMultiplyWeight.get(h) + this.get(w) * tensorW.get(h, w));
+            }
+        }
+        return tensorInputMultiplyWeight;
+    }
+
+    // please use the tensorBias call the method, update back propagation bias error
+    public void updateBias(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < getWidth(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+    //please use the tensorW call the method, update back propagation weight error
+    public void updateWeight(Tensor tensorPartialDerivative, double learnRate) {
+        for (int i = 0; i < size(); i++) {
+            set(i, get(i) - learnRate * tensorPartialDerivative.get(i));
+        }
+    }
+
+
+    // please use the tensorW call the method
+    public Tensor calculateWeightPartialDerivative(Tensor tensorPartialDerivative, Tensor tensorInput) {
+        Tensor tensorWeightPartialDerivative = this.copy();
+        tensorWeightPartialDerivative.zero();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorWeightPartialDerivative.set(h, w, tensorWeightPartialDerivative.get(h, w) + tensorPartialDerivative.get(h) * tensorInput.get(w));
+            }
+        }
+        return tensorWeightPartialDerivative;
+    }
+
+    // please use the tensorW call the method
+    public Tensor calculateInputPartialDerivative(Tensor tensorPartialDerivative) {
+        Tensor tensorInputPartialDerivative = new Tensor();
+        tensorInputPartialDerivative.setWidth(this.getWidth());
+        tensorInputPartialDerivative.createArray();
+        for (int h = 0; h < this.getHeight(); h++) {
+            for (int w = 0; w < this.getWidth(); w++) {
+                tensorInputPartialDerivative.set(w, tensorInputPartialDerivative.get(w) + tensorPartialDerivative.get(h) * this.get(h, w));
+            }
+        }
+        return tensorInputPartialDerivative;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByMse(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            tensorPartialDerivative.set(i, this.get(i) - expect.get(i));
+        }
+        return tensorPartialDerivative;
+    }
+
+    // please use the tensorOut call the method
+    public Tensor calculateOutPartialDerivativeByCrossEntropy(Tensor expect) {
+        Tensor tensorPartialDerivative = expect.copy();
+        tensorPartialDerivative.zero();
+        for (int i = 0; i < expect.size(); i++) {
+            if (expect.get(i) == 0) {
+                tensorPartialDerivative.set(i, (this.get(i)));
+            } else {
+                tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+            }
+//            tensorPartialDerivative.set(i, (this.get(i) - expect.get(i)));
+
+        }
+        return tensorPartialDerivative;
+    }
+
+    public double sum() {
+        double total = 0;
+        for (int i = 0; i < array.length; i++) {
+            total = total + array[i];
+        }
+        return total;
+    }
+
+
+    public int size() {
+        return array.length;
     }
 
     //根据高度获取数据
@@ -263,13 +377,6 @@ public class Tensor {
         }
         sb.append("\n");
         return sb.toString();
-    }
-
-    public Tensor() {
-    }
-
-    public Tensor(int size) {
-        array = new double[size];
     }
 
 
