@@ -68,7 +68,7 @@ public class RnnTime {
             tensorErrorOut.createArray();
 
             tensorInputError = new Tensor();
-            tensorInputError.setWidth(shareBias.getWidth());
+            tensorInputError.setWidth(shareListInputWeight.get(0).getWidth());
             tensorInputError.createArray();
 
         }

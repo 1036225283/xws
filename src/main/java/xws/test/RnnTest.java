@@ -29,9 +29,9 @@ public class RnnTest {
 
     public static void main(String[] args) {
 //        createCNNetWork();
-        XOR();
+//        XOR();
 //        ADD();
-//        MNIST();
+        MNIST();
     }
 
 
@@ -100,7 +100,10 @@ public class RnnTest {
         CNNetWork cnNetWork = new CNNetWork();
         //93.92%
         //95.52%
-        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 28));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 28, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
         double learnRate = UtilNeuralNet.e() * 0.00001;
@@ -237,10 +240,11 @@ public class RnnTest {
     public static void XOR() {
         List<RnnSequence> list = createSequenceXOR();
 
-        CNNetWork cnNetWork = CNNetWork.load("RNN_XOR");
-//        CNNetWork cnNetWork = new CNNetWork();
-//        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 2));
-//        cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
+//        CNNetWork cnNetWork = CNNetWork.load("RNN_XOR");
+        CNNetWork cnNetWork = new CNNetWork();
+        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 20));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 20));
+        cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
 
         cnNetWork.entryLearn();
         cnNetWork.setBatchSize(1);
