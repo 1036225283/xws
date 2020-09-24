@@ -104,10 +104,12 @@ public class RnnTest {
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+//        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
-        double learnRate = UtilNeuralNet.e() * 0.00001;
-//        double learnRate = UtilNeuralNet.e() * 0.000001;
+//        double learnRate = UtilNeuralNet.e() * 0.0001;
+//        double learnRate = UtilNeuralNet.e() * 0.00001;
+        double learnRate = UtilNeuralNet.e() * 0.000001;
 //        double learnRate = UtilNeuralNet.e() * 0.0000001;
 //        double learnRate = UtilNeuralNet.e() * 0.00000001;
 
