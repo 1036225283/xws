@@ -13,6 +13,7 @@ import xws.neuron.layer.conv.DepthSeparableLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.pool.MeanPoolLayer;
+import xws.neuron.layer.rnn.BidirectionalRnnLayer;
 import xws.neuron.layer.rnn.RnnLayer;
 
 import java.util.ArrayList;
@@ -174,6 +175,9 @@ public class CNNetWork extends NeuralNetWork {
             } else if (PaddingLayer.class.getSimpleName().equals(strType)) {
                 PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
                 cnNetWork.addLayer(paddingLayer);
+            } else if (BidirectionalRnnLayer.class.getSimpleName().equals(strType)) {
+                BidirectionalRnnLayer bidirectionalRnnLayer = JSONObject.parseObject(layer.toString(), BidirectionalRnnLayer.class);
+                cnNetWork.addLayer(bidirectionalRnnLayer);
             }
 
 

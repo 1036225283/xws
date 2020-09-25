@@ -10,11 +10,12 @@ public class BidirectionalRnnLayer extends Layer {
 
     private int num;//神经元的个数
     private double lambda = 0;
-    private String activationType;
 
     private RnnLayer forwardRnn;
     private RnnLayer backwardRnn;
     private List<Tensor> listInput = new ArrayList<>();
+    private Tensor tensorInput;
+    private Tensor tensorOut;
 
     public BidirectionalRnnLayer() {
         super(BidirectionalRnnLayer.class.getSimpleName());
@@ -57,18 +58,42 @@ public class BidirectionalRnnLayer extends Layer {
 
     @Override
     public Tensor forward(Tensor tensor) {
+        tensorInput = tensor;
         // 每次forward的时候，都需要重新运行一次反向循环神经网络，拿到最新输出
         if (getStep() == 0) {
+            forwardRnn.setStep(0);
+            // 将输入清空，同时传入最新的
             listInput = new ArrayList<>();
-            listInput.add(tensor);
-            for (int i = listInput.size() - 1; i >= 0; i--) {
-                Tensor tensorInput = listInput.get(i);
-                backwardRnn.forward(tensorInput);
-            }
+        }
+        listInput.add(tensor);
+
+        Tensor tensorBackwardOut = null;
+        backwardRnn.setStep(0);
+        // 获取反向RNN的输出
+        for (int i = listInput.size() - 1; i >= 0; i--) {
+            Tensor tensorInput = listInput.get(i);
+            tensorBackwardOut = backwardRnn.forward(tensorInput);
         }
         Tensor tensorOut = forwardRnn.forward(tensor);
+        this.tensorOut = tensorOut;
+        setStep(getStep() + 1);
+        Tensor tmp = tensorOut.concat(tensorBackwardOut);
+        return tmp;
+    }
 
-        return super.forward(tensor);
+    @Override
+    public Tensor backPropagation(Tensor tensor) {
+        // 首先，将tensor切割成两个tensor
+        Tensor tensorDiffForward = tensorOut.copy();
+        System.arraycopy(tensor.getArray(), 0, tensorDiffForward.getArray(), 0, tensorDiffForward.getArray().length);
+        Tensor tensorDiffBackward = tensorOut.copy();
+        System.arraycopy(tensor.getArray(), tensorDiffBackward.getArray().length, tensorDiffBackward.getArray(), 0, tensorDiffForward.getArray().length);
+
+        Tensor tensorErrForward = forwardRnn.backPropagation(tensorDiffForward);
+        Tensor tensorErrBackward = backwardRnn.backPropagation(tensorDiffBackward);
+        tensorErrForward.add(tensorErrBackward);
+
+        return tensorErrForward.divide(2);
     }
 
     public int getNum() {
@@ -77,14 +102,6 @@ public class BidirectionalRnnLayer extends Layer {
 
     public void setNum(int num) {
         this.num = num;
-    }
-
-    public double getLambda() {
-        return lambda;
-    }
-
-    public void setLambda(double lambda) {
-        this.lambda = lambda;
     }
 
 

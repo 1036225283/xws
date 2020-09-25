@@ -5,6 +5,7 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.rnn.BidirectionalRnnLayer;
 import xws.neuron.layer.rnn.RnnLayer;
 import xws.util.Cifar10;
 import xws.util.RnnSequence;
@@ -29,9 +30,9 @@ public class RnnTest {
 
     public static void main(String[] args) {
 //        createCNNetWork();
-//        XOR();
+        XOR();
 //        ADD();
-        MNIST();
+//        MNIST();
     }
 
 
@@ -244,15 +245,18 @@ public class RnnTest {
 
 //        CNNetWork cnNetWork = CNNetWork.load("RNN_XOR");
         CNNetWork cnNetWork = new CNNetWork();
-        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 20));
-        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 20));
+        CNNetWork.setPath("/Users/edz/Desktop/work/file");
+        cnNetWork.addLayer(new BidirectionalRnnLayer("rnn1", "sigmoid", 8));
+//        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 8));
+//        cnNetWork.addLayer(new RnnLayer("rnn1", "sigmoid", 10));
+//        cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 2, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new FullLayer("full2", "sigmoid", 1, UtilNeuralNet.e() * 0.00000000001));
 
         cnNetWork.entryLearn();
         cnNetWork.setBatchSize(1);
         double learnRate = UtilNeuralNet.e() * 0.1;
         cnNetWork.setLearnRate(learnRate);
-        for (int e = 0; e < 10000; e++) {
+        for (int e = 0; e < 100000; e++) {
 
             for (int i = 0; i < list.size(); i++) {
                 RnnSequence rnnSequence = list.get(i);

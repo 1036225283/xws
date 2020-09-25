@@ -203,6 +203,30 @@ public class Tensor {
         }
     }
 
+    // 向量除法
+    public Tensor divide(double val) {
+        Tensor tmp = this.copy();
+        double[] array = tmp.getArray();
+        for (int i = 0; i < array.length; i++) {
+            array[i] = array[i] / val;
+        }
+        return tmp;
+    }
+
+    // 拼接tensor
+    public Tensor concat(Tensor val) {
+        double[] array = new double[this.getArray().length * 2];
+
+        System.arraycopy(this.getArray(), 0, array, 0, this.getArray().length);
+        System.arraycopy(val.getArray(), 0, array, this.getArray().length, this.getArray().length);
+
+        Tensor tensor = new Tensor();
+        tensor.setArray(array);
+        tensor.setWidth(this.getArray().length * 2);
+        return tensor;
+    }
+
+
     //tensorInput * tensorW
     public Tensor multiplyW(Tensor tensorW) {
         Tensor tensorInputMultiplyWeight = new Tensor();
