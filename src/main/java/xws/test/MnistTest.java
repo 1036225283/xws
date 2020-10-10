@@ -5,7 +5,6 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
-import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.util.Cifar10;
@@ -337,9 +336,9 @@ public class MnistTest {
 
 //        List<Cifar10> list = UtilMnist.testData();
 //        Cifar10 cifar10 = list.get(0);
-//        UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
+//        UtilNeuralNet.initMinst(cifar10.getData().getArray());
 //        cnNetWork.entryTest();
-//        cnNetWork.learn(cifar10.getRgb(), expectMNIST(cifar10.getLabel()));
+//        cnNetWork.learn(cifar10.getData(), expectMNIST(cifar10.getLabel()));
         cnNetWork.save(strName);
 
         return cnNetWork;
@@ -355,11 +354,11 @@ public class MnistTest {
 
         //对所有的数据进行归一化
         for (int i = 0; i < list.size(); i++) {
-            UtilNeuralNet.initMinst(list.get(i).getRgb().getArray());
+            UtilNeuralNet.initMinst(list.get(i).getData().getArray());
         }
 //
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
         }
 //        CNNetWork cnNetWork = CNNetWork.load(strName);
         CNNetWork cnNetWork = new CNNetWork();
@@ -385,7 +384,7 @@ public class MnistTest {
                     for (int j = 0; j < batch; j++) {
                         Cifar10 cifar10 = list.get(i + j);
                         double[] expect = expectMNIST(cifar10.getLabel());
-                        int result = cnNetWork.learn(cifar10.getRgb(), expect);
+                        int result = cnNetWork.learn(cifar10.getData(), expect);
                     }
                 }
                 cnNetWork.entryTest();
@@ -407,7 +406,7 @@ public class MnistTest {
         //对所有的数据进行归一化
 
         for (int i = 0; i < listTest.size(); i++) {
-            UtilNeuralNet.initMinst(listTest.get(i).getRgb().getArray());
+            UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
         }
 
         List<String> list = CNNetWork.loadAll("FC");

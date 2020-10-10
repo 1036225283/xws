@@ -27,7 +27,7 @@ public class UtilMnist {
             tensor.setHeight(28);
             tensor.setWidth(28);
             tensor.setArray(images[i]);
-            cifar10.setRgb(tensor);
+            cifar10.setData(tensor);
             list.add(cifar10);
         }
         return list;
@@ -48,7 +48,7 @@ public class UtilMnist {
             tensor.setHeight(28);
             tensor.setWidth(28);
             tensor.setArray(imagesTest[i]);
-            cifar10.setRgb(tensor);
+            cifar10.setData(tensor);
             list.add(cifar10);
         }
         return list;
@@ -85,7 +85,7 @@ public class UtilMnist {
             tensor.setHeight(size);
             tensor.setWidth(size);
             tensor.setArray(arr);
-            cifar10.setRgb(tensor);
+            cifar10.setData(tensor);
             list.add(cifar10);
         }
         return list;

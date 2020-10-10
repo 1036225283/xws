@@ -5,6 +5,8 @@ import xws.neuron.CNNetWork;
 import xws.neuron.Tensor;
 import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
+import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.rnn.BidirectionalRnnLayer;
 import xws.neuron.layer.rnn.RnnLayer;
 import xws.util.Cifar10;
@@ -28,13 +30,16 @@ public class RnnTest {
 
     private static List<Cifar10> list = createData();
 
-    public static void main(String[] args) {
-//        createCNNetWork();
-        XOR();
-//        ADD();
-//        MNIST();
+    public RnnTest() {
     }
 
+    public static void main(String[] args) {
+//        createCNNetWork();
+//        XOR();
+//        ADD();
+//        MNIST();
+        MNIST_CNN_RNN();
+    }
 
     //第1个数+第2个数+第3个数+第n个数
     public static void createCNNetWork() {
@@ -48,7 +53,7 @@ public class RnnTest {
         cnNetWork.entryTest();
         cnNetWork.setStep(0);
         for (int i = 0; i < list.size(); i++) {
-            cnNetWork.learn(cifar10.getRgb(), new double[]{cifar10.getValue()});
+            cnNetWork.learn(cifar10.getData(), new double[]{cifar10.getValue()});
         }
 
         cnNetWork.save(strName);
@@ -66,7 +71,7 @@ public class RnnTest {
             tensor.setWidth(1);
             tensor.createArray();
             Cifar10 cifar10 = new Cifar10();
-            cifar10.setRgb(tensor);
+            cifar10.setData(tensor);
             double val = Math.random();
             tensor.set(0, val);
             total = total + tensor.get(0);
@@ -75,21 +80,6 @@ public class RnnTest {
         }
 
         return list;
-    }
-
-    //创建mnist序列
-    public static List<RnnSequence> createSequenceMNIST(List<Cifar10> list) {
-        List<RnnSequence> rnnList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Cifar10 cifar10 = list.get(i);
-//            UtilNeuralNet.initMinst(cifar10.getRgb().getArray());
-            RnnSequence rnnSequence = new RnnSequence();
-            for (int k = 0; k < 28; k++) {
-                rnnSequence.add(cifar10.getRgb().data(k), cifar10.getLabel());
-            }
-            rnnList.add(rnnSequence);
-        }
-        return rnnList;
     }
 
     //mnist
@@ -105,6 +95,75 @@ public class RnnTest {
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+//        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        double learnRate = UtilNeuralNet.e() * 0.0001;
+//        double learnRate = UtilNeuralNet.e() * 0.00001;
+        double learnRate = UtilNeuralNet.e() * 0.000001;
+//        double learnRate = UtilNeuralNet.e() * 0.0000001;
+//        double learnRate = UtilNeuralNet.e() * 0.00000001;
+
+
+//
+        cnNetWork.entryLearn();
+        cnNetWork.setBatchSize(1);
+        cnNetWork.setLearnRate(learnRate);
+
+        int batch = 2000;
+        for (int i = 0; i < list.size(); i = i + batch) {
+            System.out.println("i = " + i);
+            //将这一批数据，反复喂给
+            for (int k = 0; k < 3; k++) {
+                cnNetWork.entryLearn();
+                for (int j = 0; j < batch; j++) {
+                    RnnSequence rnnSequence = list.get(i + j);
+
+                    for (int n = 0; n < 10; n++) {
+                        cnNetWork.setStep(0);
+                        for (int r = 0; r < rnnSequence.size() - 1; r++) {
+                            cnNetWork.learn(rnnSequence.getData(r), null);
+                        }
+                        cnNetWork.learn(rnnSequence.getData(27), expectMNIST(rnnSequence.get(27).getValue()));
+                    }
+                }
+
+                UtilCifar10.testRnn(cnNetWork, listTest);
+            }
+        }
+
+        cnNetWork.save("RNN_MNIST_LN");
+
+    }
+
+    //创建mnist序列
+    public static List<RnnSequence> createSequenceMNIST(List<Cifar10> list) {
+        List<RnnSequence> rnnList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Cifar10 cifar10 = list.get(i);
+//            UtilNeuralNet.initMinst(cifar10.getData().getArray());
+            RnnSequence rnnSequence = new RnnSequence();
+            for (int k = 0; k < 28; k++) {
+                rnnSequence.add(cifar10.getData().data(k), cifar10.getLabel());
+            }
+            rnnList.add(rnnSequence);
+        }
+        return rnnList;
+    }
+
+    public static void MNIST_CNN_RNN() {
+        List<RnnSequence> list = createSequenceMNIST(UtilMnist.learnData());
+        List<RnnSequence> listTest = createSequenceMNIST(UtilMnist.testData());
+
+//        CNNetWork cnNetWork = CNNetWork.load("RNN_MNIST_LN");
+        CNNetWork cnNetWork = new CNNetWork();
+        //93.92%
+        //95.52%
+        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 6, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
+//        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
 //        cnNetWork.addLayer(new RnnLayer("rnn1", "relu", 64));
         cnNetWork.addLayer(new FullLayer("full2", "relu", 32, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));

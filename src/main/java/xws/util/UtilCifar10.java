@@ -38,7 +38,7 @@ public class UtilCifar10 {
                 for (int i = 0; i < array.length; i++) {
                     array[i] = buffer[i];
                 }
-                cifar10.setRgb(tensor);
+                cifar10.setData(tensor);
                 list.add(cifar10);
 
             }
@@ -76,7 +76,7 @@ public class UtilCifar10 {
         int right = 0;
         for (int i = 0; i < list.size(); i++) {
             Cifar10 cifar10 = list.get(i);
-            double[] out = netWork.work(cifar10.getRgb());
+            double[] out = netWork.work(cifar10.getData());
             int maxIndex = UtilNeuralNet.maxIndex(out);
             if (maxIndex == cifar10.getLabel()) {
                 right = right + 1;

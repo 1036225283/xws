@@ -8,16 +8,17 @@ import xws.neuron.Tensor;
  */
 public class Cifar10 {
 
-    private Tensor rgb;
+    private Tensor data;
+    private Tensor expect;
     private int label;
     private double value;
 
-    public Tensor getRgb() {
-        return rgb;
+    public Tensor getData() {
+        return data;
     }
 
-    public void setRgb(Tensor rgb) {
-        this.rgb = rgb;
+    public void setData(Tensor data) {
+        this.data = data;
     }
 
     public int getLabel() {
@@ -34,5 +35,13 @@ public class Cifar10 {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public Tensor getExpect() {
+        return expect;
+    }
+
+    public void setExpect(Tensor expect) {
+        this.expect = expect;
     }
 }
