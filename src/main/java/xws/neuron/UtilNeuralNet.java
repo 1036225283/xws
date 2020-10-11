@@ -312,6 +312,16 @@ public class UtilNeuralNet {
         return false;
     }
 
+    // 计算欧式距离
+    public static double euclideanDistance(double[] arr1, double[] arr2) {
+        double sum = 0;
+        for (int i = 0; i < arr1.length; i++) {
+            double val = arr1[i] - arr2[i];
+            sum = sum + val * val;
+        }
+        return Math.sqrt(sum);
+    }
+
     public static void main(String[] args) {
 
         double[] a = new double[]{2, 2, 3, 3};
