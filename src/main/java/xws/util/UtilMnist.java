@@ -54,6 +54,47 @@ public class UtilMnist {
         return list;
     }
 
+    // 获取一维数据
+    public static List<Cifar10> learnData1D() {
+        double[][] images = MnistRead.getImages(MnistRead.TRAIN_IMAGES_FILE);
+        double[] labels = MnistRead.getLabels(MnistRead.TRAIN_LABELS_FILE);
+
+        List<Cifar10> list = new ArrayList<>();
+        for (int i = 0; i < images.length; i++) {
+            Cifar10 cifar10 = new Cifar10();
+            cifar10.setLabel((int) labels[i]);
+            Tensor tensor = new Tensor();
+            tensor.setDepth(28);
+            tensor.setHeight(1);
+            tensor.setWidth(28);
+            tensor.setArray(images[i]);
+            cifar10.setData(tensor);
+            list.add(cifar10);
+        }
+        return list;
+    }
+
+    //获取一维测试数据
+    public static List<Cifar10> testData1D() {
+
+        double[][] imagesTest = MnistRead.getImages(MnistRead.TEST_IMAGES_FILE);
+        double[] labelsTest = MnistRead.getLabels(MnistRead.TEST_LABELS_FILE);
+
+        List<Cifar10> list = new ArrayList<>();
+        for (int i = 0; i < imagesTest.length; i++) {
+            Cifar10 cifar10 = new Cifar10();
+            cifar10.setLabel((int) labelsTest[i]);
+            Tensor tensor = new Tensor();
+            tensor.setDepth(28);
+            tensor.setHeight(1);
+            tensor.setWidth(28);
+            tensor.setArray(imagesTest[i]);
+            cifar10.setData(tensor);
+            list.add(cifar10);
+        }
+        return list;
+    }
+
 
     //size=10,width=28,height=28
     public static List<Cifar10> data10_28() {
