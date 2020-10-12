@@ -328,9 +328,15 @@ public class CNNetWork extends NeuralNetWork {
             if (ConvolutionLayer.class.getSimpleName().equals(layerJson.getType())) {
                 ConvolutionLayer convolutionLayer = new ConvolutionLayer(layerJson.getName(), layerJson.getActivation(), layerJson.getNum(), layerJson.getHeight(), layerJson.getWidth(), layerJson.getStrideX(), layerJson.getStrideY(), 0);
                 cnNetWork.addLayer(convolutionLayer);
+            } else if (Conv1DLayer.class.getSimpleName().equals(layerJson.getType())) {
+                Conv1DLayer conv1DLayer = new Conv1DLayer(layerJson.getName(), layerJson.getActivation(), layerJson.getNum(), layerJson.getWidth(), layerJson.getStrideX(), 0);
+                cnNetWork.addLayer(conv1DLayer);
             } else if (MaxPoolLayer.class.getSimpleName().equals(layerJson.getType())) {
                 MaxPoolLayer maxPoolLayer = new MaxPoolLayer(layerJson.getHeight(), layerJson.getWidth(), layerJson.getStrideX(), layerJson.getStrideY());
                 cnNetWork.addLayer(maxPoolLayer);
+            } else if (MaxPool1DLayer.class.getSimpleName().equals(layerJson.getType())) {
+                MaxPool1DLayer maxPool1DLayer = new MaxPool1DLayer(layerJson.getWidth(), layerJson.getStrideX());
+                cnNetWork.addLayer(maxPool1DLayer);
             } else if (MeanPoolLayer.class.getSimpleName().equals(layerJson.getType())) {
                 MeanPoolLayer meanPoolLayer = new MeanPoolLayer(layerJson.getHeight(), layerJson.getWidth(), layerJson.getStrideX(), layerJson.getStrideY());
                 cnNetWork.addLayer(meanPoolLayer);

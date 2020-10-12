@@ -29,14 +29,14 @@ public class Mnist1DTest {
     //    private static String strName = "XXX";
 //    private static String strName = "LeNet-5";
 //    private static String strName = "FC";
-    static String json = "[{\"activation\":\"relu\",\"height\":5,\"num\":10,\"strideX\":1,\"strideY\":1,\"type\":\"ConvolutionLayer\",\"width\":5},{\"height\":2,\"num\":0,\"strideX\":2,\"strideY\":2,\"type\":\"MaxPoolLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":5,\"num\":10,\"strideX\":1,\"strideY\":1,\"type\":\"ConvolutionLayer\",\"width\":5},{\"height\":2,\"num\":0,\"strideX\":2,\"strideY\":2,\"type\":\"MaxPoolLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":0,\"num\":128,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"activation\":\"relu\",\"height\":0,\"num\":128,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"height\":0,\"num\":10,\"strideX\":0,\"strideY\":0,\"type\":\"SoftmaxLayer\",\"width\":0}]\n";
+    static String json = "[{\"activation\":\"relu\",\"height\":0,\"num\":8,\"strideX\":1,\"strideY\":1,\"type\":\"Conv1DLayer\",\"width\":3},{\"height\":1,\"num\":0,\"strideX\":2,\"strideY\":1,\"type\":\"MaxPool1DLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":0,\"num\":8,\"strideX\":1,\"strideY\":1,\"type\":\"Conv1DLayer\",\"width\":3},{\"height\":1,\"num\":0,\"strideX\":2,\"strideY\":1,\"type\":\"MaxPool1DLayer\",\"width\":2},{\"activation\":\"relu\",\"height\":0,\"num\":128,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"activation\":\"relu\",\"height\":0,\"num\":64,\"strideX\":0,\"strideY\":0,\"type\":\"FullLayer\",\"width\":0},{\"height\":0,\"num\":10,\"strideX\":0,\"strideY\":0,\"type\":\"SoftmaxLayer\",\"width\":0}]\n";
     private static String strName = "MNIST1D";
 
     public static void main(String[] args) {
 //        testBN();
 
 
-        createCNNetWork();
+//        createCNNetWork();
 //        CNNetWork cnNetWork = CNNetWork.load(strName);
 //        System.out.println(JSON.toJSONString(cnNetWork.structure()));
         learnMNIST();//训练手写字符识别
@@ -206,16 +206,25 @@ public class Mnist1DTest {
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
+
+        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 8, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
+        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 8, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+
         //99.05%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=8   filter2=8
 
 
-        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 10, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
-        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 10, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 10, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
+//        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 10, 3, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPool1DLayer("pool1", 2, 2));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //99.17%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=9   filter2=9
 //        cnNetWork.addLayer(new Conv1DLayer("filter1", "relu", 10, 5, 1, 0, UtilNeuralNet.e() * 0.0000000001));
@@ -258,9 +267,9 @@ public class Mnist1DTest {
         for (int i = 0; i < listTest.size(); i++) {
             UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
         }
-        CNNetWork cnNetWork = CNNetWork.load(strName);
-//        CNNetWork cnNetWork = new CNNetWork();
-//        cnNetWork.create(json);
+//        CNNetWork cnNetWork = CNNetWork.load(strName);
+        CNNetWork cnNetWork = new CNNetWork();
+        cnNetWork.create(json);
 
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
