@@ -11,6 +11,7 @@ import xws.neuron.layer.bn.MnLayer;
 import xws.neuron.layer.conv.Conv1DLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.conv.DepthSeparableLayer;
+import xws.neuron.layer.pool.MaxPool1DLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.pool.MeanPoolLayer;
@@ -144,6 +145,9 @@ public class CNNetWork extends NeuralNetWork {
             } else if (MaxPoolLayer.class.getSimpleName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
                 cnNetWork.addLayer(maxPoolLayer);
+            } else if (MaxPool1DLayer.class.getSimpleName().equals(strType)) {
+                MaxPool1DLayer maxPool1DLayer = JSONObject.parseObject(layer.toString(), MaxPool1DLayer.class);
+                cnNetWork.addLayer(maxPool1DLayer);
             } else if (MeanPoolLayer.class.getSimpleName().equals(strType)) {
                 MeanPoolLayer meanPoolLayer = JSONObject.parseObject(layer.toString(), MeanPoolLayer.class);
                 cnNetWork.addLayer(meanPoolLayer);
@@ -290,6 +294,12 @@ public class CNNetWork extends NeuralNetWork {
                 layerJson.setWidth(maxPoolLayer.getPool().getWidth());
                 layerJson.setStrideX(maxPoolLayer.getPool().getStrideX());
                 layerJson.setStrideY(maxPoolLayer.getPool().getStrideY());
+            } else if (layer instanceof MaxPool1DLayer) {
+                MaxPool1DLayer maxPool1DLayer = (MaxPool1DLayer) layer;
+                layerJson.setHeight(maxPool1DLayer.getPool().getHeight());
+                layerJson.setWidth(maxPool1DLayer.getPool().getWidth());
+                layerJson.setStrideX(maxPool1DLayer.getPool().getStrideX());
+                layerJson.setStrideY(maxPool1DLayer.getPool().getStrideY());
             } else if (layer instanceof SoftmaxLayer) {
                 SoftmaxLayer softmaxLayer = (SoftmaxLayer) layer;
                 layerJson.setNum(softmaxLayer.getNum());

@@ -2,6 +2,7 @@ package xws.test;
 
 import xws.neuron.Tensor;
 import xws.neuron.layer.conv.Conv1DLayer;
+import xws.neuron.layer.pool.MaxPool1DLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 
 public class Conv1DLayerTest {
@@ -9,7 +10,7 @@ public class Conv1DLayerTest {
         Tensor tensor = createDepthTensor();
         Conv1DLayer conv1DLayer = new Conv1DLayer(10, 3, 1, 0);
         Tensor tensor1 = conv1DLayer.forward(tensor);
-        MaxPoolLayer maxPoolLayer = new MaxPoolLayer(1, 2, 2, 1);
+        MaxPool1DLayer maxPoolLayer = new MaxPool1DLayer(2, 2);
         tensor1 = maxPoolLayer.forward(tensor1);
         tensor1.show();
 
