@@ -8,6 +8,7 @@ import xws.neuron.layer.*;
 import xws.neuron.layer.bn.BnLayer;
 import xws.neuron.layer.bn.LnLayer;
 import xws.neuron.layer.bn.MnLayer;
+import xws.neuron.layer.conv.Conv1DLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.conv.DepthSeparableLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
@@ -136,6 +137,10 @@ public class CNNetWork extends NeuralNetWork {
                 ConvolutionLayer convolutionLayer = JSONObject.parseObject(layer.toString(), ConvolutionLayer.class);
                 convolutionLayer.setNum(convolutionLayer.getFilters().length);
                 cnNetWork.addLayer(convolutionLayer);
+            } else if (Conv1DLayer.class.getSimpleName().equals(strType)) {
+                Conv1DLayer conv1DLayer = JSONObject.parseObject(layer.toString(), Conv1DLayer.class);
+                conv1DLayer.setNum(conv1DLayer.getFilters().length);
+                cnNetWork.addLayer(conv1DLayer);
             } else if (MaxPoolLayer.class.getSimpleName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
                 cnNetWork.addLayer(maxPoolLayer);
@@ -272,6 +277,13 @@ public class CNNetWork extends NeuralNetWork {
                 layerJson.setWidth(convolutionLayer.getWidth());
                 layerJson.setStrideX(convolutionLayer.getStrideX());
                 layerJson.setStrideY(convolutionLayer.getStrideY());
+            } else if (layer instanceof Conv1DLayer) {
+                Conv1DLayer conv1DLayer = (Conv1DLayer) layer;
+                layerJson.setNum(conv1DLayer.getNum());
+                layerJson.setActivation(conv1DLayer.getActivationType());
+                layerJson.setWidth(conv1DLayer.getWidth());
+                layerJson.setStrideX(conv1DLayer.getStrideX());
+                layerJson.setStrideY(conv1DLayer.getStrideY());
             } else if (layer instanceof MaxPoolLayer) {
                 MaxPoolLayer maxPoolLayer = (MaxPoolLayer) layer;
                 layerJson.setHeight(maxPoolLayer.getPool().getHeight());
