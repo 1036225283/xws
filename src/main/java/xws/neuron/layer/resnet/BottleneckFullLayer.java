@@ -3,7 +3,9 @@ package xws.neuron.layer.resnet;
 import xws.neuron.Tensor;
 import xws.neuron.layer.FullLayer;
 import xws.neuron.layer.Layer;
-import xws.neuron.layer.conv.ConvolutionLayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -13,59 +15,66 @@ import xws.neuron.layer.conv.ConvolutionLayer;
 public class BottleneckFullLayer extends Layer {
 
 
-    private Tensor tensorInput;
-    private Tensor tensorOut;
-
-
-    FullLayer conv1 = new FullLayer();
-    FullLayer conv2 = new FullLayer();
-    FullLayer conv3 = new FullLayer();
+    FullLayer full1;
+    FullLayer full2;
+    FullLayer full3;
 
 
     public BottleneckFullLayer() {
     }
 
-    public BottleneckFullLayer(int padding) {
+    public BottleneckFullLayer(String name, String activationType, int num, double lambda) {
         super(BottleneckFullLayer.class.getSimpleName());
-    }
-
-    public BottleneckFullLayer(String name, int padding) {
-        super(BottleneckFullLayer.class.getSimpleName());
-        setName(name);
-    }
-
-    //构造函数时，传入filters的构造
-    public BottleneckFullLayer(int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckFullLayer.class.getSimpleName());
-    }
-
-    public BottleneckFullLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckFullLayer.class.getSimpleName());
-        setName(name);
+        full1 = new FullLayer(name, activationType, num, lambda);
+        full2 = new FullLayer(name, activationType, num / 2, lambda);
+        full3 = new FullLayer(name, activationType, num, lambda);
 
     }
+
 
     @Override
     public Tensor forward(Tensor tensor) {
 
-        tensorInput = tensor;
-        Tensor tensorOutConv1 = conv1.forward(tensorInput);
-        Tensor tensorOutConv2 = conv1.forward(tensorOutConv1);
-        Tensor tensorOutConv3 = conv1.forward(tensorOutConv2);
+        Tensor tensorInput = tensor;
+        tensorInput = full1.forward(tensorInput);
+        tensorInput = full2.forward(tensorInput);
+        tensorInput = full3.forward(tensorInput);
 
-        return tensorOutConv3;
+        return tensorInput;
     }
 
     @Override
     public Tensor backPropagation(Tensor tensor) {
 
-        Tensor tensorErrorConv3 = conv3.backPropagation(tensor);
-        Tensor tensorErrorConv2 = conv2.backPropagation(tensorErrorConv3);
-        Tensor tensorErrorConv1 = conv1.backPropagation(tensorErrorConv2);
-
-        tensorErrorConv1.add(tensor);
-        return tensorErrorConv1;
+        Tensor tensorError = tensor;
+        tensorError = full3.backPropagation(tensorError);
+        tensorError = full2.backPropagation(tensorError);
+        tensorError = full1.backPropagation(tensorError);
+        tensorError.add(tensor);
+        return tensorError;
     }
 
+    public FullLayer getFull1() {
+        return full1;
+    }
 
+    public void setFull1(FullLayer full1) {
+        this.full1 = full1;
+    }
+
+    public FullLayer getFull2() {
+        return full2;
+    }
+
+    public void setFull2(FullLayer full2) {
+        this.full2 = full2;
+    }
+
+    public FullLayer getFull3() {
+        return full3;
+    }
+
+    public void setFull3(FullLayer full3) {
+        this.full3 = full3;
+    }
 }

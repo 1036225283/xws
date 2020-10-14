@@ -7,6 +7,7 @@ import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
+import xws.neuron.layer.resnet.BottleneckFullLayer;
 import xws.neuron.layer.resnet.ResnetFullLayer;
 import xws.util.Cifar10;
 import xws.util.UtilCifar10;
@@ -241,12 +242,18 @@ public class MnistTest {
 //        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
 //        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
-        // resnetfull
+
+        // bottleneckfull
         cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new BottleneckFullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+
+        // resnetfull
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //99.03%    ||  99.01%  ||  99.00%
 //        cnNetWork.addLayer(new BnLayer("bn1"));
