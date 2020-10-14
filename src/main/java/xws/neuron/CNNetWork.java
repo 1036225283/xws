@@ -14,6 +14,7 @@ import xws.neuron.layer.conv.DepthSeparableLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.pool.MeanPoolLayer;
+import xws.neuron.layer.resnet.ResnetFullLayer;
 import xws.neuron.layer.rnn.BidirectionalRnnLayer;
 import xws.neuron.layer.rnn.RnnLayer;
 
@@ -152,6 +153,9 @@ public class CNNetWork extends NeuralNetWork {
                 fullLayer.setType(FullLayer.class.getSimpleName());
                 fullLayer.setNum(fullLayer.getBias().length);
                 cnNetWork.addLayer(fullLayer);
+            } else if (ResnetFullLayer.class.getSimpleName().equals(strType)) {
+                ResnetFullLayer resnetFullLayer = JSONObject.parseObject(layer.toString(), ResnetFullLayer.class);
+                cnNetWork.addLayer(resnetFullLayer);
             } else if (CrossEntropyLayer.class.getSimpleName().equals(strType)) {
                 CrossEntropyLayer crossEntropyLayer = JSONObject.parseObject(layer.toString(), CrossEntropyLayer.class);
                 cnNetWork.addLayer(crossEntropyLayer);
@@ -327,6 +331,9 @@ public class CNNetWork extends NeuralNetWork {
             } else if ("full".equals(layerJson.getType()) || FullLayer.class.getSimpleName().equals(layerJson.getType())) {
                 FullLayer fullLayer = new FullLayer(layerJson.getName(), layerJson.getActivation(), layerJson.getNum());
                 cnNetWork.addLayer(fullLayer);
+            } else if (ResnetFullLayer.class.getSimpleName().equals(layerJson.getType())) {
+//                ResnetFullLayer resnetFullLayer = new ResnetFullLayer(layerJson.getName(), layerJson.getActivation(), layerJson.getNum());
+//                cnNetWork.addLayer(resnetFullLayer);
             } else if (CrossEntropyLayer.class.getSimpleName().equals(layerJson.getType())) {
                 CrossEntropyLayer crossEntropyLayer = new CrossEntropyLayer();
                 cnNetWork.addLayer(crossEntropyLayer);
