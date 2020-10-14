@@ -4,6 +4,7 @@ import xws.neuron.Tensor;
 import xws.neuron.layer.FullLayer;
 import xws.neuron.layer.Layer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -14,14 +15,14 @@ import java.util.List;
 public class ResnetFullLayer extends Layer {
 
 
-    List<FullLayer> list;
+    List<FullLayer> list = new ArrayList<>();
 
 
     public ResnetFullLayer() {
     }
 
     public ResnetFullLayer(int layers, String name, String activationType, int num, double lambda) {
-        setName(name);
+        super(ResnetFullLayer.class.getSimpleName());
         for (int i = 0; i < layers; i++) {
             FullLayer full = new FullLayer(name, activationType, num, lambda);
             list.add(full);
@@ -54,5 +55,11 @@ public class ResnetFullLayer extends Layer {
         return tensorError;
     }
 
+    public List<FullLayer> getList() {
+        return list;
+    }
 
+    public void setList(List<FullLayer> list) {
+        this.list = list;
+    }
 }
