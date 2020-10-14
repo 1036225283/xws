@@ -7,6 +7,7 @@ import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.*;
 import xws.neuron.layer.conv.ConvolutionLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
+import xws.neuron.layer.resnet.ResnetFullLayer;
 import xws.util.Cifar10;
 import xws.util.UtilCifar10;
 import xws.util.UtilMnist;
@@ -33,7 +34,7 @@ public class MnistTest {
 //        testBN();
 
 
-//        createCNNetWork();
+        createCNNetWork();
 //        CNNetWork cnNetWork = CNNetWork.load(strName);
 //        System.out.println(JSON.toJSONString(cnNetWork.structure()));
         learnMNIST();//训练手写字符识别
@@ -232,14 +233,20 @@ public class MnistTest {
 
         //99.05%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=8   filter2=8
         //99.17%    epoch=8     batch=10    learnRate=0.9   k=2 filter1=9   filter2=9
-        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
-        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
-        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 10, 5, 5, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
+//        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+//        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
+        // resnetfull
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new ResnetFullLayer(2, "full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         //99.03%    ||  99.01%  ||  99.00%
 //        cnNetWork.addLayer(new BnLayer("bn1"));
@@ -360,9 +367,9 @@ public class MnistTest {
         for (int i = 0; i < listTest.size(); i++) {
             UtilNeuralNet.initMinst(listTest.get(i).getData().getArray());
         }
-//        CNNetWork cnNetWork = CNNetWork.load(strName);
-        CNNetWork cnNetWork = new CNNetWork();
-        cnNetWork.create(json);
+        CNNetWork cnNetWork = CNNetWork.load(strName);
+//        CNNetWork cnNetWork = new CNNetWork();
+//        cnNetWork.create(json);
 
         double learnRate = UtilNeuralNet.e() * 0.001;
         for (int x = 0; x < 100; x++) {
