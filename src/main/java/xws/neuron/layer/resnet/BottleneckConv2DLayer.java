@@ -1,6 +1,7 @@
 package xws.neuron.layer.resnet;
 
 import xws.neuron.Tensor;
+import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.Layer;
 import xws.neuron.layer.Padding2DLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
@@ -18,9 +19,9 @@ public class BottleneckConv2DLayer extends Layer {
 
 
     Padding2DLayer padding2DLayer = new Padding2DLayer(1);
-    ConvolutionLayer conv1 = new ConvolutionLayer();
-    ConvolutionLayer conv2 = new ConvolutionLayer();
-    ConvolutionLayer conv3 = new ConvolutionLayer();
+    ConvolutionLayer conv1;
+    ConvolutionLayer conv2;
+    ConvolutionLayer conv3;
 
 
     public BottleneckConv2DLayer() {
@@ -28,9 +29,10 @@ public class BottleneckConv2DLayer extends Layer {
 
     public BottleneckConv2DLayer(int num) {
         super(BottleneckConv2DLayer.class.getSimpleName());
-        conv1 = new ConvolutionLayer(num, 1, 1, 1, 1, 0);
-        conv2 = new ConvolutionLayer(num, 3, 3, 1, 1, 0);
-        conv3 = new ConvolutionLayer(num, 1, 1, 1, 1, 0);
+        conv1 = new ConvolutionLayer("", "relu", num, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001);
+        conv2 = new ConvolutionLayer("", "relu", num, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001);
+        conv3 = new ConvolutionLayer("", "relu", num, 1, 1, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001);
+
     }
 
 

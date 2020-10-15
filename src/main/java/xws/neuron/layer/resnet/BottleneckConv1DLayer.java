@@ -1,8 +1,10 @@
 package xws.neuron.layer.resnet;
 
 import xws.neuron.Tensor;
+import xws.neuron.UtilNeuralNet;
 import xws.neuron.layer.Layer;
-import xws.neuron.layer.conv.ConvolutionLayer;
+import xws.neuron.layer.Padding1DLayer;
+import xws.neuron.layer.conv.Conv1DLayer;
 
 
 /**
@@ -16,77 +18,79 @@ public class BottleneckConv1DLayer extends Layer {
     private Tensor tensorOut;
 
 
-    ConvolutionLayer conv1 = new ConvolutionLayer();
-    ConvolutionLayer conv2 = new ConvolutionLayer();
-    ConvolutionLayer conv3 = new ConvolutionLayer();
+    Padding1DLayer padding1DLayer = new Padding1DLayer(1);
+    Conv1DLayer conv1;
+    Conv1DLayer conv2;
+    Conv1DLayer conv3;
 
 
     public BottleneckConv1DLayer() {
     }
 
-    public BottleneckConv1DLayer(int padding) {
+    public BottleneckConv1DLayer(int num) {
         super(BottleneckConv1DLayer.class.getSimpleName());
-    }
-
-    public BottleneckConv1DLayer(String name, int padding) {
-        super(BottleneckConv1DLayer.class.getSimpleName());
-        setName(name);
-    }
-
-    //构造函数时，传入filters的构造
-    public BottleneckConv1DLayer(int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckConv1DLayer.class.getSimpleName());
-    }
-
-    public BottleneckConv1DLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckConv1DLayer.class.getSimpleName());
-        setName(name);
+        conv1 = new Conv1DLayer("", "relu", num, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001);
+        conv2 = new Conv1DLayer("", "relu", num, 3, 1, 0, UtilNeuralNet.e() * 0.00000000001);
+        conv3 = new Conv1DLayer("", "relu", num, 1, 1, 0, UtilNeuralNet.e() * 0.00000000001);
 
     }
+
 
     @Override
     public Tensor forward(Tensor tensor) {
 
         tensorInput = tensor;
-        Tensor tensorOutConv1 = conv1.forward(tensorInput);
-        Tensor tensorOutConv2 = conv1.forward(tensorOutConv1);
-        Tensor tensorOutConv3 = conv1.forward(tensorOutConv2);
+        tensor = conv1.forward(tensor);
+        tensor = padding1DLayer.forward(tensor);
+        tensor = conv2.forward(tensor);
+        tensor = conv3.forward(tensor);
 
-        return tensorOutConv3;
+        tensor.add(tensorInput);
+        return tensor;
     }
 
     @Override
     public Tensor backPropagation(Tensor tensor) {
+        tensorOut = tensor;
 
-        Tensor tensorErrorConv3 = conv3.backPropagation(tensor);
-        Tensor tensorErrorConv2 = conv2.backPropagation(tensorErrorConv3);
-        Tensor tensorErrorConv1 = conv1.backPropagation(tensorErrorConv2);
+        tensor = conv3.backPropagation(tensor);
+        tensor = conv2.backPropagation(tensor);
+        tensor = padding1DLayer.backPropagation(tensor);
+        tensor = conv1.backPropagation(tensor);
 
-        tensorErrorConv1.add(tensor);
-        return tensorErrorConv1;
+        tensor.add(tensorOut);
+        return tensor;
     }
 
-    public ConvolutionLayer getConv1() {
+    public Padding1DLayer getPadding1DLayer() {
+        return padding1DLayer;
+    }
+
+    public void setPadding1DLayer(Padding1DLayer padding1DLayer) {
+        this.padding1DLayer = padding1DLayer;
+    }
+
+    public Conv1DLayer getConv1() {
         return conv1;
     }
 
-    public void setConv1(ConvolutionLayer conv1) {
+    public void setConv1(Conv1DLayer conv1) {
         this.conv1 = conv1;
     }
 
-    public ConvolutionLayer getConv2() {
+    public Conv1DLayer getConv2() {
         return conv2;
     }
 
-    public void setConv2(ConvolutionLayer conv2) {
+    public void setConv2(Conv1DLayer conv2) {
         this.conv2 = conv2;
     }
 
-    public ConvolutionLayer getConv3() {
+    public Conv1DLayer getConv3() {
         return conv3;
     }
 
-    public void setConv3(ConvolutionLayer conv3) {
+    public void setConv3(Conv1DLayer conv3) {
         this.conv3 = conv3;
     }
 }
