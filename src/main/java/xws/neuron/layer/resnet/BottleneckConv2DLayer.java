@@ -2,6 +2,7 @@ package xws.neuron.layer.resnet;
 
 import xws.neuron.Tensor;
 import xws.neuron.layer.Layer;
+import xws.neuron.layer.Padding2DLayer;
 import xws.neuron.layer.conv.ConvolutionLayer;
 
 
@@ -16,6 +17,7 @@ public class BottleneckConv2DLayer extends Layer {
     private Tensor tensorOut;
 
 
+    Padding2DLayer padding2DLayer = new Padding2DLayer(1);
     ConvolutionLayer conv1 = new ConvolutionLayer();
     ConvolutionLayer conv2 = new ConvolutionLayer();
     ConvolutionLayer conv3 = new ConvolutionLayer();
@@ -24,8 +26,11 @@ public class BottleneckConv2DLayer extends Layer {
     public BottleneckConv2DLayer() {
     }
 
-    public BottleneckConv2DLayer(int padding) {
+    public BottleneckConv2DLayer(int num) {
         super(BottleneckConv2DLayer.class.getSimpleName());
+        conv1 = new ConvolutionLayer(num, 1, 1, 1, 1, 0);
+        conv2 = new ConvolutionLayer(num, 3, 3, 1, 1, 0);
+        conv3 = new ConvolutionLayer(num, 1, 1, 1, 1, 0);
     }
 
 
@@ -33,22 +38,26 @@ public class BottleneckConv2DLayer extends Layer {
     public Tensor forward(Tensor tensor) {
 
         tensorInput = tensor;
-        Tensor tensorOutConv1 = conv1.forward(tensorInput);
-        Tensor tensorOutConv2 = conv1.forward(tensorOutConv1);
-        Tensor tensorOutConv3 = conv1.forward(tensorOutConv2);
+        tensor = conv1.forward(tensor);
+        tensor = padding2DLayer.forward(tensor);
+        tensor = conv2.forward(tensor);
+        tensor = conv3.forward(tensor);
 
-        return tensorOutConv3;
+        tensor.add(tensorInput);
+        return tensor;
     }
 
     @Override
     public Tensor backPropagation(Tensor tensor) {
+        tensorOut = tensor;
 
-        Tensor tensorErrorConv3 = conv3.backPropagation(tensor);
-        Tensor tensorErrorConv2 = conv2.backPropagation(tensorErrorConv3);
-        Tensor tensorErrorConv1 = conv1.backPropagation(tensorErrorConv2);
+        tensor = conv3.backPropagation(tensor);
+        tensor = conv2.backPropagation(tensor);
+        tensor = padding2DLayer.backPropagation(tensor);
+        tensor = conv1.backPropagation(tensor);
 
-        tensorErrorConv1.add(tensor);
-        return tensorErrorConv1;
+        tensor.add(tensorOut);
+        return tensor;
     }
 
     public ConvolutionLayer getConv1() {

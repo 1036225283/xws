@@ -39,6 +39,7 @@ public class ResnetFullLayer extends Layer {
             tensor = fullLayer.forward(tensor);
         }
 
+        tensor.add(tensorInput);
         return tensor;
     }
 

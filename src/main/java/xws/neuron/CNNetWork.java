@@ -14,6 +14,7 @@ import xws.neuron.layer.pool.MaxPool1DLayer;
 import xws.neuron.layer.pool.MaxPoolBackLayer;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.pool.MeanPoolLayer;
+import xws.neuron.layer.resnet.BottleneckConv2DLayer;
 import xws.neuron.layer.resnet.BottleneckFullLayer;
 import xws.neuron.layer.resnet.ResnetFullLayer;
 import xws.neuron.layer.rnn.BidirectionalRnnLayer;
@@ -143,6 +144,9 @@ public class CNNetWork extends NeuralNetWork {
                 Conv1DLayer conv1DLayer = JSONObject.parseObject(layer.toString(), Conv1DLayer.class);
                 conv1DLayer.setNum(conv1DLayer.getFilters().length);
                 cnNetWork.addLayer(conv1DLayer);
+            } else if (BottleneckConv2DLayer.class.getSimpleName().equals(strType)) {
+                BottleneckConv2DLayer bottleneckConv2DLayer = JSONObject.parseObject(layer.toString(), BottleneckConv2DLayer.class);
+                cnNetWork.addLayer(bottleneckConv2DLayer);
             } else if (MaxPoolLayer.class.getSimpleName().equals(strType)) {
                 MaxPoolLayer maxPoolLayer = JSONObject.parseObject(layer.toString(), MaxPoolLayer.class);
                 cnNetWork.addLayer(maxPoolLayer);
