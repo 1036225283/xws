@@ -244,8 +244,9 @@ public class MnistTest {
 
 
         // bottleneckfull
-        cnNetWork.addLayer(new FullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
-        cnNetWork.addLayer(new BottleneckFullLayer("full2", "relu", 128, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new FullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new BottleneckFullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
+        cnNetWork.addLayer(new BottleneckFullLayer("full2", "relu", 64, UtilNeuralNet.e() * 0.00000000001));
         cnNetWork.addLayer(new SoftmaxLayer("softmax", 10, UtilNeuralNet.e() * 0.00000000001));
 
         // resnetfull

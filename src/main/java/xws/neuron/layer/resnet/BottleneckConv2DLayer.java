@@ -28,21 +28,6 @@ public class BottleneckConv2DLayer extends Layer {
         super(BottleneckConv2DLayer.class.getSimpleName());
     }
 
-    public BottleneckConv2DLayer(String name, int padding) {
-        super(BottleneckConv2DLayer.class.getSimpleName());
-        setName(name);
-    }
-
-    //构造函数时，传入filters的构造
-    public BottleneckConv2DLayer(int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckConv2DLayer.class.getSimpleName());
-    }
-
-    public BottleneckConv2DLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
-        super(BottleneckConv2DLayer.class.getSimpleName());
-        setName(name);
-
-    }
 
     @Override
     public Tensor forward(Tensor tensor) {
