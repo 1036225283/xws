@@ -4,63 +4,37 @@ import xws.neuron.Tensor;
 
 
 /**
- * 填充空白
- * 左填充
- * 右填充
- * 上填充
- * 下填充
+ * 1维padding
  * Created by xws on 2019/2/19.
  */
-public class PaddingLayer extends Layer {
+public class Padding1DLayer extends Layer {
 
 
     private Tensor tensorInput;
     private Tensor tensorOut;
 
-    private int pTop;
-    private int pBottom;
+    private int pTop = 0;
+    private int pBottom = 0;
     private int pLeft;
     private int pRight;
 
 
-    public PaddingLayer() {
+    public Padding1DLayer() {
     }
 
-    public PaddingLayer(int padding) {
-        super(PaddingLayer.class.getSimpleName());
-        this.pTop = padding;
-        this.pBottom = padding;
+    public Padding1DLayer(int padding) {
+        super(Padding1DLayer.class.getSimpleName());
         this.pLeft = padding;
         this.pRight = padding;
     }
 
-    public PaddingLayer(String name, int padding) {
-        super(PaddingLayer.class.getSimpleName());
-        this.pTop = padding;
-        this.pBottom = padding;
+    public Padding1DLayer(String name, int padding) {
+        super(Padding1DLayer.class.getSimpleName());
         this.pLeft = padding;
         this.pRight = padding;
         setName(name);
     }
 
-    //构造函数时，传入filters的构造
-    public PaddingLayer(int pTop, int pBottom, int pLeft, int pRight) {
-        super(PaddingLayer.class.getSimpleName());
-        this.pTop = pTop;
-        this.pBottom = pBottom;
-        this.pLeft = pLeft;
-        this.pRight = pRight;
-    }
-
-    public PaddingLayer(String name, int pTop, int pBottom, int pLeft, int pRight) {
-        super(PaddingLayer.class.getSimpleName());
-        this.pTop = pTop;
-        this.pBottom = pBottom;
-        this.pLeft = pLeft;
-        this.pRight = pRight;
-        setName(name);
-
-    }
 
     @Override
     public Tensor forward(Tensor tensor) {
@@ -69,7 +43,7 @@ public class PaddingLayer extends Layer {
         //首先，根据现有大小，创建新的大小
         tensorOut = new Tensor();
         tensorOut.setDepth(tensorInput.getDepth());
-        tensorOut.setHeight(tensorInput.getHeight() + pTop + pBottom);
+        tensorOut.setHeight(tensorInput.getHeight());
         tensorOut.setWidth(tensorInput.getWidth() + pLeft + pRight);
         tensorOut.createArray();
 
@@ -85,7 +59,7 @@ public class PaddingLayer extends Layer {
                         continue;
                     }
 
-                    double val = tensor.get(d, h - pTop, w - pLeft);
+                    double val = tensor.get(d, h, w - pLeft);
                     tensorOut.set(d, h, w, val);
                 }
             }
@@ -119,7 +93,7 @@ public class PaddingLayer extends Layer {
                     }
 
                     double val = tensor.get(d, h, w);
-                    tensorError.set(d, h - pTop, w - pLeft, val);
+                    tensorError.set(d, h, w - pLeft, val);
                 }
             }
 

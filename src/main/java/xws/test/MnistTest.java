@@ -258,11 +258,11 @@ public class MnistTest {
 
         //99.03%    ||  99.01%  ||  99.00%
 //        cnNetWork.addLayer(new BnLayer("bn1"));
-//        cnNetWork.addLayer(new PaddingLayer("padd1", 1));
+//        cnNetWork.addLayer(new Padding2DLayer("padd1", 1));
 //        cnNetWork.addLayer(new ConvolutionLayer("filter1", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
 //        cnNetWork.addLayer(new MaxPoolLayer("pool1", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("bn2"));
-//        cnNetWork.addLayer(new PaddingLayer("padd2", 1));
+//        cnNetWork.addLayer(new Padding2DLayer("padd2", 1));
 //        cnNetWork.addLayer(new ConvolutionLayer("filter2", "relu", 9, 3, 3, 1, 1, 0, UtilNeuralNet.e() * 0.0000000001));
 //        cnNetWork.addLayer(new MaxPoolLayer("pool2", 2, 2, 2, 2));
 //        cnNetWork.addLayer(new BnLayer("bn3"));

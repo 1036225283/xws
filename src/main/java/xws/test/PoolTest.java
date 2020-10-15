@@ -3,7 +3,6 @@ package xws.test;
 import xws.neuron.Tensor;
 import xws.neuron.layer.pool.MaxPoolLayer;
 import xws.neuron.layer.pool.MeanPoolLayer;
-import xws.neuron.layer.PaddingLayer;
 
 /**
  * mean pool test

@@ -1,6 +1,5 @@
 package xws.neuron;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import xws.neuron.json.LayerJson;
@@ -189,8 +188,8 @@ public class CNNetWork extends NeuralNetWork {
             } else if (RnnLayer.class.getSimpleName().equals(strType)) {
                 RnnLayer rnnLayer = JSONObject.parseObject(layer.toString(), RnnLayer.class);
                 cnNetWork.addLayer(rnnLayer);
-            } else if (PaddingLayer.class.getSimpleName().equals(strType)) {
-                PaddingLayer paddingLayer = JSONObject.parseObject(layer.toString(), PaddingLayer.class);
+            } else if (Padding2DLayer.class.getSimpleName().equals(strType)) {
+                Padding2DLayer paddingLayer = JSONObject.parseObject(layer.toString(), Padding2DLayer.class);
                 cnNetWork.addLayer(paddingLayer);
             } else if (BidirectionalRnnLayer.class.getSimpleName().equals(strType)) {
                 BidirectionalRnnLayer bidirectionalRnnLayer = JSONObject.parseObject(layer.toString(), BidirectionalRnnLayer.class);
@@ -313,8 +312,8 @@ public class CNNetWork extends NeuralNetWork {
                 layerJson.setNum(softmaxLayer.getNum());
             } else if (layer instanceof LnLayer) {
                 LnLayer maxPoolLayer = (LnLayer) layer;
-            } else if (layer instanceof PaddingLayer) {
-                PaddingLayer maxPoolLayer = (PaddingLayer) layer;
+            } else if (layer instanceof Padding2DLayer) {
+                Padding2DLayer maxPoolLayer = (Padding2DLayer) layer;
             } else if (layer instanceof BnLayer) {
                 BnLayer maxPoolLayer = (BnLayer) layer;
             } else {
@@ -379,9 +378,12 @@ public class CNNetWork extends NeuralNetWork {
                 RnnLayer rnnLayer = new RnnLayer(layerJson.getNum());
                 rnnLayer.setInitFlag(false);
                 cnNetWork.addLayer(rnnLayer);
-            } else if (PaddingLayer.class.getSimpleName().equals(layerJson.getType())) {
-                PaddingLayer paddingLayer = new PaddingLayer();
+            } else if (Padding2DLayer.class.getSimpleName().equals(layerJson.getType())) {
+                Padding2DLayer paddingLayer = new Padding2DLayer();
                 cnNetWork.addLayer(paddingLayer);
+            } else if (Padding1DLayer.class.getSimpleName().equals(layerJson.getType())) {
+                Padding1DLayer padding1DLayer = new Padding1DLayer();
+                cnNetWork.addLayer(padding1DLayer);
             }
         }
         return cnNetWork;
