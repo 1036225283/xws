@@ -103,6 +103,11 @@ public class CNNetWork extends NeuralNetWork {
 
     //卷积神经网络工作
     public double[] work(Tensor tensorInput) {
+        tensorInput = workTensor(tensorInput);
+        return tensorInput.getArray();
+    }
+
+    public Tensor workTensor(Tensor tensorInput) {
         //前向传播
         for (int i = 0; i < layers.size(); i++) {
             Layer layer = layers.get(i);
@@ -116,8 +121,7 @@ public class CNNetWork extends NeuralNetWork {
             }
             tensorInput = layer.forward(tensorInput);
         }
-        double[] result = tensorInput.getArray();
-        return result;
+        return tensorInput;
     }
 
     //加载卷积神经网络从硬盘上
