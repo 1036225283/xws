@@ -171,7 +171,7 @@ public class RnnLayer extends Layer {
             shareListErrorInputResidualWeight = new ArrayList<>();
             for (int i = 0; i < shareBias.getWidth(); i++) {
                 Tensor w = new Tensor();
-                w.setWidth(tensor.getWidth());
+                w.setWidth(tensor.size());
                 w.createArray();
                 shareListErrorInputWeight.add(w);
 
