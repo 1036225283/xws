@@ -199,9 +199,15 @@ public class CNNetWork extends NeuralNetWork {
             } else if (Padding2DLayer.class.getSimpleName().equals(strType)) {
                 Padding2DLayer paddingLayer = JSONObject.parseObject(layer.toString(), Padding2DLayer.class);
                 cnNetWork.addLayer(paddingLayer);
+            } else if (Padding1DLayer.class.getSimpleName().equals(strType)) {
+                Padding1DLayer padding1DLayer = JSONObject.parseObject(layer.toString(), Padding1DLayer.class);
+                cnNetWork.addLayer(padding1DLayer);
             } else if (BidirectionalRnnLayer.class.getSimpleName().equals(strType)) {
                 BidirectionalRnnLayer bidirectionalRnnLayer = JSONObject.parseObject(layer.toString(), BidirectionalRnnLayer.class);
                 cnNetWork.addLayer(bidirectionalRnnLayer);
+            } else if (FlattenLayer.class.getSimpleName().equals(strType)) {
+                FlattenLayer flattenLayer = JSONObject.parseObject(layer.toString(), FlattenLayer.class);
+                cnNetWork.addLayer(flattenLayer);
             }
 
 

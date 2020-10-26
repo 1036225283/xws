@@ -152,7 +152,7 @@ public class RnnLayer extends Layer {
 
         //判断权重是否初始化
         if (initFlag == false) {
-            initWeight(tensor.getWidth());
+            initWeight(tensor.size());
             initFlag = true;
         }
 
